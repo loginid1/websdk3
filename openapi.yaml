@@ -1,0 +1,1555 @@
+swagger: "2.0"
+info:
+    title: FIDO2 API
+    description: RESTful API for handling WebAuthn logic with support for FIDO2 flows with passkeys.
+    version: "2.0"
+host: api.loginid.io
+basePath: /fido2/v2
+consumes:
+    - application/json
+    - application/xml
+    - application/gob
+produces:
+    - application/json
+    - application/xml
+    - application/gob
+paths:
+    /auth/complete:
+        post:
+            tags:
+                - auth
+            summary: Complete WebAuthn registration
+            operationId: auth#authComplete
+            parameters:
+                - name: AuthCompleteRequestBody
+                  in: body
+                  required: true
+                  schema:
+                    $ref: '#/definitions/AuthAuthCompleteRequestBody'
+                    required:
+                        - session
+                        - assertionResult
+            responses:
+                "200":
+                    description: OK response.
+                    schema:
+                        $ref: '#/definitions/AuthAuthCompleteResponseBody'
+                "400":
+                    description: Bad Request response.
+                    schema:
+                        $ref: '#/definitions/AuthAuthCompleteBadRequestResponseBody'
+                        required:
+                            - msgCode
+                "403":
+                    description: Forbidden response.
+                    schema:
+                        $ref: '#/definitions/AuthAuthCompleteForbiddenResponseBody'
+                        required:
+                            - msgCode
+                "500":
+                    description: Internal Server Error response.
+                    schema:
+                        $ref: '#/definitions/AuthAuthCompleteInternalServerErrorResponseBody'
+                        required:
+                            - msgCode
+            schemes:
+                - https
+    /auth/init:
+        post:
+            tags:
+                - auth
+            summary: Start WebAuthn registration flow
+            operationId: auth#authInit
+            produces:
+                - application/json
+            parameters:
+                - name: AuthInitRequestBody
+                  in: body
+                  required: true
+                  schema:
+                    $ref: '#/definitions/AuthAuthInitRequestBody'
+                    required:
+                        - app
+                        - user
+                        - deviceInfo
+            responses:
+                "200":
+                    description: OK response.
+                    schema:
+                        $ref: '#/definitions/AuthAuthInitResponseBody'
+                "400":
+                    description: Bad Request response.
+                    schema:
+                        $ref: '#/definitions/AuthAuthInitBadRequestResponseBody'
+                        required:
+                            - msgCode
+                "403":
+                    description: Forbidden response.
+                    schema:
+                        $ref: '#/definitions/AuthAuthInitForbiddenResponseBody'
+                        required:
+                            - msgCode
+                "500":
+                    description: Internal Server Error response.
+                    schema:
+                        $ref: '#/definitions/AuthAuthInitInternalServerErrorResponseBody'
+                        required:
+                            - msgCode
+            schemes:
+                - https
+    /passkeys:
+        get:
+            tags:
+                - passkeys
+            summary: List passkeys
+            description: |4-
+                **Required security scopes for jwt**:
+                  * `passkey:read`
+            operationId: passkeys#passkeysList
+            produces:
+                - application/json
+            parameters:
+                - name: Authorization
+                  in: header
+                  description: Authorization token
+                  required: false
+                  type: string
+                  pattern: ^Bearer [^ ]+$
+            responses:
+                "200":
+                    description: OK response.
+                    schema:
+                        $ref: '#/definitions/PasskeysPasskeyResponseCollection'
+                "401":
+                    description: Unauthorized response.
+                    schema:
+                        $ref: '#/definitions/PasskeysPasskeysListUnauthorizedResponseBody'
+                        required:
+                            - msgCode
+                "403":
+                    description: Forbidden response.
+                    schema:
+                        $ref: '#/definitions/PasskeysPasskeysListForbiddenResponseBody'
+                        required:
+                            - msgCode
+                "500":
+                    description: Internal Server Error response.
+                    schema:
+                        $ref: '#/definitions/PasskeysPasskeysListInternalServerErrorResponseBody'
+                        required:
+                            - msgCode
+            schemes:
+                - https
+            security:
+                - jwt_header_Authorization: []
+    /passkeys/{id}:
+        put:
+            tags:
+                - passkeys
+            summary: Rename passkey
+            description: |4-
+                **Required security scopes for jwt**:
+                  * `passkey:write`
+            operationId: passkeys#passkeyRename
+            parameters:
+                - name: id
+                  in: path
+                  description: Internal passkey identifier
+                  required: true
+                  type: string
+                - name: Authorization
+                  in: header
+                  description: Authorization token
+                  required: false
+                  type: string
+                  pattern: ^Bearer [^ ]+$
+                - name: PasskeyRenameRequestBody
+                  in: body
+                  required: true
+                  schema:
+                    $ref: '#/definitions/PasskeysPasskeyRenameRequestBody'
+                    required:
+                        - name
+            responses:
+                "204":
+                    description: No Content response.
+                "401":
+                    description: Unauthorized response.
+                    schema:
+                        $ref: '#/definitions/PasskeysPasskeyRenameUnauthorizedResponseBody'
+                        required:
+                            - msgCode
+                "403":
+                    description: Forbidden response.
+                    schema:
+                        $ref: '#/definitions/PasskeysPasskeyRenameForbiddenResponseBody'
+                        required:
+                            - msgCode
+                "404":
+                    description: Not Found response.
+                    schema:
+                        $ref: '#/definitions/PasskeysPasskeyRenameNotFoundResponseBody'
+                        required:
+                            - msgCode
+                "500":
+                    description: Internal Server Error response.
+                    schema:
+                        $ref: '#/definitions/PasskeysPasskeyRenameInternalServerErrorResponseBody'
+                        required:
+                            - msgCode
+            schemes:
+                - https
+            security:
+                - jwt_header_Authorization: []
+        delete:
+            tags:
+                - passkeys
+            summary: Delete passkey
+            description: |4-
+                **Required security scopes for jwt**:
+                  * `passkey:write`
+            operationId: passkeys#passkeyDelete
+            parameters:
+                - name: id
+                  in: path
+                  description: Internal passkey identifier
+                  required: true
+                  type: string
+                - name: Authorization
+                  in: header
+                  description: Authorization token
+                  required: false
+                  type: string
+                  pattern: ^Bearer [^ ]+$
+            responses:
+                "204":
+                    description: No Content response.
+                "401":
+                    description: Unauthorized response.
+                    schema:
+                        $ref: '#/definitions/PasskeysPasskeyDeleteUnauthorizedResponseBody'
+                        required:
+                            - msgCode
+                "403":
+                    description: Forbidden response.
+                    schema:
+                        $ref: '#/definitions/PasskeysPasskeyDeleteForbiddenResponseBody'
+                        required:
+                            - msgCode
+                "404":
+                    description: Not Found response.
+                    schema:
+                        $ref: '#/definitions/PasskeysPasskeyDeleteNotFoundResponseBody'
+                        required:
+                            - msgCode
+                "500":
+                    description: Internal Server Error response.
+                    schema:
+                        $ref: '#/definitions/PasskeysPasskeyDeleteInternalServerErrorResponseBody'
+                        required:
+                            - msgCode
+            schemes:
+                - https
+            security:
+                - jwt_header_Authorization: []
+    /reg/complete:
+        post:
+            tags:
+                - reg
+            summary: Complete WebAuthn registration flow
+            operationId: reg#regComplete
+            parameters:
+                - name: RegCompleteRequestBody
+                  in: body
+                  required: true
+                  schema:
+                    $ref: '#/definitions/RegRegCompleteRequestBody'
+                    required:
+                        - session
+                        - creationResult
+            responses:
+                "200":
+                    description: OK response.
+                    schema:
+                        $ref: '#/definitions/RegRegCompleteResponseBody'
+                "400":
+                    description: Bad Request response.
+                    schema:
+                        $ref: '#/definitions/RegRegCompleteBadRequestResponseBody'
+                        required:
+                            - msgCode
+                "403":
+                    description: Forbidden response.
+                    schema:
+                        $ref: '#/definitions/RegRegCompleteForbiddenResponseBody'
+                        required:
+                            - msgCode
+                "500":
+                    description: Internal Server Error response.
+                    schema:
+                        $ref: '#/definitions/RegRegCompleteInternalServerErrorResponseBody'
+                        required:
+                            - msgCode
+            schemes:
+                - https
+    /reg/init:
+        post:
+            tags:
+                - reg
+            summary: Start WebAuthn registration flow
+            operationId: reg#regInit
+            produces:
+                - application/json
+            parameters:
+                - name: RegInitRequestBody
+                  in: body
+                  required: true
+                  schema:
+                    $ref: '#/definitions/RegRegInitRequestBody'
+                    required:
+                        - app
+                        - user
+                        - deviceInfo
+            responses:
+                "200":
+                    description: OK response.
+                    schema:
+                        $ref: '#/definitions/RegRegInitResponseBody'
+                "400":
+                    description: Bad Request response.
+                    schema:
+                        $ref: '#/definitions/RegRegInitBadRequestResponseBody'
+                        required:
+                            - msgCode
+                "403":
+                    description: Forbidden response.
+                    schema:
+                        $ref: '#/definitions/RegRegInitForbiddenResponseBody'
+                        required:
+                            - msgCode
+                "500":
+                    description: Internal Server Error response.
+                    schema:
+                        $ref: '#/definitions/RegRegInitInternalServerErrorResponseBody'
+                        required:
+                            - msgCode
+            schemes:
+                - https
+    /version:
+        get:
+            tags:
+                - version
+            summary: Show software version
+            operationId: version#versionShow
+            produces:
+                - application/json
+            responses:
+                "200":
+                    description: OK response.
+                    schema:
+                        $ref: '#/definitions/VersionVersionShowResponseBody'
+            schemes:
+                - https
+definitions:
+    AuthAuthCompleteBadRequestResponseBody:
+        title: AuthAuthCompleteBadRequestResponseBody
+        type: object
+        properties:
+            msg:
+                type: string
+                example: A serious error
+            msgCode:
+                type: string
+                example: serious_error
+        example:
+            msg: A serious error
+            msgCode: serious_error
+        required:
+            - msgCode
+    AuthAuthCompleteForbiddenResponseBody:
+        title: AuthAuthCompleteForbiddenResponseBody
+        type: object
+        properties:
+            msg:
+                type: string
+                example: A serious error
+            msgCode:
+                type: string
+                example: serious_error
+        example:
+            msg: A serious error
+            msgCode: serious_error
+        required:
+            - msgCode
+    AuthAuthCompleteInternalServerErrorResponseBody:
+        title: AuthAuthCompleteInternalServerErrorResponseBody
+        type: object
+        properties:
+            msg:
+                type: string
+                example: A serious error
+            msgCode:
+                type: string
+                example: serious_error
+        example:
+            msg: A serious error
+            msgCode: serious_error
+        required:
+            - msgCode
+    AuthAuthCompleteRequestBody:
+        title: AuthAuthCompleteRequestBody
+        type: object
+        properties:
+            assertionResult:
+                $ref: '#/definitions/authenticatorAssertionResponseRequestBody'
+            session:
+                type: string
+                description: An opaque object containing session data.
+                example: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
+        example:
+            assertionResult:
+                authenticatorData: ix523n3XniH01jM4CIuOn1z0Jw6QbRATXYOsCUyQN...
+                clientDataJSON: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
+                credentialId: 2aChi2dALRLdVP5i/zKr7yvMrP8FIy7MK4lbyUsjO...
+                signature: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
+                userHandle: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
+            session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
+        required:
+            - session
+            - assertionResult
+    AuthAuthCompleteResponseBody:
+        title: 'Mediatype identifier: application/vnd.jwt+json; view=default'
+        type: object
+        properties:
+            jwtAccess:
+                type: string
+                description: JWT access token
+                example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        description: AuthCompleteResponseBody result type (default view)
+        example:
+            jwtAccess: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        required:
+            - jwtAccess
+    AuthAuthInitBadRequestResponseBody:
+        title: AuthAuthInitBadRequestResponseBody
+        type: object
+        properties:
+            msg:
+                type: string
+                example: A serious error
+            msgCode:
+                type: string
+                example: serious_error
+        example:
+            msg: A serious error
+            msgCode: serious_error
+        required:
+            - msgCode
+    AuthAuthInitForbiddenResponseBody:
+        title: AuthAuthInitForbiddenResponseBody
+        type: object
+        properties:
+            msg:
+                type: string
+                example: A serious error
+            msgCode:
+                type: string
+                example: serious_error
+        example:
+            msg: A serious error
+            msgCode: serious_error
+        required:
+            - msgCode
+    AuthAuthInitInternalServerErrorResponseBody:
+        title: AuthAuthInitInternalServerErrorResponseBody
+        type: object
+        properties:
+            msg:
+                type: string
+                example: A serious error
+            msgCode:
+                type: string
+                example: serious_error
+        example:
+            msg: A serious error
+            msgCode: serious_error
+        required:
+            - msgCode
+    AuthAuthInitRequestBody:
+        title: AuthAuthInitRequestBody
+        type: object
+        properties:
+            app:
+                $ref: '#/definitions/applicationRequestBody'
+            deviceInfo:
+                $ref: '#/definitions/deviceInfoRequestBody'
+            user:
+                $ref: '#/definitions/userRequestBody'
+        example:
+            app:
+                id: 2a363a42-a397-4af0-b089-0935fc223017
+                name: Messenger
+            deviceInfo:
+                clientName: Chrome
+                clientType: browser
+                clientVersion: 120.0.0.0
+                deviceId: Chrome
+                osArch: aarch64
+                osName: iPhone
+                osVersion: 14.2.1
+            user:
+                displayName: System Administrator
+                username: admin@example.com
+                usernameType: email
+        required:
+            - app
+            - user
+            - deviceInfo
+    AuthAuthInitResponseBody:
+        title: 'Mediatype identifier: application/vnd.auth.init+json; view=default'
+        type: object
+        properties:
+            assertionOption:
+                $ref: '#/definitions/publicKeyCredentialRequestOptionsResponseBody'
+            session:
+                type: string
+                description: An opaque object containing session data.
+                example: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
+        description: AuthInitResponseBody result type (default view)
+        example:
+            assertionOption:
+                allowCredentials:
+                    - id: oAjxAhjnoQXLmRRAczwPg2E/S2zVS+DKlO6WNvgH9ys=
+                      transports:
+                        - usb
+                        - internal
+                      type: public-key
+                    - id: dqJvLVzdodYfQfKPB8zgF+rtoxNx5WUgH7kFHp8SegY=
+                      type: public-key
+                challenge: gUEHYYYEpkj+eNo9DOPb/17K36VT0rTUAPyM03JeoeM=
+                extensions:
+                    appid: https://loalhost:8443
+                rpId: https://localhost:8443/
+                timeout: 5000
+                userVerification: preferred
+            session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
+        required:
+            - session
+            - assertionOption
+    PasskeyResponse:
+        title: 'Mediatype identifier: application/vnd.passkey+json; view=default'
+        type: object
+        properties:
+            createdAt:
+                type: string
+                description: Timestamp in RFC3339 format.
+                example: 2023-06-15 13:29:41 EDT
+                format: date-time
+            device:
+                type: string
+                description: Device type
+                example: iPhone SE
+            id:
+                type: string
+                description: PassKey ID
+                example: eb385800-d35e-4108-9b49-48010731cd37
+            name:
+                type: string
+                description: Name of the passkey
+                example: My Phone
+        description: PasskeyResponse result type (default view)
+        example:
+            createdAt: 2023-06-15 13:29:41 EDT
+            device: iPhone SE
+            id: eb385800-d35e-4108-9b49-48010731cd37
+            name: My Phone
+        required:
+            - id
+            - name
+            - device
+            - createdAt
+    PasskeysPasskeyDeleteForbiddenResponseBody:
+        title: PasskeysPasskeyDeleteForbiddenResponseBody
+        type: object
+        properties:
+            msg:
+                type: string
+                example: A serious error
+            msgCode:
+                type: string
+                example: serious_error
+        example:
+            msg: A serious error
+            msgCode: serious_error
+        required:
+            - msgCode
+    PasskeysPasskeyDeleteInternalServerErrorResponseBody:
+        title: PasskeysPasskeyDeleteInternalServerErrorResponseBody
+        type: object
+        properties:
+            msg:
+                type: string
+                example: A serious error
+            msgCode:
+                type: string
+                example: serious_error
+        example:
+            msg: A serious error
+            msgCode: serious_error
+        required:
+            - msgCode
+    PasskeysPasskeyDeleteNotFoundResponseBody:
+        title: PasskeysPasskeyDeleteNotFoundResponseBody
+        type: object
+        properties:
+            msg:
+                type: string
+                example: A serious error
+            msgCode:
+                type: string
+                example: serious_error
+        example:
+            msg: A serious error
+            msgCode: serious_error
+        required:
+            - msgCode
+    PasskeysPasskeyDeleteUnauthorizedResponseBody:
+        title: PasskeysPasskeyDeleteUnauthorizedResponseBody
+        type: object
+        properties:
+            msg:
+                type: string
+                example: A serious error
+            msgCode:
+                type: string
+                example: serious_error
+        example:
+            msg: A serious error
+            msgCode: serious_error
+        required:
+            - msgCode
+    PasskeysPasskeyRenameForbiddenResponseBody:
+        title: PasskeysPasskeyRenameForbiddenResponseBody
+        type: object
+        properties:
+            msg:
+                type: string
+                example: A serious error
+            msgCode:
+                type: string
+                example: serious_error
+        example:
+            msg: A serious error
+            msgCode: serious_error
+        required:
+            - msgCode
+    PasskeysPasskeyRenameInternalServerErrorResponseBody:
+        title: PasskeysPasskeyRenameInternalServerErrorResponseBody
+        type: object
+        properties:
+            msg:
+                type: string
+                example: A serious error
+            msgCode:
+                type: string
+                example: serious_error
+        example:
+            msg: A serious error
+            msgCode: serious_error
+        required:
+            - msgCode
+    PasskeysPasskeyRenameNotFoundResponseBody:
+        title: PasskeysPasskeyRenameNotFoundResponseBody
+        type: object
+        properties:
+            msg:
+                type: string
+                example: A serious error
+            msgCode:
+                type: string
+                example: serious_error
+        example:
+            msg: A serious error
+            msgCode: serious_error
+        required:
+            - msgCode
+    PasskeysPasskeyRenameRequestBody:
+        title: PasskeysPasskeyRenameRequestBody
+        type: object
+        properties:
+            name:
+                type: string
+                description: Internal passkey identifier
+                example: My iPhone SE
+        example:
+            name: My iPhone SE
+        required:
+            - name
+    PasskeysPasskeyRenameUnauthorizedResponseBody:
+        title: PasskeysPasskeyRenameUnauthorizedResponseBody
+        type: object
+        properties:
+            msg:
+                type: string
+                example: A serious error
+            msgCode:
+                type: string
+                example: serious_error
+        example:
+            msg: A serious error
+            msgCode: serious_error
+        required:
+            - msgCode
+    PasskeysPasskeyResponseCollection:
+        title: 'Mediatype identifier: application/vnd.passkey+json; type=collection; view=default'
+        type: array
+        items:
+            $ref: '#/definitions/PasskeyResponse'
+        description: PasskeysListResponseBody is the result type for an array of PasskeyResponse (default view)
+        example:
+            - createdAt: 2023-06-15 13:29:41 EDT
+              device: iPhone SE (2nd Gen)
+              id: eb385800-d35e-4108-9b49-48010731cd37
+              name: My Phone
+            - createdAt: 2023-06-15 13:29:41 EDT
+              device: MacBook Pro (Google Chrome)
+              id: 1b385800-d35e-4108-9b49-48010731cd37
+              name: My Laptop
+            - createdAt: 2023-06-15 13:29:41 EDT
+              device: MacBook Pro
+              id: ab385800-d35e-4108-9b49-48010731cd37
+              name: My Tablet
+    PasskeysPasskeysListForbiddenResponseBody:
+        title: PasskeysPasskeysListForbiddenResponseBody
+        type: object
+        properties:
+            msg:
+                type: string
+                example: A serious error
+            msgCode:
+                type: string
+                example: serious_error
+        example:
+            msg: A serious error
+            msgCode: serious_error
+        required:
+            - msgCode
+    PasskeysPasskeysListInternalServerErrorResponseBody:
+        title: PasskeysPasskeysListInternalServerErrorResponseBody
+        type: object
+        properties:
+            msg:
+                type: string
+                example: A serious error
+            msgCode:
+                type: string
+                example: serious_error
+        example:
+            msg: A serious error
+            msgCode: serious_error
+        required:
+            - msgCode
+    PasskeysPasskeysListUnauthorizedResponseBody:
+        title: PasskeysPasskeysListUnauthorizedResponseBody
+        type: object
+        properties:
+            msg:
+                type: string
+                example: A serious error
+            msgCode:
+                type: string
+                example: serious_error
+        example:
+            msg: A serious error
+            msgCode: serious_error
+        required:
+            - msgCode
+    RegRegCompleteBadRequestResponseBody:
+        title: RegRegCompleteBadRequestResponseBody
+        type: object
+        properties:
+            msg:
+                type: string
+                example: A serious error
+            msgCode:
+                type: string
+                example: serious_error
+        example:
+            msg: A serious error
+            msgCode: serious_error
+        required:
+            - msgCode
+    RegRegCompleteForbiddenResponseBody:
+        title: RegRegCompleteForbiddenResponseBody
+        type: object
+        properties:
+            msg:
+                type: string
+                example: A serious error
+            msgCode:
+                type: string
+                example: serious_error
+        example:
+            msg: A serious error
+            msgCode: serious_error
+        required:
+            - msgCode
+    RegRegCompleteInternalServerErrorResponseBody:
+        title: RegRegCompleteInternalServerErrorResponseBody
+        type: object
+        properties:
+            msg:
+                type: string
+                example: A serious error
+            msgCode:
+                type: string
+                example: serious_error
+        example:
+            msg: A serious error
+            msgCode: serious_error
+        required:
+            - msgCode
+    RegRegCompleteRequestBody:
+        title: RegRegCompleteRequestBody
+        type: object
+        properties:
+            creationResult:
+                $ref: '#/definitions/creationResultRequestBody'
+            session:
+                type: string
+                description: An opaque object containing session data.
+                example: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
+        example:
+            creationResult:
+                attestationObject: 5lvuZBkX1w7/0+XKcldttzA7vTwilEq3qnnXSq/a0...
+                authenticatorData: ix523n3XniH01jM4CIuOn1z0Jw6QbRATXYOsCUyQN...
+                clientDataJSON: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
+                credentialId: 2aChi2dALRLdVP5i/zKr7yvMrP8FIy7MK4lbyUsjO...
+                publicKey: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
+                publicKeyAlgorithm: -8
+                transports:
+                    - nfc
+                    - ble
+                    - nfc
+            session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
+        required:
+            - session
+            - creationResult
+    RegRegCompleteResponseBody:
+        title: 'Mediatype identifier: application/vnd.jwt+json; view=default'
+        type: object
+        properties:
+            jwtAccess:
+                type: string
+                description: JWT access token
+                example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        description: RegCompleteResponseBody result type (default view)
+        example:
+            jwtAccess: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        required:
+            - jwtAccess
+    RegRegInitBadRequestResponseBody:
+        title: RegRegInitBadRequestResponseBody
+        type: object
+        properties:
+            msg:
+                type: string
+                example: A serious error
+            msgCode:
+                type: string
+                example: serious_error
+        example:
+            msg: A serious error
+            msgCode: serious_error
+        required:
+            - msgCode
+    RegRegInitForbiddenResponseBody:
+        title: RegRegInitForbiddenResponseBody
+        type: object
+        properties:
+            msg:
+                type: string
+                example: A serious error
+            msgCode:
+                type: string
+                example: serious_error
+        example:
+            msg: A serious error
+            msgCode: serious_error
+        required:
+            - msgCode
+    RegRegInitInternalServerErrorResponseBody:
+        title: RegRegInitInternalServerErrorResponseBody
+        type: object
+        properties:
+            msg:
+                type: string
+                example: A serious error
+            msgCode:
+                type: string
+                example: serious_error
+        example:
+            msg: A serious error
+            msgCode: serious_error
+        required:
+            - msgCode
+    RegRegInitRequestBody:
+        title: RegRegInitRequestBody
+        type: object
+        properties:
+            app:
+                $ref: '#/definitions/applicationRequestBody'
+            deviceInfo:
+                $ref: '#/definitions/deviceInfoRequestBody'
+            mfa:
+                type: array
+                items:
+                    type: string
+                    example: email
+                    enum:
+                        - fido2
+                        - email
+                        - phone
+                        - password
+                        - pin
+                description: |-
+                    Set of authentication factors:
+                    - Single factor: Username (i.e. email or phone) + FIDO2 credential;
+                    - Two factor: Username + password + FIDO2 credential;
+                    - Passwordless: FIDO2 discoverable credentials;
+                    - Passwordless + MFA: FIDO2 discoverable credentials + PIN;
+                example:
+                    - fido2
+                    - email
+            user:
+                $ref: '#/definitions/userRequestBody'
+        example:
+            app:
+                id: 2a363a42-a397-4af0-b089-0935fc223017
+                name: Messenger
+            deviceInfo:
+                clientName: Chrome
+                clientType: browser
+                clientVersion: 120.0.0.0
+                deviceId: Chrome
+                osArch: aarch64
+                osName: iPhone
+                osVersion: 14.2.1
+            mfa:
+                - fido2
+                - email
+            user:
+                displayName: System Administrator
+                username: admin@example.com
+                usernameType: email
+        required:
+            - app
+            - user
+            - deviceInfo
+    RegRegInitResponseBody:
+        title: 'Mediatype identifier: application/vnd.reg.init+json; view=default'
+        type: object
+        properties:
+            registrationRequestOptions:
+                $ref: '#/definitions/publicKeyCredentialCreationOptionsResponseBody'
+            session:
+                type: string
+                description: An opaque object containing session data.
+                example: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
+        description: RegInitResponseBody result type (default view)
+        example:
+            registrationRequestOptions:
+                attestation: none
+                authenticatorSelection:
+                    authenticatorAttachment: platform
+                    requireResidentKey: true
+                    residentKey: required
+                    userVerification: preferred
+                challenge: gUEHYYYEpkj+eNo9DOPb/17K36VT0rTUAPyM03JeoeM=
+                excludeCredentials:
+                    - id: oAjxAhjnoQXLmRRAczwPg2E/S2zVS+DKlO6WNvgH9ys=
+                      transports:
+                        - usb
+                        - internal
+                      type: public-key
+                    - id: dqJvLVzdodYfQfKPB8zgF+rtoxNx5WUgH7kFHp8SegY=
+                      type: public-key
+                extensions:
+                    appid: https://loalhost:8443
+                pubKeyCredParams:
+                    - alg: -7
+                      type: public-key
+                    - alg: -257
+                      type: public-key
+                rp:
+                    id: api.loginid.io
+                    name: Login ID Inc.
+                timeout: 10000
+                user:
+                    displayName: System Administrator
+                    id: 5e084987-3b3d-4cd7-8b19-385f8f5e253b
+                    name: admin
+            session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
+        required:
+            - session
+            - registrationRequestOptions
+    VersionVersionShowResponseBody:
+        title: 'Mediatype identifier: application/vnd.version+json; view=default'
+        type: object
+        properties:
+            hash:
+                type: string
+                description: Version hash
+                example: cd243db4
+            version:
+                type: string
+                description: Software version
+                example: 1.2.3
+        description: VersionShowResponseBody result type (default view)
+        example:
+            hash: cd243db4
+            version: 1.2.3
+        required:
+            - version
+    applicationRequestBody:
+        title: applicationRequestBody
+        type: object
+        properties:
+            id:
+                type: string
+                description: Unique application id
+                example: 7e8fbee6-7d23-4d2c-a66b-e92fe21212a7
+            name:
+                type: string
+                description: Human readable application name
+                example: Messenger
+            token:
+                type: string
+                description: App authorization token signed with application key.
+                example: hEonOXevUMgNDYQWCYQQog==
+        description: |-
+            Application making the request. It contains additional info about the caller
+            to distinguish between tenants.
+        example:
+            id: 2a363a42-a397-4af0-b089-0935fc223017
+            name: Messenger
+        required:
+            - name
+    authenticatorAssertionResponseRequestBody:
+        title: authenticatorAssertionResponseRequestBody
+        type: object
+        properties:
+            authenticatorData:
+                type: string
+                description: This attribute contains the authenticator data returned by the authenticator.
+                example: ix523n3XniH01jM4CIuOn1z0Jw6QbRATXYOsCUyQN...
+            clientDataJSON:
+                type: string
+                description: |-
+                    Base64 encoded byte array which is a JSON-compatible serialization of client data
+                    passed to the authenticator by the client in order to generate this assertion.
+                    The exact JSON serialization MUST be preserved, as the hash of the serialized
+                    client data has been computed over it.
+                example: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
+            credentialId:
+                type: string
+                description: |-
+                    A base64 encoded byte sequence identifying a public key credential
+                    source and its authentication assertions.
+                example: 2aChi2dALRLdVP5i/zKr7yvMrP8FIy7MK4lbyUsjO...
+            signature:
+                type: string
+                description: Base64 encoded the raw signature returned from the authenticator.
+                example: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
+            userHandle:
+                type: string
+                description: User handle returned from the authenticator, or null if the authenticator did not return a user handle.
+                example: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
+        example:
+            authenticatorData: ix523n3XniH01jM4CIuOn1z0Jw6QbRATXYOsCUyQN...
+            clientDataJSON: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
+            credentialId: 2aChi2dALRLdVP5i/zKr7yvMrP8FIy7MK4lbyUsjO...
+            signature: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
+            userHandle: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
+    authenticatorSelectionCriteriaResponseBody:
+        title: authenticatorSelectionCriteriaResponseBody
+        type: object
+        properties:
+            authenticatorAttachment:
+                type: string
+                description: Authenticator attachment modality
+                example: cross-platform
+                enum:
+                    - platform
+                    - cross-platform
+            requireResidentKey:
+                type: boolean
+                description: Resident key requirement
+                default: false
+                example: true
+            residentKey:
+                type: string
+                description: Resident key requirement
+                example: required
+                enum:
+                    - discouraged
+                    - preferred
+                    - required
+            userVerification:
+                type: string
+                description: Resident key requirement
+                example: preferred
+                enum:
+                    - required
+                    - preferred
+                    - discouraged
+        example:
+            authenticatorAttachment: platform
+            requireResidentKey: true
+            residentKey: discouraged
+            userVerification: preferred
+    creationResultRequestBody:
+        title: creationResultRequestBody
+        type: object
+        properties:
+            attestationObject:
+                type: string
+                description: |-
+                    Base64 encoded byte array containing an attestation object, which is opaque to,
+                    and cryptographically protected against tampering by, the client.
+                example: 5lvuZBkX1w7/0+XKcldttzA7vTwilEq3qnnXSq/a0...
+            authenticatorData:
+                type: string
+                description: This attribute contains the authenticator data contained within attestationObject.
+                example: ix523n3XniH01jM4CIuOn1z0Jw6QbRATXYOsCUyQN...
+            clientDataJSON:
+                type: string
+                description: |-
+                    Base64 encoded byte array which is a JSON-compatible serialization of client data
+                    passed to the authenticator by the client in order to generate this credential.
+                    The exact JSON serialization MUST be preserved, as the hash of the serialized
+                    client data has been computed over it.
+                example: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
+            credentialId:
+                type: string
+                description: |-
+                    A base64 encoded byte sequence identifying a public key credential
+                    source and its authentication assertions.
+                example: 2aChi2dALRLdVP5i/zKr7yvMrP8FIy7MK4lbyUsjO...
+            publicKey:
+                type: string
+                description: |-
+                    Base64 encoded DER SubjectPublicKeyInfo of the new credential, or null if this is
+                    not available.
+                example: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
+            publicKeyAlgorithm:
+                type: integer
+                example: -8
+                format: int64
+            transports:
+                type: array
+                items:
+                    type: string
+                    example: ble
+                    enum:
+                        - usb
+                        - nfc
+                        - ble
+                        - internal
+                description: |-
+                    These values are the transports that the authenticator is believed to support,
+                    or an empty sequence if the information is unavailable.
+                example:
+                    - ble
+                    - internal
+                    - usb
+        example:
+            attestationObject: 5lvuZBkX1w7/0+XKcldttzA7vTwilEq3qnnXSq/a0...
+            authenticatorData: ix523n3XniH01jM4CIuOn1z0Jw6QbRATXYOsCUyQN...
+            clientDataJSON: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
+            credentialId: 2aChi2dALRLdVP5i/zKr7yvMrP8FIy7MK4lbyUsjO...
+            publicKey: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
+            publicKeyAlgorithm: -8
+            transports:
+                - internal
+                - usb
+                - nfc
+    deviceInfoRequestBody:
+        title: deviceInfoRequestBody
+        type: object
+        properties:
+            clientName:
+                type: string
+                description: Client name
+                example: Chrome
+            clientType:
+                type: string
+                description: Client type.
+                example: browser
+                enum:
+                    - browser
+                    - other
+            clientVersion:
+                type: string
+                description: Client version
+                example: 120.0.0.0
+            deviceId:
+                type: string
+                description: An unique device identifier
+                example: Chrome
+            osArch:
+                type: string
+                description: OS architecture
+                example: aarch64
+            osName:
+                type: string
+                description: OS name
+                example: iPhone
+            osVersion:
+                type: string
+                description: OS version
+                example: 14.2.1
+        description: |-
+            Information about the device. All of these attributes are optional and should
+            be provided on best effort basis. If provide, they will be taken into
+            consideration in order to improve user experience.
+        example:
+            clientName: Chrome
+            clientType: browser
+            clientVersion: 120.0.0.0
+            deviceId: Chrome
+            osArch: aarch64
+            osName: iPhone
+            osVersion: 14.2.1
+    pubKeyCredentialDescriptorResponseBody:
+        title: pubKeyCredentialDescriptorResponseBody
+        type: object
+        properties:
+            id:
+                type: string
+                description: Base64 encoded byte array of the public key identifier.
+                example: AyQBkTLAPWaLl6HtE3Oh6ovqkspSidX8DA9fYQB6DX4=
+            transports:
+                type: array
+                items:
+                    type: string
+                    example: usb
+                    enum:
+                        - usb
+                        - nfc
+                        - ble
+                        - internal
+                example:
+                    - usb
+                    - ble
+                    - internal
+            type:
+                type: string
+                example: public-key
+                enum:
+                    - public-key
+        example:
+            id: AyQBkTLAPWaLl6HtE3Oh6ovqkspSidX8DA9fYQB6DX4=
+            transports:
+                - ble
+                - usb
+            type: public-key
+        required:
+            - type
+            - id
+    publicKeyCredentialCreationOptionsResponseBody:
+        title: publicKeyCredentialCreationOptionsResponseBody
+        type: object
+        properties:
+            attestation:
+                type: string
+                description: A preference for attestation conveyance.
+                example: enterprise
+                enum:
+                    - none
+                    - indirect
+                    - direct
+                    - enterprise
+            authenticatorSelection:
+                $ref: '#/definitions/authenticatorSelectionCriteriaResponseBody'
+            challenge:
+                type: string
+                description: |-
+                    This base64 encoded byte array represents a challenge that
+                    the selected authenticator signs, along with other data, when
+                    producing an authentication assertion.
+                example: gUEHYYYEpkj+eNo9DOPb/17K36VT0rTUAPyM03JeoeM=
+            excludeCredentials:
+                type: array
+                items:
+                    $ref: '#/definitions/pubKeyCredentialDescriptorResponseBody'
+                description: |-
+                    List of credentials to limit the creation of multiple credentials for the same
+                    account on a single authenticator. The client is requested to return an error
+                    if the new credential would be created on an authenticator that also contains
+                    one of the credentials enumerated in this parameter.
+                example:
+                    - id: oAjxAhjnoQXLmRRAczwPg2E/S2zVS+DKlO6WNvgH9ys=
+                      transports:
+                        - usb
+                        - internal
+                      type: public-key
+                    - id: dqJvLVzdodYfQfKPB8zgF+rtoxNx5WUgH7kFHp8SegY=
+                      type: public-key
+            extensions:
+                type: object
+                description: Additional parameters requesting processing by the client and authenticator.
+                example:
+                    appid: https://loalhost:8443
+                additionalProperties:
+                    type: string
+                    example: Rerum nobis odio qui totam.
+            pubKeyCredParams:
+                type: array
+                items:
+                    $ref: '#/definitions/publicKeyCredentialParametersResponseBody'
+                description: |-
+                    This member contains information about the desired properties of the credential
+                    to be created. The sequence is ordered from most preferred to least preferred.
+                    The client makes a best-effort to create the most preferred credential that it
+                    can.
+                example:
+                    - alg: -7
+                      type: public-key
+                    - alg: -257
+                      type: public-key
+            rp:
+                $ref: '#/definitions/publicKeyCredentialRpEntityResponseBody'
+            timeout:
+                type: integer
+                description: |-
+                    This OPTIONAL member specifies a time, in milliseconds,
+                    that the caller is willing to wait for the call to complete. The
+                    value is treated as a hint, and MAY be overridden by the client.
+                example: 10000
+                format: int64
+            user:
+                $ref: '#/definitions/publicKeyCredentialUserEntityResponseBody'
+        example:
+            attestation: indirect
+            authenticatorSelection:
+                authenticatorAttachment: platform
+                requireResidentKey: true
+                residentKey: required
+                userVerification: preferred
+            challenge: gUEHYYYEpkj+eNo9DOPb/17K36VT0rTUAPyM03JeoeM=
+            excludeCredentials:
+                - id: oAjxAhjnoQXLmRRAczwPg2E/S2zVS+DKlO6WNvgH9ys=
+                  transports:
+                    - usb
+                    - internal
+                  type: public-key
+                - id: dqJvLVzdodYfQfKPB8zgF+rtoxNx5WUgH7kFHp8SegY=
+                  type: public-key
+            extensions:
+                appid: https://loalhost:8443
+            pubKeyCredParams:
+                - alg: -7
+                  type: public-key
+                - alg: -257
+                  type: public-key
+            rp:
+                id: api.loginid.io
+                name: Login ID Inc.
+            timeout: 10000
+            user:
+                displayName: System Administrator
+                id: 5e084987-3b3d-4cd7-8b19-385f8f5e253b
+                name: admin
+        required:
+            - rp
+            - user
+            - challenge
+            - pubKeyCredParams
+    publicKeyCredentialParametersResponseBody:
+        title: publicKeyCredentialParametersResponseBody
+        type: object
+        properties:
+            alg:
+                type: integer
+                description: |-
+                    A cryptographic signature algorithm with which the newly generated credential
+                    will be used, and thus also the type of asymmetric key pair to be generated,
+                    e.g., RSA or Elliptic Curve.
+                example: -36
+                enum:
+                    - -7
+                    - -35
+                    - -36
+                    - -257
+                    - -8
+            type:
+                type: string
+                example: public-key
+                enum:
+                    - public-key
+        description: Additional parameters when creating a new credential.
+        example:
+            alg: -8
+            type: public-key
+    publicKeyCredentialRequestOptionsResponseBody:
+        title: publicKeyCredentialRequestOptionsResponseBody
+        type: object
+        properties:
+            allowCredentials:
+                type: array
+                items:
+                    $ref: '#/definitions/pubKeyCredentialDescriptorResponseBody'
+                description: |-
+                    A list of PublicKeyCredentialDescriptor objects representing public key
+                    credentials acceptable to the caller, in descending order of the caller’s
+                    preference (the first item in the list is the most preferred credential,
+                    and so on down the list).
+                example:
+                    - id: oAjxAhjnoQXLmRRAczwPg2E/S2zVS+DKlO6WNvgH9ys=
+                      transports:
+                        - usb
+                        - internal
+                      type: public-key
+                    - id: dqJvLVzdodYfQfKPB8zgF+rtoxNx5WUgH7kFHp8SegY=
+                      type: public-key
+            challenge:
+                type: string
+                description: |-
+                    This base64 encoded byte array represents a challenge that the selected
+                    authenticator signs, along with other data, when producing an authentication
+                    assertion.
+                example: gUEHYYYEpkj+eNo9DOPb/17K36VT0rTUAPyM03JeoeM=
+            extensions:
+                type: object
+                description: |-
+                    Additional parameters requesting additional processing by the client and
+                    authenticator. For example, if transaction confirmation is sought from the
+                    user, then the prompt string might be included as an extension.
+                example:
+                    appid: https://loalhost:8443
+                additionalProperties:
+                    type: string
+                    example: Harum odit ea qui odit rerum aliquid.
+            rpId:
+                type: string
+                description: |-
+                    The relying party identifier claimed by the caller. If omitted, its value will
+                    be the CredentialsContainer object’s relevant settings object's origin's
+                    effective domain.
+                example: https://localhost:8443/
+            timeout:
+                type: integer
+                description: |-
+                    Specifies a time, in milliseconds, that the caller is willing
+                    to wait for the call to complete. The value is treated as a
+                    hint, and MAY be overridden by the client.
+                example: 5000
+                format: int64
+            userVerification:
+                type: string
+                description: |-
+                    The Relying Party's requirements regarding user verification for the get()
+                    operation. The value SHOULD be a member of UserVerificationRequirement but
+                    client platforms MUST ignore unknown values, treating an unknown value as if
+                    the member does not exist. Eligible authenticators are filtered to only those
+                    capable of satisfying this requirement.
+                example: discouraged
+                enum:
+                    - required
+                    - preferred
+                    - discouraged
+        example:
+            allowCredentials:
+                - id: oAjxAhjnoQXLmRRAczwPg2E/S2zVS+DKlO6WNvgH9ys=
+                  transports:
+                    - usb
+                    - internal
+                  type: public-key
+                - id: dqJvLVzdodYfQfKPB8zgF+rtoxNx5WUgH7kFHp8SegY=
+                  type: public-key
+            challenge: gUEHYYYEpkj+eNo9DOPb/17K36VT0rTUAPyM03JeoeM=
+            extensions:
+                appid: https://loalhost:8443
+            rpId: https://localhost:8443/
+            timeout: 5000
+            userVerification: required
+        required:
+            - challenge
+    publicKeyCredentialRpEntityResponseBody:
+        title: publicKeyCredentialRpEntityResponseBody
+        type: object
+        properties:
+            id:
+                type: string
+                description: A unique identifier for the Relying Party entity, which sets the RP ID.
+                example: api.loginid.io
+            name:
+                type: string
+                description: Relaying party name
+                example: Login ID Inc.
+        description: Data about the Relying Party responsible for the request.
+        example:
+            id: api.loginid.io
+            name: Login ID Inc.
+        required:
+            - name
+    publicKeyCredentialUserEntityResponseBody:
+        title: publicKeyCredentialUserEntityResponseBody
+        type: object
+        properties:
+            displayName:
+                type: string
+                example: System Administrator
+            id:
+                type: string
+                example: 5e084987-3b3d-4cd7-8b19-385f8f5e253b
+            name:
+                type: string
+                example: admin
+        description: Data about the user account for which the Relying Party is requesting attestation
+        example:
+            displayName: System Administrator
+            id: 5e084987-3b3d-4cd7-8b19-385f8f5e253b
+            name: admin
+        required:
+            - name
+            - displayName
+            - id
+    userRequestBody:
+        title: userRequestBody
+        type: object
+        properties:
+            displayName:
+                type: string
+                description: Display Name
+                example: System Administrator
+            username:
+                type: string
+                description: Username
+                example: user01
+            usernameType:
+                type: string
+                description: Username type
+                example: email
+                enum:
+                    - email
+                    - phone
+        example:
+            displayName: System Administrator
+            username: admin@example.com
+            usernameType: email
+        required:
+            - username
+securityDefinitions:
+    jwt_header_Authorization:
+        type: apiKey
+        description: |4-
+            **Security Scopes**:
+              * `passkey:read`: read access
+              * `passkey:write`: write access
+        name: Authorization
+        in: header
+externalDocs:
+    description: Additional documentation
+    url: https://https://docs.loginid.io/

@@ -1,0 +1,59 @@
+{
+  "name": "@loginid/websdk3",
+  "version": "0.0.0",
+  "description": "",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "tsc --noEmit & tsup ./src/index.ts --no-config  --sourcemap --format esm,cjs --dts --minify",
+    "build:watch": "tsc --noEmit & tsup ./src/index.ts --watch --no-config --format esm,cjs --dts --minify",
+    "commit:pre": "npm run lint && npm run format",
+    "delete-maps": "npm run delete-map-files && npm run delete-references-to-map-files",
+    "delete-map-files": "find ./dist -name '*.map' -delete",
+    "delete-references-to-map-files": "find ./dist -name '*.js' -or -name '*.mjs' -exec sed -i -e 's/sourceMappingURL=[^ ]*.map//g' {} +",
+    "format": "pretty-quick --staged",
+    "gen": "openapi --input ./openapi.yaml --output ./src/api --name LoginIDService --useOptions",
+    "commit": "cz",
+    "lint": "eslint src/**/*.ts?(x)",
+    "lint:fix": "eslint src/**/*.ts?(x) --fix",
+    "log:env": "echo Using MODE: $MODE && echo Using APP_ENV: $APP_ENV",
+    "test": "jest **/*.test.ts"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run commit:pre"
+    }
+  },
+  "author": "LoginID Inc.",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/ua-parser-js": "^0.7.39",
+    "@typescript-eslint/eslint-plugin": "^6.20.0",
+    "commitizen": "^4.3.0",
+    "cz-conventional-changelog": "^3.3.0",
+    "eslint": "^8.56.0",
+    "husky": "^9.0.10",
+    "openapi-typescript-codegen": "^0.27.0",
+    "pretty-quick": "^4.0.0",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3"
+  },
+  "keywords": [
+    "authentication",
+    "passkey",
+    "fido2",
+    "biometrics",
+    "webauthn",
+    "passwordless"
+  ],
+  "dependencies": {
+    "ua-parser-js": "^1.0.37"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
+}
