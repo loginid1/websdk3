@@ -5,7 +5,7 @@ import {
   userRequestBody
 } from '../api'
 
-export type UsernameType = userRequestBody.usernameType
+export type UsernameType = userRequestBody['usernameType']
 export type DeviceInfoRequestBody = deviceInfoRequestBody
 export type MFA = RegRegInitRequestBody['mfa']
 export type Transports = creationResultRequestBody['transports']
@@ -20,7 +20,7 @@ export interface PasskeyOptions {
 	token?: string
 	deviceInfo?: DeviceInfoRequestBody
 	displayName?: string
-	usernameType?: userRequestBody.usernameType
+	usernameType?: UsernameType
 	hints?: string[]
 }
 

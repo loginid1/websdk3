@@ -14,15 +14,6 @@ export type userRequestBody = {
     /**
      * Username type
      */
-    usernameType?: userRequestBody.usernameType;
+    usernameType?: 'email' | 'phone';
 };
-export namespace userRequestBody {
-    /**
-     * Username type
-     */
-    export enum usernameType {
-        EMAIL = 'email',
-        PHONE = 'phone',
-    }
-}
 

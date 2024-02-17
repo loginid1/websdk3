@@ -15,7 +15,7 @@ export type deviceInfoRequestBody = {
     /**
      * Client type.
      */
-    clientType?: deviceInfoRequestBody.clientType;
+    clientType?: 'browser' | 'other';
     /**
      * Client version
      */
@@ -37,13 +37,4 @@ export type deviceInfoRequestBody = {
      */
     osVersion?: string;
 };
-export namespace deviceInfoRequestBody {
-    /**
-     * Client type.
-     */
-    export enum clientType {
-        BROWSER = 'browser',
-        OTHER = 'other',
-    }
-}
 

@@ -8,11 +8,6 @@ export type pubKeyCredentialDescriptorResponseBody = {
      */
     id: string;
     transports?: Array<'usb' | 'nfc' | 'ble' | 'internal'>;
-    type: pubKeyCredentialDescriptorResponseBody.type;
+    type: 'public-key';
 };
-export namespace pubKeyCredentialDescriptorResponseBody {
-    export enum type {
-        PUBLIC_KEY = 'public-key',
-    }
-}
 
