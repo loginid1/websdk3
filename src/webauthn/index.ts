@@ -1,4 +1,3 @@
-//import {LoginIdError} from './api/error'
 import {base64UrlToBuffer} from '../utils'
 import type {
   publicKeyCredentialCreationOptionsResponseBody,
@@ -6,6 +5,7 @@ import type {
 import type {
   publicKeyCredentialRequestOptionsResponseBody
 } from '../api/models/publicKeyCredentialRequestOptionsResponseBody'
+import { AuthenticateWithPasskeysOptions } from '..'
 
 /**
  * Asynchronously creates a passkey credential using the provided registration response.
@@ -78,7 +78,17 @@ const createPasskeyCredential = async (init: publicKeyCredentialCreationOptionsR
   return <PublicKeyCredential>credential
 }
 
-const getPasskeyCredential = async (init: publicKeyCredentialRequestOptionsResponseBody): Promise<PublicKeyCredential> => {
+/**
+ * Asynchronously retrieves a passkey credential for authentication using the provided request options.
+ *
+ * @param {publicKeyCredentialRequestOptionsResponseBody} init - The authentication initiation response.
+ * @param {AuthenticateWithPasskeysOptions} options - Additional options for the authentication request.
+ * @returns {Promise<PublicKeyCredential>} A promise that resolves to the passkey credential.
+ */
+const getPasskeyCredential = async (
+  init: publicKeyCredentialRequestOptionsResponseBody,
+  options: AuthenticateWithPasskeysOptions = {}
+): Promise<PublicKeyCredential> => {
   // Represents a list of public key credential descriptors (allowCredentials).
   let allowCredentials: PublicKeyCredentialDescriptor[] | undefined = undefined
 
@@ -103,7 +113,9 @@ const getPasskeyCredential = async (init: publicKeyCredentialRequestOptionsRespo
 
   // Define options for creating the passkey credential.
   // TODO: Add hints
-  const options: CredentialRequestOptions = {
+  const credOptions: CredentialRequestOptions = {
+    ...options.autoFill && { mediation: 'conditional' },
+    ...options.abortSignal && { signal: options.abortSignal },
     publicKey: {
       allowCredentials: allowCredentials,
       challenge: base64UrlToBuffer(init.challenge),
@@ -115,7 +127,7 @@ const getPasskeyCredential = async (init: publicKeyCredentialRequestOptionsRespo
   }
 
   // Create the passkey credential using the Web Authentication API.
-  const credential = await navigator.credentials.get(options)
+  const credential = await navigator.credentials.get(credOptions)
 
   // Check if the credential creation was successful.
   if (credential === null) {
