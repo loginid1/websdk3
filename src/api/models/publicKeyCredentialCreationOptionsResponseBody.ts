@@ -11,7 +11,7 @@ export type publicKeyCredentialCreationOptionsResponseBody = {
     /**
      * A preference for attestation conveyance.
      */
-    attestation?: publicKeyCredentialCreationOptionsResponseBody.attestation;
+    attestation?: 'none' | 'indirect' | 'direct' | 'enterprise';
     authenticatorSelection?: authenticatorSelectionCriteriaResponseBody;
     /**
      * This base64 encoded byte array represents a challenge that
@@ -46,15 +46,4 @@ export type publicKeyCredentialCreationOptionsResponseBody = {
     timeout?: number;
     user: publicKeyCredentialUserEntityResponseBody;
 };
-export namespace publicKeyCredentialCreationOptionsResponseBody {
-    /**
-     * A preference for attestation conveyance.
-     */
-    export enum attestation {
-        NONE = 'none',
-        INDIRECT = 'indirect',
-        DIRECT = 'direct',
-        ENTERPRISE = 'enterprise',
-    }
-}
 

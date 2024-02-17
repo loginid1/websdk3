@@ -13,7 +13,7 @@ const defaultDeviceInfo = (): deviceInfoRequestBody => {
 
   const device: deviceInfoRequestBody = {
     clientName: result.browser.name,
-    clientType: deviceInfoRequestBody['clientType'].BROWSER,
+    clientType: 'browser',
     clientVersion: result.browser.version,
     //this needs to be explained
     //deviceId: '',

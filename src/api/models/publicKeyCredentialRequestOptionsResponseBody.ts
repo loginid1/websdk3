@@ -42,20 +42,6 @@ export type publicKeyCredentialRequestOptionsResponseBody = {
      * the member does not exist. Eligible authenticators are filtered to only those
      * capable of satisfying this requirement.
      */
-    userVerification?: publicKeyCredentialRequestOptionsResponseBody.userVerification;
+    userVerification?: 'required' | 'preferred' | 'discouraged';
 };
-export namespace publicKeyCredentialRequestOptionsResponseBody {
-    /**
-     * The Relying Party's requirements regarding user verification for the get()
-     * operation. The value SHOULD be a member of UserVerificationRequirement but
-     * client platforms MUST ignore unknown values, treating an unknown value as if
-     * the member does not exist. Eligible authenticators are filtered to only those
-     * capable of satisfying this requirement.
-     */
-    export enum userVerification {
-        REQUIRED = 'required',
-        PREFERRED = 'preferred',
-        DISCOURAGED = 'discouraged',
-    }
-}
 

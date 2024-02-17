@@ -22,9 +22,9 @@ export type { AuthAuthInitInternalServerErrorResponseBody } from './models/AuthA
 export type { AuthAuthInitRequestBody } from './models/AuthAuthInitRequestBody';
 export type { AuthAuthInitResponseBody } from './models/AuthAuthInitResponseBody';
 export type { authenticatorAssertionResponseRequestBody } from './models/authenticatorAssertionResponseRequestBody';
-export { authenticatorSelectionCriteriaResponseBody } from './models/authenticatorSelectionCriteriaResponseBody';
+export type { authenticatorSelectionCriteriaResponseBody } from './models/authenticatorSelectionCriteriaResponseBody';
 export type { creationResultRequestBody } from './models/creationResultRequestBody';
-export { deviceInfoRequestBody } from './models/deviceInfoRequestBody';
+export type { deviceInfoRequestBody } from './models/deviceInfoRequestBody';
 export type { PasskeyResponse } from './models/PasskeyResponse';
 export type { PasskeysPasskeyDeleteForbiddenResponseBody } from './models/PasskeysPasskeyDeleteForbiddenResponseBody';
 export type { PasskeysPasskeyDeleteInternalServerErrorResponseBody } from './models/PasskeysPasskeyDeleteInternalServerErrorResponseBody';
@@ -39,10 +39,10 @@ export type { PasskeysPasskeyResponseCollection } from './models/PasskeysPasskey
 export type { PasskeysPasskeysListForbiddenResponseBody } from './models/PasskeysPasskeysListForbiddenResponseBody';
 export type { PasskeysPasskeysListInternalServerErrorResponseBody } from './models/PasskeysPasskeysListInternalServerErrorResponseBody';
 export type { PasskeysPasskeysListUnauthorizedResponseBody } from './models/PasskeysPasskeysListUnauthorizedResponseBody';
-export { pubKeyCredentialDescriptorResponseBody } from './models/pubKeyCredentialDescriptorResponseBody';
-export { publicKeyCredentialCreationOptionsResponseBody } from './models/publicKeyCredentialCreationOptionsResponseBody';
-export { publicKeyCredentialParametersResponseBody } from './models/publicKeyCredentialParametersResponseBody';
-export { publicKeyCredentialRequestOptionsResponseBody } from './models/publicKeyCredentialRequestOptionsResponseBody';
+export type { pubKeyCredentialDescriptorResponseBody } from './models/pubKeyCredentialDescriptorResponseBody';
+export type { publicKeyCredentialCreationOptionsResponseBody } from './models/publicKeyCredentialCreationOptionsResponseBody';
+export type { publicKeyCredentialParametersResponseBody } from './models/publicKeyCredentialParametersResponseBody';
+export type { publicKeyCredentialRequestOptionsResponseBody } from './models/publicKeyCredentialRequestOptionsResponseBody';
 export type { publicKeyCredentialRpEntityResponseBody } from './models/publicKeyCredentialRpEntityResponseBody';
 export type { publicKeyCredentialUserEntityResponseBody } from './models/publicKeyCredentialUserEntityResponseBody';
 export type { RegRegCompleteBadRequestResponseBody } from './models/RegRegCompleteBadRequestResponseBody';
@@ -55,7 +55,7 @@ export type { RegRegInitForbiddenResponseBody } from './models/RegRegInitForbidd
 export type { RegRegInitInternalServerErrorResponseBody } from './models/RegRegInitInternalServerErrorResponseBody';
 export type { RegRegInitRequestBody } from './models/RegRegInitRequestBody';
 export type { RegRegInitResponseBody } from './models/RegRegInitResponseBody';
-export { userRequestBody } from './models/userRequestBody';
+export type { userRequestBody } from './models/userRequestBody';
 export type { VersionVersionShowResponseBody } from './models/VersionVersionShowResponseBody';
 
 export { AuthService } from './services/AuthService';
