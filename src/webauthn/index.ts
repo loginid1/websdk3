@@ -6,6 +6,7 @@ import type {
   publicKeyCredentialRequestOptionsResponseBody
 } from '../api/models/publicKeyCredentialRequestOptionsResponseBody'
 import { AuthenticateWithPasskeysOptions } from '..'
+import {identifyCreateError, identifyGetError} from '../loginid/errors'
 
 /**
  * Asynchronously creates a passkey credential using the provided registration response.
@@ -59,23 +60,26 @@ const createPasskeyCredential = async (init: publicKeyCredentialCreationOptionsR
     }
   }
 
-  // Create the passkey credential using the Web Authentication API.
-  const credential = await navigator.credentials.create(options)
+  try {
+    // Create the passkey credential using the Web Authentication API.
+    const credential = await navigator.credentials.create(options)
 
-  // Check if the credential creation was successful.
-  if (credential === null) {
-    throw new Error('Failed to create the passkey credential.')
+    // Check if the credential creation was successful.
+    if (credential === null) {
+      throw new Error('Failed to create the passkey credential.')
+    }
+
+    // Return the created passkey credential.
+    return <PublicKeyCredential>credential
+  } catch (e) {
+    // Identify error if possible to provide a more friendly error message.
+    if (e instanceof Error) {
+      throw identifyCreateError(e, options)
+    }
+
+    // Re-throw the object if it is not an instance of Error.
+    throw e
   }
-
-  // Check the type of the created credential.
-  // [MDN Reference](https://developer.mozilla.org/docs/Web/API/Credential/type)
-  // Valid values are `password`, `federated` and `public-key`.
-  if (credential.type !== 'public-key') {
-    throw new Error('The created credential has an invalid type.')
-  }
-
-  // Return the created passkey credential.
-  return <PublicKeyCredential>credential
 }
 
 /**
@@ -126,23 +130,26 @@ const getPasskeyCredential = async (
     }
   }
 
-  // Create the passkey credential using the Web Authentication API.
-  const credential = await navigator.credentials.get(credOptions)
+  try {
+    // Create the passkey credential using the Web Authentication API.
+    const credential = await navigator.credentials.get(credOptions)
 
-  // Check if the credential creation was successful.
-  if (credential === null) {
-    throw new Error('Failed to create the passkey credential.')
+    // Check if the credential creation was successful.
+    if (credential === null) {
+      throw new Error('Failed to create the passkey credential.')
+    }
+
+    // Return the created passkey credential.
+    return <PublicKeyCredential>credential
+  } catch (e) {
+    // Identify error if possible to provide a more friendly error message.
+    if (e instanceof Error) {
+      throw identifyGetError(e, credOptions)
+    }
+
+    // Re-throw the object if it is not an instance of Error.
+    throw e
   }
-
-  // Check the type of the created credential.
-  // [MDN Reference](https://developer.mozilla.org/docs/Web/API/Credential/type)
-  // Valid values are `password`, `federated` and `public-key`.
-  if (credential.type !== 'public-key') {
-    throw new Error('The created credential has an invalid type.')
-  }
-
-  // Return the created passkey credential.
-  return <PublicKeyCredential>credential
 }
 
 // Export the function for external use.
