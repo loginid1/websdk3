@@ -21,10 +21,15 @@ export interface PasskeyOptions {
 	deviceInfo?: DeviceInfoRequestBody
 	displayName?: string
 	usernameType?: UsernameType
-	hints?: string[]
+	// disable hints for now
+	//hints?: string[]
 }
 
-export interface AuthenticateWithPasskeysOptions extends PasskeyOptions {}
+export interface AuthenticateWithPasskeysOptions extends PasskeyOptions {
+	// autoFill is conditional UI
+	autoFill?: boolean
+	abortSignal?: AbortSignal
+}
 
 //TODO: add attestationFormats
 export interface RegisterWithPasskeyOptions extends PasskeyOptions {

@@ -109,12 +109,13 @@ class Passkeys extends LoginIDBase {
   /**
    * Retrieves a navigator credential for authentication.
    * @param {AuthAuthInitResponseBody} authInitResponseBody The response body from authentication initialization.
+   * @param {AuthenticateWithPasskeysOptions} options Additional options for authentication.
    * @returns {Promise<AuthAuthCompleteRequestBody>} Completion request body for authentication.
    */
-  async getNavigatorCredential(authInitResponseBody: AuthAuthInitResponseBody) {
+  async getNavigatorCredential(authInitResponseBody: AuthAuthInitResponseBody, options: AuthenticateWithPasskeysOptions = {}) {
     const { assertionOption, session } = authInitResponseBody
 
-    const credential = await getPasskeyCredential(assertionOption)
+    const credential = await getPasskeyCredential(assertionOption, options)
     const response = credential.response as AuthenticatorAssertionResponse
 
     const authCompleteRequestBody: AuthAuthCompleteRequestBody = {
