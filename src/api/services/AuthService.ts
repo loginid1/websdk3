@@ -38,12 +38,20 @@ export class AuthService {
      */
     public authAuthInit({
         authInitRequestBody,
+        userAgent,
     }: {
         authInitRequestBody: AuthAuthInitRequestBody,
+        /**
+         * Raw user-agent header as set by a browser
+         */
+        userAgent?: string,
     }): CancelablePromise<AuthAuthInitResponseBody> {
         return this.httpRequest.request({
             method: 'POST',
             url: '/auth/init',
+            headers: {
+                'User-Agent': userAgent,
+            },
             body: authInitRequestBody,
             errors: {
                 400: `Bad Request response.`,

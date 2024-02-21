@@ -63,6 +63,11 @@ paths:
             produces:
                 - application/json
             parameters:
+                - name: User-Agent
+                  in: header
+                  description: Raw user-agent header as set by a browser
+                  required: false
+                  type: string
                 - name: AuthInitRequestBody
                   in: body
                   required: true
@@ -301,6 +306,11 @@ paths:
             produces:
                 - application/json
             parameters:
+                - name: User-Agent
+                  in: header
+                  description: Raw user-agent header as set by a browser
+                  required: false
+                  type: string
                 - name: RegInitRequestBody
                   in: body
                   required: true
@@ -488,15 +498,16 @@ definitions:
         example:
             app:
                 id: 2a363a42-a397-4af0-b089-0935fc223017
-                name: Messenger
             deviceInfo:
                 clientName: Chrome
                 clientType: browser
                 clientVersion: 120.0.0.0
-                deviceId: Chrome
+                deviceId: 2a363a42-a397-4af0-b089-0935fc223017
                 osArch: aarch64
                 osName: iPhone
                 osVersion: 14.2.1
+                screenHeight: 1080
+                screenWidth: 1920
             user:
                 displayName: System Administrator
                 username: admin@example.com
@@ -509,7 +520,7 @@ definitions:
         title: 'Mediatype identifier: application/vnd.auth.init+json; view=default'
         type: object
         properties:
-            assertionOption:
+            assertionOptions:
                 $ref: '#/definitions/publicKeyCredentialRequestOptionsResponseBody'
             session:
                 type: string
@@ -517,7 +528,7 @@ definitions:
                 example: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
         description: AuthInitResponseBody result type (default view)
         example:
-            assertionOption:
+            assertionOptions:
                 allowCredentials:
                     - id: oAjxAhjnoQXLmRRAczwPg2E/S2zVS+DKlO6WNvgH9ys=
                       transports:
@@ -535,7 +546,7 @@ definitions:
             session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
         required:
             - session
-            - assertionOption
+            - assertionOptions
     PasskeyResponse:
         title: 'Mediatype identifier: application/vnd.passkey+json; view=default'
         type: object
@@ -828,9 +839,9 @@ definitions:
                 publicKey: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
                 publicKeyAlgorithm: -8
                 transports:
+                    - internal
                     - nfc
-                    - ble
-                    - nfc
+                    - usb
             session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
         required:
             - session
@@ -905,7 +916,7 @@ definitions:
                 type: array
                 items:
                     type: string
-                    example: email
+                    example: password
                     enum:
                         - fido2
                         - email
@@ -926,15 +937,16 @@ definitions:
         example:
             app:
                 id: 2a363a42-a397-4af0-b089-0935fc223017
-                name: Messenger
             deviceInfo:
                 clientName: Chrome
                 clientType: browser
                 clientVersion: 120.0.0.0
-                deviceId: Chrome
+                deviceId: 2a363a42-a397-4af0-b089-0935fc223017
                 osArch: aarch64
                 osName: iPhone
                 osVersion: 14.2.1
+                screenHeight: 1080
+                screenWidth: 1920
             mfa:
                 - fido2
                 - email
@@ -959,7 +971,7 @@ definitions:
         description: RegInitResponseBody result type (default view)
         example:
             registrationRequestOptions:
-                attestation: none
+                attestation: enterprise
                 authenticatorSelection:
                     authenticatorAttachment: platform
                     requireResidentKey: true
@@ -1019,10 +1031,6 @@ definitions:
                 type: string
                 description: Unique application id
                 example: 7e8fbee6-7d23-4d2c-a66b-e92fe21212a7
-            name:
-                type: string
-                description: Human readable application name
-                example: Messenger
             token:
                 type: string
                 description: App authorization token signed with application key.
@@ -1032,9 +1040,8 @@ definitions:
             to distinguish between tenants.
         example:
             id: 2a363a42-a397-4af0-b089-0935fc223017
-            name: Messenger
         required:
-            - name
+            - id
     authenticatorAssertionResponseRequestBody:
         title: authenticatorAssertionResponseRequestBody
         type: object
@@ -1071,6 +1078,11 @@ definitions:
             credentialId: 2aChi2dALRLdVP5i/zKr7yvMrP8FIy7MK4lbyUsjO...
             signature: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
             userHandle: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
+        required:
+            - clientDataJSON
+            - authenticatorData
+            - credentialId
+            - signature
     authenticatorSelectionCriteriaResponseBody:
         title: authenticatorSelectionCriteriaResponseBody
         type: object
@@ -1078,7 +1090,7 @@ definitions:
             authenticatorAttachment:
                 type: string
                 description: Authenticator attachment modality
-                example: cross-platform
+                example: platform
                 enum:
                     - platform
                     - cross-platform
@@ -1090,7 +1102,7 @@ definitions:
             residentKey:
                 type: string
                 description: Resident key requirement
-                example: required
+                example: discouraged
                 enum:
                     - discouraged
                     - preferred
@@ -1098,15 +1110,15 @@ definitions:
             userVerification:
                 type: string
                 description: Resident key requirement
-                example: preferred
+                example: discouraged
                 enum:
                     - required
                     - preferred
                     - discouraged
         example:
-            authenticatorAttachment: platform
+            authenticatorAttachment: cross-platform
             requireResidentKey: true
-            residentKey: discouraged
+            residentKey: required
             userVerification: preferred
     creationResultRequestBody:
         title: creationResultRequestBody
@@ -1150,7 +1162,7 @@ definitions:
                 type: array
                 items:
                     type: string
-                    example: ble
+                    example: nfc
                     enum:
                         - usb
                         - nfc
@@ -1160,9 +1172,8 @@ definitions:
                     These values are the transports that the authenticator is believed to support,
                     or an empty sequence if the information is unavailable.
                 example:
-                    - ble
-                    - internal
                     - usb
+                    - ble
         example:
             attestationObject: 5lvuZBkX1w7/0+XKcldttzA7vTwilEq3qnnXSq/a0...
             authenticatorData: ix523n3XniH01jM4CIuOn1z0Jw6QbRATXYOsCUyQN...
@@ -1171,9 +1182,14 @@ definitions:
             publicKey: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
             publicKeyAlgorithm: -8
             transports:
-                - internal
+                - ble
                 - usb
-                - nfc
+                - internal
+                - ble
+        required:
+            - clientDataJSON
+            - attestationObject
+            - credentialId
     deviceInfoRequestBody:
         title: deviceInfoRequestBody
         type: object
@@ -1185,6 +1201,7 @@ definitions:
             clientType:
                 type: string
                 description: Client type.
+                default: other
                 example: browser
                 enum:
                     - browser
@@ -1196,7 +1213,7 @@ definitions:
             deviceId:
                 type: string
                 description: An unique device identifier
-                example: Chrome
+                example: 2a363a42-a397-4af0-b089-0935fc223017
             osArch:
                 type: string
                 description: OS architecture
@@ -1209,6 +1226,16 @@ definitions:
                 type: string
                 description: OS version
                 example: 14.2.1
+            screenHeight:
+                type: integer
+                description: Screen height in pixels
+                example: 1080
+                format: int64
+            screenWidth:
+                type: integer
+                description: Screen width in pixels
+                example: 1920
+                format: int64
         description: |-
             Information about the device. All of these attributes are optional and should
             be provided on best effort basis. If provide, they will be taken into
@@ -1217,10 +1244,12 @@ definitions:
             clientName: Chrome
             clientType: browser
             clientVersion: 120.0.0.0
-            deviceId: Chrome
+            deviceId: 2a363a42-a397-4af0-b089-0935fc223017
             osArch: aarch64
             osName: iPhone
             osVersion: 14.2.1
+            screenHeight: 1080
+            screenWidth: 1920
     pubKeyCredentialDescriptorResponseBody:
         title: pubKeyCredentialDescriptorResponseBody
         type: object
@@ -1233,14 +1262,13 @@ definitions:
                 type: array
                 items:
                     type: string
-                    example: usb
+                    example: internal
                     enum:
                         - usb
                         - nfc
                         - ble
                         - internal
                 example:
-                    - usb
                     - ble
                     - internal
             type:
@@ -1251,8 +1279,10 @@ definitions:
         example:
             id: AyQBkTLAPWaLl6HtE3Oh6ovqkspSidX8DA9fYQB6DX4=
             transports:
+                - internal
+                - nfc
+                - nfc
                 - ble
-                - usb
             type: public-key
         required:
             - type
@@ -1264,7 +1294,7 @@ definitions:
             attestation:
                 type: string
                 description: A preference for attestation conveyance.
-                example: enterprise
+                example: none
                 enum:
                     - none
                     - indirect
@@ -1303,7 +1333,7 @@ definitions:
                     appid: https://loalhost:8443
                 additionalProperties:
                     type: string
-                    example: Rerum nobis odio qui totam.
+                    example: Quisquam consequatur possimus et voluptas.
             pubKeyCredParams:
                 type: array
                 items:
@@ -1331,7 +1361,7 @@ definitions:
             user:
                 $ref: '#/definitions/publicKeyCredentialUserEntityResponseBody'
         example:
-            attestation: indirect
+            attestation: none
             authenticatorSelection:
                 authenticatorAttachment: platform
                 requireResidentKey: true
@@ -1376,13 +1406,14 @@ definitions:
                     A cryptographic signature algorithm with which the newly generated credential
                     will be used, and thus also the type of asymmetric key pair to be generated,
                     e.g., RSA or Elliptic Curve.
-                example: -36
+                example: -35
                 enum:
                     - -7
                     - -35
                     - -36
                     - -257
                     - -8
+                format: int64
             type:
                 type: string
                 example: public-key
@@ -1390,7 +1421,7 @@ definitions:
                     - public-key
         description: Additional parameters when creating a new credential.
         example:
-            alg: -8
+            alg: -35
             type: public-key
     publicKeyCredentialRequestOptionsResponseBody:
         title: publicKeyCredentialRequestOptionsResponseBody
@@ -1430,7 +1461,7 @@ definitions:
                     appid: https://loalhost:8443
                 additionalProperties:
                     type: string
-                    example: Harum odit ea qui odit rerum aliquid.
+                    example: Nihil dolores voluptatem sequi ipsam rerum.
             rpId:
                 type: string
                 description: |-
@@ -1454,7 +1485,7 @@ definitions:
                     client platforms MUST ignore unknown values, treating an unknown value as if
                     the member does not exist. Eligible authenticators are filtered to only those
                     capable of satisfying this requirement.
-                example: discouraged
+                example: preferred
                 enum:
                     - required
                     - preferred
@@ -1531,6 +1562,7 @@ definitions:
             usernameType:
                 type: string
                 description: Username type
+                default: email
                 example: email
                 enum:
                     - email
@@ -1541,6 +1573,7 @@ definitions:
             usernameType: email
         required:
             - username
+            - usernameType
 securityDefinitions:
     jwt_header_Authorization:
         type: apiKey

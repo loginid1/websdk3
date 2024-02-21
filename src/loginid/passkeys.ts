@@ -71,22 +71,23 @@ class Passkeys extends LoginIDBase {
    * @returns {Promise<any>} Result of the registration operation.
    */
   async registerWithPasskey(username: string, options: RegisterWithPasskeyOptions = {}): Promise<PasskeyResult> {
-    let deviceInfo = options.deviceInfo
-    if (!deviceInfo) {
-      deviceInfo = defaultDeviceInfo()
+    const deviceInfo = defaultDeviceInfo()
+
+    // Default to email if usernameType is not provided
+    if (!options.usernameType) {
+      options.usernameType = 'email'
     }
 
     const regInitRequestBody: RegRegInitRequestBody = {
       app: {
         id: this.config.appId,
-        name: '',
         ...options.token && { token: options.token },
       },
       deviceInfo: deviceInfo,
       user: {
         username: username,
+        usernameType: options.usernameType,
         ...options.displayName && { displayName: options.displayName },
-        ...options.usernameType && { usernameType: options.usernameType }
       },
       ...options.mfa && { mfa: options.mfa }
     }
@@ -113,9 +114,9 @@ class Passkeys extends LoginIDBase {
    * @returns {Promise<AuthAuthCompleteRequestBody>} Completion request body for authentication.
    */
   async getNavigatorCredential(authInitResponseBody: AuthAuthInitResponseBody, options: AuthenticateWithPasskeysOptions = {}) {
-    const { assertionOption, session } = authInitResponseBody
+    const { assertionOptions, session } = authInitResponseBody
 
-    const credential = await getPasskeyCredential(assertionOption, options)
+    const credential = await getPasskeyCredential(assertionOptions, options)
     const response = credential.response as AuthenticatorAssertionResponse
 
     const authCompleteRequestBody: AuthAuthCompleteRequestBody = {
@@ -139,23 +140,24 @@ class Passkeys extends LoginIDBase {
    * @returns {Promise<any>} Result of the authentication operation.
    */
   async authenticateWithPasskey(username: string, options: AuthenticateWithPasskeysOptions = {}): Promise<PasskeyResult> {
-    let deviceInfo = options.deviceInfo
-    if (!deviceInfo) {
-      deviceInfo = defaultDeviceInfo()
+    const deviceInfo = defaultDeviceInfo()
+
+    // Default to email if usernameType is not provided
+    if (!options.usernameType) {
+      options.usernameType = 'email'
     }
 
     const authInitRequestBody: AuthAuthInitRequestBody = {
       app: {
         id: this.config.appId,
-        name: '',
         ...options.token && { token: options.token },
       },
       deviceInfo: deviceInfo,
       user: {
         //need to consider usernameless
         username: username,
+        usernameType: options.usernameType,
         ...options.displayName && { displayName: options.displayName },
-        ...options.usernameType && { usernameType: options.usernameType }
       },
     }
 

@@ -7,7 +7,7 @@ export type creationResultRequestBody = {
      * Base64 encoded byte array containing an attestation object, which is opaque to,
      * and cryptographically protected against tampering by, the client.
      */
-    attestationObject?: string;
+    attestationObject: string;
     /**
      * This attribute contains the authenticator data contained within attestationObject.
      */
@@ -18,12 +18,12 @@ export type creationResultRequestBody = {
      * The exact JSON serialization MUST be preserved, as the hash of the serialized
      * client data has been computed over it.
      */
-    clientDataJSON?: string;
+    clientDataJSON: string;
     /**
      * A base64 encoded byte sequence identifying a public key credential
      * source and its authentication assertions.
      */
-    credentialId?: string;
+    credentialId: string;
     /**
      * Base64 encoded DER SubjectPublicKeyInfo of the new credential, or null if this is
      * not available.

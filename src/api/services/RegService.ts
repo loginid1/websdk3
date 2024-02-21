@@ -38,12 +38,20 @@ export class RegService {
      */
     public regRegInit({
         regInitRequestBody,
+        userAgent,
     }: {
         regInitRequestBody: RegRegInitRequestBody,
+        /**
+         * Raw user-agent header as set by a browser
+         */
+        userAgent?: string,
     }): CancelablePromise<RegRegInitResponseBody> {
         return this.httpRequest.request({
             method: 'POST',
             url: '/reg/init',
+            headers: {
+                'User-Agent': userAgent,
+            },
             body: regInitRequestBody,
             errors: {
                 400: `Bad Request response.`,
