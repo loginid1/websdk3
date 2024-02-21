@@ -1,13 +1,17 @@
 import LoginIDWebSDK from './loginid'
-import {doesDeviceSupportPasskeys} from './browser'
+import PasskeyError from './errors/passkey'
 import {createPasskeyCredential, getPasskeyCredential} from './webauthn'
 import type {DoesDeviceSupportPasskeysResponse} from './browser'
+import {doesDeviceSupportPasskeys, isConditionalUIAvailable, isPlatformAuthenticatorAvailable} from './browser'
 
 export {
   createPasskeyCredential,
   doesDeviceSupportPasskeys,
   getPasskeyCredential,
-  LoginIDWebSDK
+  isConditionalUIAvailable,
+  isPlatformAuthenticatorAvailable,
+  LoginIDWebSDK,
+  PasskeyError,
 }
 export type {DoesDeviceSupportPasskeysResponse}
 

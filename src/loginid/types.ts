@@ -1,4 +1,3 @@
-import PasskeyError from '../errors/passkey'
 import {
   ApiError,
   creationResultRequestBody,
@@ -41,4 +40,4 @@ export interface PasskeyResult {
 	jwtAccess: string
 }
 
-export { ApiError, PasskeyError }
+export { ApiError }
