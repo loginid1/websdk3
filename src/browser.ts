@@ -55,12 +55,28 @@ async function isPlatformAuthenticatorAvailable(): Promise<boolean> {
     ) {
       return false
     }
-    return window.PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable()
+    return await window.PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable()
   } catch (err) {
     return false
   }
 }
 
+/**
+ * Checks if conditional UI is available
+ * */
+async function isConditionalUIAvailable(): Promise<boolean> {
+  try {
+    if (
+      !window.PublicKeyCredential
+      || !window.PublicKeyCredential.isConditionalMediationAvailable
+    ) {
+      return false
+    }
+    return await window.PublicKeyCredential.isConditionalMediationAvailable()
+  } catch (err) {
+    return false
+  }
+}
 
 interface DoesDeviceSupportPasskeysResponse {
 	solution: string
@@ -127,5 +143,6 @@ export type {
 export {
   defaultDeviceInfo,
   doesDeviceSupportPasskeys,
+  isConditionalUIAvailable,
   isPlatformAuthenticatorAvailable,
 }
