@@ -1,4 +1,6 @@
+import PasskeyError from '../errors/passkey'
 import {
+  ApiError,
   creationResultRequestBody,
   deviceInfoRequestBody,
   RegRegInitRequestBody,
@@ -18,7 +20,6 @@ export interface LoginIDConfig {
 
 export interface PasskeyOptions {
 	token?: string
-	deviceInfo?: DeviceInfoRequestBody
 	displayName?: string
 	usernameType?: UsernameType
 	// disable hints for now
@@ -39,3 +40,5 @@ export interface RegisterWithPasskeyOptions extends PasskeyOptions {
 export interface PasskeyResult {
 	jwtAccess: string
 }
+
+export { ApiError, PasskeyError }

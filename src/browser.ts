@@ -8,18 +8,10 @@ import {deviceInfoRequestBody} from './api/models/deviceInfoRequestBody'
  * It constructs a deviceInfoRequestBody object containing this information and returns it.
  */
 const defaultDeviceInfo = (): deviceInfoRequestBody => {
-  const ua = new UAParser(window.navigator.userAgent)
-  const result = ua.getResult()
-
   const device: deviceInfoRequestBody = {
-    clientName: result.browser.name,
     clientType: 'browser',
-    clientVersion: result.browser.version,
-    //this needs to be explained
-    //deviceId: '',
-    osArch: result.cpu.architecture,
-    osName: result.os.name,
-    osVersion: result.os.version,
+    screenWidth: window.screen.width,
+    screenHeight: window.screen.height,
   }
 
   return device

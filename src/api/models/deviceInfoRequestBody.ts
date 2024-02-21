@@ -36,5 +36,13 @@ export type deviceInfoRequestBody = {
      * OS version
      */
     osVersion?: string;
+    /**
+     * Screen height in pixels
+     */
+    screenHeight?: number;
+    /**
+     * Screen width in pixels
+     */
+    screenWidth?: number;
 };
 

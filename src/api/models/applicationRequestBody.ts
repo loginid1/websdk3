@@ -10,11 +10,7 @@ export type applicationRequestBody = {
     /**
      * Unique application id
      */
-    id?: string;
-    /**
-     * Human readable application name
-     */
-    name: string;
+    id: string;
     /**
      * App authorization token signed with application key.
      */

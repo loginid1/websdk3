@@ -14,6 +14,6 @@ export type userRequestBody = {
     /**
      * Username type
      */
-    usernameType?: 'email' | 'phone';
+    usernameType: 'email' | 'phone';
 };
 

@@ -7,7 +7,7 @@ import type { publicKeyCredentialRequestOptionsResponseBody } from './publicKeyC
  * AuthInitResponseBody result type (default view)
  */
 export type AuthAuthInitResponseBody = {
-    assertionOption: publicKeyCredentialRequestOptionsResponseBody;
+    assertionOptions: publicKeyCredentialRequestOptionsResponseBody;
     /**
      * An opaque object containing session data.
      */
