@@ -1,0 +1,44 @@
+image: node:latest
+include:
+  - template: Security/Dependency-Scanning.gitlab-ci.yml
+  - template: Security/Secret-Detection.gitlab-ci.yml
+  - template: Security/SAST.gitlab-ci.yml
+
+stages:
+  - build
+  - test
+  - release
+
+install:
+  stage: build
+  script:
+    - npm install
+  artifacts:
+    expire_in: 10 minutes
+    when: on_success
+    paths:
+      - node_modules/
+
+unit-test:
+  stage: test
+  script:
+    - npm run lint
+    - npm run test
+
+e2e-test:
+  stage: test
+  image: docker
+  script:
+    # add test once apps can be used on QA gen3
+    - echo "Run test"
+
+release:
+  stage: release
+  image: node:latest
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH || $CI_COMMIT_BRANCH == "next"'
+  variables:
+    GITLAB_TOKEN: $CI_JOB_TOKEN
+  script:
+    - npm i -g semantic-release @semantic-release/gitlab @semantic-release/changelog @semantic-release/git @semantic-release/npm @semantic-release/commit-analyzer conventional-changelog-conventionalcommits
+    - npx semantic-release

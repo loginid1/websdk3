@@ -5,7 +5,8 @@ module.exports = {
   branches: ["main"],
   plugins: [
     "@semantic-release/gitlab",
-    "@semantic-release/npm",
+    // remove autiomatic npm release for now
+    //"@semantic-release/npm",
     [
       "@semantic-release/git",
       {
