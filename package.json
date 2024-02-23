@@ -6,6 +6,22 @@
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "module",
+  "exports": {
+    ".": {
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc --noEmit & tsup ./src/index.ts --no-config  --sourcemap --format esm,cjs --dts --minify",
     "build:watch": "tsc --noEmit & tsup ./src/index.ts --watch --no-config --format esm,cjs --dts --minify",
