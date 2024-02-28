@@ -23,6 +23,7 @@ unit-test:
   stage: test
   script:
     - npm run lint
+    - npm audit --audit-level=low
     - npm run test
 
 e2e-test:
@@ -41,5 +42,7 @@ release:
     GITLAB_TOKEN: $PROJECT_CI_TOKEN
     NPM_TOKEN: $NPM_AUTH_TOKEN
   script:
+    - npm run build
+    - npm run delete-maps
     - npm i -g semantic-release @semantic-release/gitlab @semantic-release/changelog @semantic-release/git @semantic-release/npm @semantic-release/commit-analyzer conventional-changelog-conventionalcommits
     - npx semantic-release

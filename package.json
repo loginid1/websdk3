@@ -15,8 +15,7 @@
   },
   "files": [
     "dist",
-    "README.md",
-    "CHANGELOG.md"
+    "README.md"
   ],
   "private": false,
   "publishConfig": {
