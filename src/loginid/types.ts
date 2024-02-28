@@ -14,7 +14,6 @@ export type Transports = creationResultRequestBody['transports']
 export interface LoginIDConfig {
 	baseUrl: string
 	appId: string
-	appName: string
 }
 
 export interface PasskeyOptions {
