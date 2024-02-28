@@ -1,3 +1,10 @@
+## [1.0.1](https://gitlab.com/loginid/software/sdks/websdk3/compare/v1.0.0...v1.0.1) (2024-2-28)
+
+
+### Bug Fixes
+
+* **npm dist files:** updated pipeline to include ./dist files for npm ([a35cf1d](https://gitlab.com/loginid/software/sdks/websdk3/commit/a35cf1d85c8b893dd18ed87d695678a441fd569f))
+
 ## 1.0.0 (2024-2-23)
 
 
