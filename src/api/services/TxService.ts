@@ -2,27 +2,27 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { AuthCompleteRequestBody } from '../models/AuthCompleteRequestBody';
-import type { AuthInit } from '../models/AuthInit';
-import type { AuthInitRequestBody } from '../models/AuthInitRequestBody';
-import type { JWT } from '../models/JWT';
+import type { TxComplete } from '../models/TxComplete';
+import type { TxCompleteRequestBody } from '../models/TxCompleteRequestBody';
+import type { TxInit } from '../models/TxInit';
+import type { TxInitRequestBody } from '../models/TxInitRequestBody';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
-export class AuthService {
+export class TxService {
     constructor(public readonly httpRequest: BaseHttpRequest) {}
     /**
-     * Complete WebAuthn registration
-     * @returns JWT OK response.
+     * Complete transaction confirmation
+     * @returns TxComplete OK response.
      * @throws ApiError
      */
-    public authAuthComplete({
+    public txTxComplete({
         requestBody,
     }: {
-        requestBody: AuthCompleteRequestBody,
-    }): CancelablePromise<JWT> {
+        requestBody: TxCompleteRequestBody,
+    }): CancelablePromise<TxComplete> {
         return this.httpRequest.request({
             method: 'POST',
-            url: '/fido2/v2/auth/complete',
+            url: '/fido2/v2/tx/complete',
             body: requestBody,
             mediaType: 'application/json',
             errors: {
@@ -33,26 +33,18 @@ export class AuthService {
         });
     }
     /**
-     * Start WebAuthn registration flow
-     * @returns AuthInit OK response.
+     * Start transaction confirmation flow
+     * @returns TxInit OK response.
      * @throws ApiError
      */
-    public authAuthInit({
+    public txTxInit({
         requestBody,
-        userAgent,
     }: {
-        requestBody: AuthInitRequestBody,
-        /**
-         * Raw user-agent header as set by a browser
-         */
-        userAgent?: string,
-    }): CancelablePromise<AuthInit> {
+        requestBody: TxInitRequestBody,
+    }): CancelablePromise<TxInit> {
         return this.httpRequest.request({
             method: 'POST',
-            url: '/fido2/v2/auth/init',
-            headers: {
-                'User-Agent': userAgent,
-            },
+            url: '/fido2/v2/tx/init',
             body: requestBody,
             mediaType: 'application/json',
             errors: {

@@ -1,12 +1,10 @@
 import {base64UrlToBuffer} from '../utils'
-import type {
-  publicKeyCredentialCreationOptionsResponseBody,
-} from '../api/models/publicKeyCredentialCreationOptionsResponseBody'
-import type {
-  publicKeyCredentialRequestOptionsResponseBody
-} from '../api/models/publicKeyCredentialRequestOptionsResponseBody'
 import { AuthenticateWithPasskeysOptions } from '..'
 import {identifyCreateError, identifyGetError} from '../loginid/errors'
+import type {
+  PublicKeyCredentialCreationOptions,
+  PublicKeyCredentialRequestOptions,
+} from '../api/'
 
 /**
  * Asynchronously creates a passkey credential using the provided registration response.
@@ -15,7 +13,7 @@ import {identifyCreateError, identifyGetError} from '../loginid/errors'
  * @returns {Promise<PublicKeyCredential>} A promise that resolves to the passkey credential.
  * @throws {LoginIdError} If any errors occur during credential creation or if the credential type is invalid.
  */
-const createPasskeyCredential = async (init: publicKeyCredentialCreationOptionsResponseBody): Promise<PublicKeyCredential> => {
+const createPasskeyCredential = async (init: PublicKeyCredentialCreationOptions): Promise<PublicKeyCredential> => {
   // Represents a list of public key credential descriptors (excludeCredentials).
   let excludeCredentials: PublicKeyCredentialDescriptor[] | undefined = undefined
 
@@ -90,7 +88,7 @@ const createPasskeyCredential = async (init: publicKeyCredentialCreationOptionsR
  * @returns {Promise<PublicKeyCredential>} A promise that resolves to the passkey credential.
  */
 const getPasskeyCredential = async (
-  init: publicKeyCredentialRequestOptionsResponseBody,
+  init: PublicKeyCredentialRequestOptions,
   options: AuthenticateWithPasskeysOptions = {}
 ): Promise<PublicKeyCredential> => {
   // Represents a list of public key credential descriptors (allowCredentials).

@@ -2,84 +2,37 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { PasskeysPasskeyRenameRequestBody } from '../models/PasskeysPasskeyRenameRequestBody';
-import type { PasskeysPasskeyResponseCollection } from '../models/PasskeysPasskeyResponseCollection';
+import type { PasskeyCollection } from '../models/PasskeyCollection';
+import type { PasskeyRenameRequestBody } from '../models/PasskeyRenameRequestBody';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
 export class PasskeysService {
     constructor(public readonly httpRequest: BaseHttpRequest) {}
     /**
      * List passkeys
-     * **Required security scopes for jwt**:
-     * * `passkey:read`
-     * @returns PasskeysPasskeyResponseCollection OK response.
+     * @returns PasskeyCollection OK response.
      * @throws ApiError
      */
     public passkeysPasskeysList({
-        authorization,
+        authorization
     }: {
-        /**
-         * Authorization token
-         */
-        authorization?: string,
-    }): CancelablePromise<PasskeysPasskeyResponseCollection> {
+        authorization: string,
+    }): CancelablePromise<PasskeyCollection> {
         return this.httpRequest.request({
             method: 'GET',
-            url: '/passkeys',
+            url: '/fido2/v2/passkeys',
             headers: {
-                'Authorization': authorization,
+                Authorization: authorization,
             },
             errors: {
-                401: `Unauthorized response.`,
-                403: `Forbidden response.`,
-                500: `Internal Server Error response.`,
-            },
-        });
-    }
-    /**
-     * Rename passkey
-     * **Required security scopes for jwt**:
-     * * `passkey:write`
-     * @returns void
-     * @throws ApiError
-     */
-    public passkeysPasskeyRename({
-        id,
-        passkeyRenameRequestBody,
-        authorization,
-    }: {
-        /**
-         * Internal passkey identifier
-         */
-        id: string,
-        passkeyRenameRequestBody: PasskeysPasskeyRenameRequestBody,
-        /**
-         * Authorization token
-         */
-        authorization?: string,
-    }): CancelablePromise<void> {
-        return this.httpRequest.request({
-            method: 'PUT',
-            url: '/passkeys/{id}',
-            path: {
-                'id': id,
-            },
-            headers: {
-                'Authorization': authorization,
-            },
-            body: passkeyRenameRequestBody,
-            errors: {
-                401: `Unauthorized response.`,
-                403: `Forbidden response.`,
-                404: `Not Found response.`,
-                500: `Internal Server Error response.`,
+                401: `Unauthorized: Unauthorized response.`,
+                403: `Forbidden: Forbidden response.`,
+                500: `InternalServerError: Internal Server Error response.`,
             },
         });
     }
     /**
      * Delete passkey
-     * **Required security scopes for jwt**:
-     * * `passkey:write`
      * @returns void
      * @throws ApiError
      */
@@ -91,25 +44,58 @@ export class PasskeysService {
          * Internal passkey identifier
          */
         id: string,
-        /**
-         * Authorization token
-         */
-        authorization?: string,
+        authorization: string,
     }): CancelablePromise<void> {
         return this.httpRequest.request({
             method: 'DELETE',
-            url: '/passkeys/{id}',
+            url: '/fido2/v2/passkeys/{id}',
+            headers: {
+                Authorization: authorization,
+            },
             path: {
                 'id': id,
             },
-            headers: {
-                'Authorization': authorization,
-            },
             errors: {
-                401: `Unauthorized response.`,
-                403: `Forbidden response.`,
-                404: `Not Found response.`,
-                500: `Internal Server Error response.`,
+                401: `Unauthorized: Unauthorized response.`,
+                403: `Forbidden: Forbidden response.`,
+                404: `NotFound: Not Found response.`,
+                500: `InternalServerError: Internal Server Error response.`,
+            },
+        });
+    }
+    /**
+     * Rename passkey
+     * @returns void
+     * @throws ApiError
+     */
+    public passkeysPasskeyRename({
+        id,
+        requestBody,
+        authorization
+    }: {
+        /**
+         * Internal passkey identifier
+         */
+        id: string,
+        requestBody: PasskeyRenameRequestBody,
+        authorization: string,
+    }): CancelablePromise<void> {
+        return this.httpRequest.request({
+            method: 'PUT',
+            url: '/fido2/v2/passkeys/{id}',
+            headers: {
+                Authorization: authorization,
+            },
+            path: {
+                'id': id,
+            },
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                401: `Unauthorized: Unauthorized response.`,
+                403: `Forbidden: Forbidden response.`,
+                404: `NotFound: Not Found response.`,
+                500: `InternalServerError: Internal Server Error response.`,
             },
         });
     }

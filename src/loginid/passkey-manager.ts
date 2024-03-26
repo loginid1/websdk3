@@ -1,7 +1,6 @@
 import LoginIDBase from './base'
 import {LoginIDConfig} from './types'
-import type {PasskeysPasskeyRenameRequestBody} from '../api'
-import type {PasskeysPasskeyResponseCollection} from '../api/models/PasskeysPasskeyResponseCollection'
+import type {PasskeyCollection, PasskeyRenameRequestBody} from '../api'
 
 /**
  * Extends LoginIDBase to manage Passkeys, including listing, renaming, and deleting passkeys.
@@ -20,7 +19,7 @@ class PasskeyManager extends LoginIDBase {
    * @param {string} authToken Authorization token to authenticate the request.
    * @returns {Promise<PasskeysPasskeyResponseCollection>} A collection of passkeys.
    */
-  async listPasskeys(authToken: string): Promise<PasskeysPasskeyResponseCollection> {
+  async listPasskeys(authToken: string): Promise<PasskeyCollection> {
     return await this.service
       .passkeys
       .passkeysPasskeysList({authorization: authToken})
@@ -34,7 +33,7 @@ class PasskeyManager extends LoginIDBase {
    * @returns {Promise<null>} A promise that resolves to null upon successful completion.
    */
   async renamePasskey(authToken: string, id: string, name: string): Promise<null> {
-    const passkeyRenameRequestBody: PasskeysPasskeyRenameRequestBody = {
+    const passkeyRenameRequestBody: PasskeyRenameRequestBody = {
       name: name
     }
 
@@ -43,7 +42,7 @@ class PasskeyManager extends LoginIDBase {
       .passkeysPasskeyRename({
         authorization: authToken,
         id: id,
-        passkeyRenameRequestBody: passkeyRenameRequestBody
+        requestBody: passkeyRenameRequestBody
       })
 
     return null
