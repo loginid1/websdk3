@@ -167,7 +167,11 @@ class Passkeys extends LoginIDBase {
       .auth
       .authAuthInit({ requestBody: authInitRequestBody })
 
-    const authCompleteRequestBody = await this.getNavigatorCredential(authInitResponseBody)
+    if (username === '') {
+      options.autoFill = true
+    }
+
+    const authCompleteRequestBody = await this.getNavigatorCredential(authInitResponseBody, options)
 
     const result = await this.service
       .auth
