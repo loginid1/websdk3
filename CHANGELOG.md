@@ -1,3 +1,10 @@
+## [1.1.0](https://gitlab.com/loginid/software/sdks/websdk3/compare/v1.0.1...v1.1.0) (2024-03-27)
+
+
+### Features
+
+* **passkeys:** added tranaction confirmation and also fixed up usernameless option ([30b1eb4](https://gitlab.com/loginid/software/sdks/websdk3/commit/30b1eb4ba52220d898bb832eb37b6baac8c30419))
+
 ## [1.0.1](https://gitlab.com/loginid/software/sdks/websdk3/compare/v1.0.0...v1.0.1) (2024-2-28)
 
 
