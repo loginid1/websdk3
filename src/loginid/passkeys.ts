@@ -142,7 +142,7 @@ class Passkeys extends LoginIDBase {
    * @param {AuthenticateWithPasskeysOptions} options Additional authentication options.
    * @returns {Promise<any>} Result of the authentication operation.
    */
-  async authenticateWithPasskey(username: string, options: AuthenticateWithPasskeysOptions = {}): Promise<PasskeyResult> {
+  async authenticateWithPasskey(username = '', options: AuthenticateWithPasskeysOptions = {}): Promise<PasskeyResult> {
     const deviceInfo = defaultDeviceInfo()
 
     // Default to email if usernameType is not provided
@@ -156,12 +156,11 @@ class Passkeys extends LoginIDBase {
         ...options.token && { token: options.token },
       },
       deviceInfo: deviceInfo,
-      user: {
-        //need to consider usernameless
+      ...(!options.autoFill && username !== '') && { user: {
         username: username,
         usernameType: options.usernameType,
         ...options.displayName && { displayName: options.displayName },
-      },
+      }},
     }
 
     const authInitResponseBody = await this.service
