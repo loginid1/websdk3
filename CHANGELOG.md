@@ -1,3 +1,10 @@
+## [1.1.1](https://gitlab.com/loginid/software/sdks/websdk3/compare/v1.1.0...v1.1.1) (2024-03-27)
+
+
+### Bug Fixes
+
+* **passkeys:** fix for autofill not passing ([4e1c669](https://gitlab.com/loginid/software/sdks/websdk3/commit/4e1c669a95519d6b52990ebb142f361bbea699b1))
+
 ## [1.1.0](https://gitlab.com/loginid/software/sdks/websdk3/compare/v1.0.1...v1.1.0) (2024-03-27)
 
 
