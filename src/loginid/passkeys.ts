@@ -4,18 +4,21 @@ import { defaultDeviceInfo } from '../browser'
 import { createPasskeyCredential, getPasskeyCredential } from '../webauthn/'
 import type {
   AuthenticateWithPasskeysOptions,
+  ConfirmTransactionOptions,
   LoginIDConfig,
   PasskeyResult,
   RegisterWithPasskeyOptions,
   Transports
 } from './types'
 import {
-  AuthAuthCompleteRequestBody,
-  AuthAuthInitRequestBody,
-  AuthAuthInitResponseBody,
-  RegRegCompleteRequestBody,
-  RegRegInitRequestBody,
-  RegRegInitResponseBody,
+  AuthCompleteRequestBody,
+  AuthInit,
+  AuthInitRequestBody,
+  RegCompleteRequestBody,
+  RegInit,
+  RegInitRequestBody,
+  TxCompleteRequestBody,
+  TxInitRequestBody,
 } from '../api'
 
 /**
@@ -34,10 +37,10 @@ class Passkeys extends LoginIDBase {
 
   /**
    * Creates a navigator credential using WebAuthn.
-   * @param {RegRegInitResponseBody} regInitResponseBody The response body from registration initialization.
+   * @param {RegInit} regInitResponseBody The response body from registration initialization.
    * @returns {Promise<RegRegCompleteRequestBody>} Completion request body for registration.
    */
-  async createNavigatorCredential(regInitResponseBody: RegRegInitResponseBody) {
+  async createNavigatorCredential(regInitResponseBody: RegInit) {
     const { registrationRequestOptions, session } = regInitResponseBody
 
     const credential = await createPasskeyCredential(registrationRequestOptions)
@@ -48,7 +51,7 @@ class Passkeys extends LoginIDBase {
     const authenticatorData = response.getAuthenticatorData && response.getAuthenticatorData()
     const transports = response.getTransports && response.getTransports() as Transports
 
-    const regCompleteRequestBody: RegRegCompleteRequestBody = {
+    const regCompleteRequestBody: RegCompleteRequestBody = {
       creationResult: {
         attestationObject: bufferToBase64Url(response.attestationObject),
         clientDataJSON: bufferToBase64Url(response.clientDataJSON),
@@ -78,7 +81,7 @@ class Passkeys extends LoginIDBase {
       options.usernameType = 'email'
     }
 
-    const regInitRequestBody: RegRegInitRequestBody = {
+    const regInitRequestBody: RegInitRequestBody = {
       app: {
         id: this.config.appId,
         ...options.token && { token: options.token },
@@ -94,13 +97,13 @@ class Passkeys extends LoginIDBase {
 
     const regInitResponseBody = await this.service
       .reg
-      .regRegInit({ regInitRequestBody })
+      .regRegInit({ requestBody: regInitRequestBody })
 
     const regCompleteRequestBody = await this.createNavigatorCredential(regInitResponseBody)
 
     const result = await this.service
       .reg
-      .regRegComplete({ regCompleteRequestBody })
+      .regRegComplete({ requestBody: regCompleteRequestBody })
 
     this.jwtAccess = result.jwtAccess
 
@@ -109,17 +112,17 @@ class Passkeys extends LoginIDBase {
 
   /**
    * Retrieves a navigator credential for authentication.
-   * @param {AuthAuthInitResponseBody} authInitResponseBody The response body from authentication initialization.
+   * @param {AuthInit} authInitResponseBody The response body from authentication initialization.
    * @param {AuthenticateWithPasskeysOptions} options Additional options for authentication.
    * @returns {Promise<AuthAuthCompleteRequestBody>} Completion request body for authentication.
    */
-  async getNavigatorCredential(authInitResponseBody: AuthAuthInitResponseBody, options: AuthenticateWithPasskeysOptions = {}) {
+  async getNavigatorCredential(authInitResponseBody: AuthInit, options: AuthenticateWithPasskeysOptions = {}) {
     const { assertionOptions, session } = authInitResponseBody
 
     const credential = await getPasskeyCredential(assertionOptions, options)
     const response = credential.response as AuthenticatorAssertionResponse
 
-    const authCompleteRequestBody: AuthAuthCompleteRequestBody = {
+    const authCompleteRequestBody: AuthCompleteRequestBody = {
       assertionResult: {
         authenticatorData: bufferToBase64Url(response.authenticatorData),
         clientDataJSON: bufferToBase64Url(response.clientDataJSON),
@@ -139,7 +142,7 @@ class Passkeys extends LoginIDBase {
    * @param {AuthenticateWithPasskeysOptions} options Additional authentication options.
    * @returns {Promise<any>} Result of the authentication operation.
    */
-  async authenticateWithPasskey(username: string, options: AuthenticateWithPasskeysOptions = {}): Promise<PasskeyResult> {
+  async authenticateWithPasskey(username = '', options: AuthenticateWithPasskeysOptions = {}): Promise<PasskeyResult> {
     const deviceInfo = defaultDeviceInfo()
 
     // Default to email if usernameType is not provided
@@ -147,29 +150,80 @@ class Passkeys extends LoginIDBase {
       options.usernameType = 'email'
     }
 
-    const authInitRequestBody: AuthAuthInitRequestBody = {
+    const authInitRequestBody: AuthInitRequestBody = {
       app: {
         id: this.config.appId,
         ...options.token && { token: options.token },
       },
       deviceInfo: deviceInfo,
-      user: {
-        //need to consider usernameless
+      ...(!options.autoFill && username !== '') && { user: {
         username: username,
         usernameType: options.usernameType,
         ...options.displayName && { displayName: options.displayName },
-      },
+      }},
     }
 
     const authInitResponseBody = await this.service
       .auth
-      .authAuthInit({ authInitRequestBody })
+      .authAuthInit({ requestBody: authInitRequestBody })
 
     const authCompleteRequestBody = await this.getNavigatorCredential(authInitResponseBody)
 
     const result = await this.service
       .auth
-      .authAuthComplete({ authCompleteRequestBody })
+      .authAuthComplete({ requestBody: authCompleteRequestBody })
+
+    this.jwtAccess = result.jwtAccess
+
+    return result
+  }
+
+  /**
+   * Confirms a transaction using a passkey.
+   * 
+   * This method initiates a transaction confirmation process by generating a transaction-specific challenge 
+   * and then expects the client to provide an assertion response using a passkey. 
+   * This method is useful for confirming actions such as payments 
+   * or changes to sensitive account information, ensuring that the transaction is being authorized 
+   * by the rightful owner of the passkey.
+   * 
+   * @param {string} username The username of the user confirming the transaction.
+   * @param {string} txPayload The transaction-specific payload, which could include details 
+   * such as the transaction amount, recipient, and other metadata necessary for the transaction.
+   * @param {ConfirmTransactionOptions} [options={}] Optional parameters for transaction confirmation.
+   * @returns {Promise<any>} A promise that resolves with the result of the transaction confirmation operation. 
+   * The result includes details about the transaction's details and includes a new JWT access token.
+   */
+  async confirmTransaction(username: string, txPayload: string, nonce: string, options: ConfirmTransactionOptions = {}) {
+    const txInitRequestBody: TxInitRequestBody = {
+      username: username,
+      txPayload: txPayload,
+      nonce: nonce,
+      txType: options.txType || '',
+    }
+
+    const {assertionOptions, session} = await this.service
+      .tx
+      .txTxInit({ requestBody: txInitRequestBody })
+
+    const authInitResponseBody: AuthInit = {
+      assertionOptions: assertionOptions,
+      session: session,
+    } 
+
+    const {assertionResult} = await this.getNavigatorCredential(authInitResponseBody)
+
+    const txCompleteRequestBody: TxCompleteRequestBody = {
+      authenticatorData: assertionResult.authenticatorData,
+      clientData: assertionResult.clientDataJSON,
+      keyHandle: assertionResult.credentialId,
+      session: session,
+      signature: assertionResult.signature,
+    }
+
+    const result = await this.service
+      .tx
+      .txTxComplete({ requestBody: txCompleteRequestBody })
 
     this.jwtAccess = result.jwtAccess
 

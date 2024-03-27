@@ -2,61 +2,63 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { RegRegCompleteRequestBody } from '../models/RegRegCompleteRequestBody';
-import type { RegRegCompleteResponseBody } from '../models/RegRegCompleteResponseBody';
-import type { RegRegInitRequestBody } from '../models/RegRegInitRequestBody';
-import type { RegRegInitResponseBody } from '../models/RegRegInitResponseBody';
+import type { JWT } from '../models/JWT';
+import type { RegCompleteRequestBody } from '../models/RegCompleteRequestBody';
+import type { RegInit } from '../models/RegInit';
+import type { RegInitRequestBody } from '../models/RegInitRequestBody';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
 export class RegService {
     constructor(public readonly httpRequest: BaseHttpRequest) {}
     /**
      * Complete WebAuthn registration flow
-     * @returns RegRegCompleteResponseBody OK response.
+     * @returns JWT OK response.
      * @throws ApiError
      */
     public regRegComplete({
-        regCompleteRequestBody,
+        requestBody,
     }: {
-        regCompleteRequestBody: RegRegCompleteRequestBody,
-    }): CancelablePromise<RegRegCompleteResponseBody> {
+        requestBody: RegCompleteRequestBody,
+    }): CancelablePromise<JWT> {
         return this.httpRequest.request({
             method: 'POST',
-            url: '/reg/complete',
-            body: regCompleteRequestBody,
+            url: '/fido2/v2/reg/complete',
+            body: requestBody,
+            mediaType: 'application/json',
             errors: {
-                400: `Bad Request response.`,
-                403: `Forbidden response.`,
-                500: `Internal Server Error response.`,
+                400: `BadRequest: Bad Request response.`,
+                403: `Forbidden: Forbidden response.`,
+                500: `InternalServerError: Internal Server Error response.`,
             },
         });
     }
     /**
      * Start WebAuthn registration flow
-     * @returns RegRegInitResponseBody OK response.
+     * @returns RegInit OK response.
      * @throws ApiError
      */
     public regRegInit({
-        regInitRequestBody,
+        requestBody,
         userAgent,
     }: {
-        regInitRequestBody: RegRegInitRequestBody,
+        requestBody: RegInitRequestBody,
         /**
          * Raw user-agent header as set by a browser
          */
         userAgent?: string,
-    }): CancelablePromise<RegRegInitResponseBody> {
+    }): CancelablePromise<RegInit> {
         return this.httpRequest.request({
             method: 'POST',
-            url: '/reg/init',
+            url: '/fido2/v2/reg/init',
             headers: {
                 'User-Agent': userAgent,
             },
-            body: regInitRequestBody,
+            body: requestBody,
+            mediaType: 'application/json',
             errors: {
-                400: `Bad Request response.`,
-                403: `Forbidden response.`,
-                500: `Internal Server Error response.`,
+                400: `BadRequest: Bad Request response.`,
+                403: `Forbidden: Forbidden response.`,
+                500: `InternalServerError: Internal Server Error response.`,
             },
         });
     }

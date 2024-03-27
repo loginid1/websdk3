@@ -20,7 +20,7 @@ export type OpenAPIConfig = {
 };
 
 export const OpenAPI: OpenAPIConfig = {
-    BASE: 'http://api.loginid.io/fido2/v2',
+    BASE: 'https://api.loginid.io/fido2/v2',
     VERSION: '2.0',
     WITH_CREDENTIALS: false,
     CREDENTIALS: 'include',

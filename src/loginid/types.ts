@@ -1,15 +1,16 @@
 import {
   ApiError,
-  creationResultRequestBody,
-  deviceInfoRequestBody,
-  RegRegInitRequestBody,
-  userRequestBody
+  CreationResult,
+  DeviceInfo,
+  RegInitRequestBody,
+  TxInitRequestBody,
+  User,
 } from '../api'
 
-export type UsernameType = userRequestBody['usernameType']
-export type DeviceInfoRequestBody = deviceInfoRequestBody
-export type MFA = RegRegInitRequestBody['mfa']
-export type Transports = creationResultRequestBody['transports']
+export type UsernameType = User['usernameType']
+export type DeviceInfoRequestBody = DeviceInfo
+export type MFA = RegInitRequestBody['mfa']
+export type Transports = CreationResult['transports']
 
 export interface LoginIDConfig {
 	baseUrl: string
@@ -34,6 +35,8 @@ export interface AuthenticateWithPasskeysOptions extends PasskeyOptions {
 export interface RegisterWithPasskeyOptions extends PasskeyOptions {
 	mfa?: MFA
 }
+
+export interface ConfirmTransactionOptions extends Partial<Pick<TxInitRequestBody, 'txType'>> {}
 
 export interface PasskeyResult {
 	jwtAccess: string
