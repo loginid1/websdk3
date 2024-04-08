@@ -1,6 +1,6 @@
 import LoginIDBase from './base'
-import { bufferToBase64Url } from '../utils'
 import { defaultDeviceInfo } from '../browser'
+import { bufferToBase64Url, createUUID } from '../utils'
 import { createPasskeyCredential, getPasskeyCredential } from '../webauthn/'
 import type {
   AuthenticateWithPasskeysOptions,
@@ -198,12 +198,12 @@ class Passkeys extends LoginIDBase {
    * @returns {Promise<any>} A promise that resolves with the result of the transaction confirmation operation. 
    * The result includes details about the transaction's details and includes a new JWT access token.
    */
-  async confirmTransaction(username: string, txPayload: string, nonce: string, options: ConfirmTransactionOptions = {}) {
+  async confirmTransaction(username: string, txPayload: string, options: ConfirmTransactionOptions = {}) {
     const txInitRequestBody: TxInitRequestBody = {
       username: username,
       txPayload: txPayload,
-      nonce: nonce,
-      txType: options.txType || '',
+      nonce: options.nonce || createUUID(),
+      txType: options.txType || 'raw',
     }
 
     const {assertionOptions, session} = await this.service

@@ -3,7 +3,6 @@ import {
   CreationResult,
   DeviceInfo,
   RegInitRequestBody,
-  TxInitRequestBody,
   User,
 } from '../api'
 
@@ -36,7 +35,10 @@ export interface RegisterWithPasskeyOptions extends PasskeyOptions {
 	mfa?: MFA
 }
 
-export interface ConfirmTransactionOptions extends Partial<Pick<TxInitRequestBody, 'txType'>> {}
+export interface ConfirmTransactionOptions extends PasskeyOptions {
+	txType?: string
+	nonce?: string
+}
 
 export interface PasskeyResult {
 	jwtAccess: string
