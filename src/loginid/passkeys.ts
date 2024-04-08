@@ -156,7 +156,7 @@ class Passkeys extends LoginIDBase {
         ...options.token && { token: options.token },
       },
       deviceInfo: deviceInfo,
-      ...(!options.autoFill && username !== '') && { user: {
+      ...!options.autoFill && { user: {
         username: username,
         usernameType: options.usernameType,
         ...options.displayName && { displayName: options.displayName },
@@ -166,10 +166,6 @@ class Passkeys extends LoginIDBase {
     const authInitResponseBody = await this.service
       .auth
       .authAuthInit({ requestBody: authInitRequestBody })
-
-    if (username === '') {
-      options.autoFill = true
-    }
 
     const authCompleteRequestBody = await this.getNavigatorCredential(authInitResponseBody, options)
 
