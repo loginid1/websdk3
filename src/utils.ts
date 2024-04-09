@@ -118,6 +118,19 @@ const base64UrlToBuffer = (data: string): ArrayBuffer => {
 }
 
 /**
+ * Generate a UUID using the `crypto.randomUUID` method if available,
+ * otherwise use the `window.crypto.getRandomValues` method.
+ * */
+const createUUID = () => {
+  if (crypto.randomUUID) {
+    return crypto.randomUUID()
+  }
+  // Technically, this is not a UUID, but it's good enough for our purposes
+  // This goes back to 2010's so it's safe to use
+  return window.crypto.getRandomValues(new Uint32Array(4)).join('-')
+}
+
+/**
  * Along with traditional OO hierarchies, another popular way of building up classes from 
  * reusable components is to build them by combining simpler partial classes.
  * https://www.typescriptlang.org/docs/handbook/mixins.html
@@ -141,4 +154,5 @@ export {
   b2a,
   bufferToBase64Url,
   base64UrlToBuffer,
+  createUUID,
 }

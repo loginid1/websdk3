@@ -1,6 +1,6 @@
 import LoginIDBase from './base'
-import { bufferToBase64Url } from '../utils'
 import { defaultDeviceInfo } from '../browser'
+import { bufferToBase64Url, createUUID } from '../utils'
 import { createPasskeyCredential, getPasskeyCredential } from '../webauthn/'
 import type {
   AuthenticateWithPasskeysOptions,
@@ -92,7 +92,8 @@ class Passkeys extends LoginIDBase {
         usernameType: options.usernameType,
         ...options.displayName && { displayName: options.displayName },
       },
-      ...options.mfa && { mfa: options.mfa }
+      ...options.mfa && { mfa: options.mfa },
+      ...options.session && { session: options.session },
     }
 
     const regInitResponseBody = await this.service
@@ -156,7 +157,7 @@ class Passkeys extends LoginIDBase {
         ...options.token && { token: options.token },
       },
       deviceInfo: deviceInfo,
-      ...(!options.autoFill && username !== '') && { user: {
+      ...!options.autoFill && { user: {
         username: username,
         usernameType: options.usernameType,
         ...options.displayName && { displayName: options.displayName },
@@ -166,10 +167,6 @@ class Passkeys extends LoginIDBase {
     const authInitResponseBody = await this.service
       .auth
       .authAuthInit({ requestBody: authInitRequestBody })
-
-    if (username === '') {
-      options.autoFill = true
-    }
 
     const authCompleteRequestBody = await this.getNavigatorCredential(authInitResponseBody, options)
 
@@ -198,12 +195,12 @@ class Passkeys extends LoginIDBase {
    * @returns {Promise<any>} A promise that resolves with the result of the transaction confirmation operation. 
    * The result includes details about the transaction's details and includes a new JWT access token.
    */
-  async confirmTransaction(username: string, txPayload: string, nonce: string, options: ConfirmTransactionOptions = {}) {
+  async confirmTransaction(username: string, txPayload: string, options: ConfirmTransactionOptions = {}) {
     const txInitRequestBody: TxInitRequestBody = {
       username: username,
       txPayload: txPayload,
-      nonce: nonce,
-      txType: options.txType || '',
+      nonce: options.nonce || createUUID(),
+      txType: options.txType || 'raw',
     }
 
     const {assertionOptions, session} = await this.service
