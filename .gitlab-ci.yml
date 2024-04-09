@@ -29,9 +29,30 @@ unit-test:
 e2e-test:
   stage: test
   image: docker
+  variables:
+    TEST_URL: http://localhost:3000
+    TESTING_ENVIRONMENT: dev
+    REMOTE_URL: http://localhost:4444/wd/hub
+    NODE_ENV: test
+  services:
+    - docker:dind
+  before_script:
+    - apk update
+    - apk add --no-cache git
   script:
-    # add test once apps can be used on QA gen3
-    - echo "Run test"
+    - git clone -b feat/dev-gen3/tx-conf --single-branch "https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/loginid/software/testing-tools/auto-directweb.git" ../auto-directweb
+    - cd ../auto-directweb
+    - mv ../websdk3 ./web
+    - docker build -t test-suite -f Dockerfile.dev.integration.test .
+    - >
+      docker run --rm --name test-suite
+      -e TEST_URL="$TEST_URL"
+      -e TESTING_ENVIRONMENT="$TESTING_ENVIRONMENT"
+      -e SE_NODE_MAX_SESSIONS="2"
+      -e SE_NODE_OVERRIDE_MAX_SESSIONS="true"
+      -e NODE_ENV="$NODE_ENV"
+      -e SE_OPTS="--log-level INFO"
+      -e REMOTE_URL="$REMOTE_URL" test-suite
 
 release:
   stage: release
