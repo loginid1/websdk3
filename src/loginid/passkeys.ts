@@ -92,7 +92,8 @@ class Passkeys extends LoginIDBase {
         usernameType: options.usernameType,
         ...options.displayName && { displayName: options.displayName },
       },
-      ...options.mfa && { mfa: options.mfa }
+      ...options.mfa && { mfa: options.mfa },
+      ...options.session && { session: options.session },
     }
 
     const regInitResponseBody = await this.service
