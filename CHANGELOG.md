@@ -1,3 +1,16 @@
+## [1.2.0](https://gitlab.com/loginid/software/sdks/websdk3/compare/v1.1.1...v1.2.0) (2024-04-09)
+
+
+### Features
+
+* **add passkey:** adds passkey for existing users ([088b732](https://gitlab.com/loginid/software/sdks/websdk3/commit/088b732b512d62f14dee5fe295a919331b2497b3))
+
+
+### Bug Fixes
+
+* **autofill:** can pass username as an empty string now for usernameless ([5aafe35](https://gitlab.com/loginid/software/sdks/websdk3/commit/5aafe35aac61f4da413d0f20f2baedd81748eb0d))
+* **tx conf:** moved options around ([2c63b25](https://gitlab.com/loginid/software/sdks/websdk3/commit/2c63b25c3cb3127cba34a7c3517869b97475c1e0))
+
 ## [1.1.1](https://gitlab.com/loginid/software/sdks/websdk3/compare/v1.1.0...v1.1.1) (2024-03-27)
 
 
