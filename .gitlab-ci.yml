@@ -40,7 +40,7 @@ e2e-test:
     - apk update
     - apk add --no-cache git
   script:
-    - git clone -b feat/dev-gen3/tx-conf --single-branch "https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/loginid/software/testing-tools/auto-directweb.git" ../auto-directweb
+    - git clone -b staging --single-branch "https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/loginid/software/testing-tools/auto-directweb.git" ../auto-directweb
     - cd ../auto-directweb
     - mv ../websdk3 ./web
     - docker build -t test-suite -f Dockerfile.dev.integration.test .
