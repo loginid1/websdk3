@@ -16,8 +16,6 @@ import {
   AuthCompleteRequestBody,
   AuthInit,
   AuthInitRequestBody,
-  CodeGenerate,
-  GenerateCodeRequestBody,
   RegCompleteRequestBody,
   RegInit,
   RegInitRequestBody,
