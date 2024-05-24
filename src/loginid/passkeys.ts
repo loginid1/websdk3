@@ -4,6 +4,7 @@ import { bufferToBase64Url, createUUID } from '../utils'
 import { createPasskeyCredential, getPasskeyCredential } from '../webauthn/'
 import type {
   AuthenticateWithPasskeysOptions,
+  CodePurpose,
   ConfirmTransactionOptions,
   LoginIDConfig,
   PasskeyResult,
@@ -11,9 +12,12 @@ import type {
   Transports
 } from './types'
 import {
+  AuthCodeRequestBody,
   AuthCompleteRequestBody,
   AuthInit,
   AuthInitRequestBody,
+  CodeGenerate,
+  GenerateCodeRequestBody,
   RegCompleteRequestBody,
   RegInit,
   RegInitRequestBody,
@@ -175,6 +179,51 @@ class Passkeys extends LoginIDBase {
       .authAuthComplete({ requestBody: authCompleteRequestBody })
 
     this.jwtAccess = result.jwtAccess
+
+    return result
+  }
+
+  /**
+   * Generates a code with passkey.
+   * @param {string} username Username to authenticate.
+   * @param {CodePurpose} codePurpose Used to determine if code is for one time authentcation or to add a credential.
+   * @param {AuthenticateWithPasskeysOptions} options Additional authentication options.
+   * @returns {Promise<any>} Result of the authentication operation.
+   */
+  async generateCodeWithPasskey(username: string, codePurpose: CodePurpose, options: AuthenticateWithPasskeysOptions): Promise<PasskeyResult> {
+    const result = await this.authenticateWithPasskey(username, {
+      codePurpose,
+      ...options.usernameType && { usernameType: options.usernameType },
+      ...options.displayName && { displayName: options.displayName },
+    })
+  
+    return result
+  }
+  
+  /**
+   * Authenticate with a code.
+   * @param {string} username Username to authenticate.
+   * @param {string} code code to authenticate.
+   * @param {AuthenticateWithPasskeysOptions} options Additional authentication options.
+   * @returns {Promise<any>} Result of the authentication operation.
+   */
+  async authenticateWithCode(username: string, code: string, options: AuthenticateWithPasskeysOptions) {
+    // Default to email if usernameType is not provided
+    if (!options.usernameType) {
+      options.usernameType = 'email'
+    }
+  
+    const request: AuthCodeRequestBody = {
+      code: code,
+      user: {
+        username: username,
+        usernameType: options.usernameType,
+        ...options.displayName && { displayName: options.displayName },
+      },
+    }
+  
+    const result = await this.service
+      .auth.authAuthCode({ requestBody: request })
 
     return result
   }
