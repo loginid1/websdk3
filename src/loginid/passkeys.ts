@@ -188,7 +188,7 @@ class Passkeys extends LoginIDBase {
    * @param {AuthenticateWithPasskeysOptions} options Additional authentication options.
    * @returns {Promise<any>} Result of the authentication operation.
    */
-  async generateCodeWithPasskey(username: string, codePurpose: CodePurpose, options: AuthenticateWithPasskeysOptions): Promise<PasskeyResult> {
+  async generateCodeWithPasskey(username: string, codePurpose: CodePurpose, options: AuthenticateWithPasskeysOptions = {}): Promise<PasskeyResult> {
     options.codePurpose = codePurpose
 
     const result = await this.authenticateWithPasskey(username, options)
@@ -203,7 +203,7 @@ class Passkeys extends LoginIDBase {
    * @param {AuthenticateWithPasskeysOptions} options Additional authentication options.
    * @returns {Promise<any>} Result of the authentication operation.
    */
-  async authenticateWithCode(username: string, code: string, options: AuthenticateWithPasskeysOptions) {
+  async authenticateWithCode(username: string, code: string, options: AuthenticateWithPasskeysOptions = {}) {
     // Default to email if usernameType is not provided
     if (!options.usernameType) {
       options.usernameType = 'email'
