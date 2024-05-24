@@ -16,6 +16,7 @@ import {
   AuthCompleteRequestBody,
   AuthInit,
   AuthInitRequestBody,
+  JWT,
   RegCompleteRequestBody,
   RegInit,
   RegInitRequestBody,
@@ -153,11 +154,14 @@ class Passkeys extends LoginIDBase {
       options.usernameType = 'email'
     }
 
+    console.log(options)
+
     const authInitRequestBody: AuthInitRequestBody = {
       app: {
         id: this.config.appId,
         ...options.token && { token: options.token },
       },
+      ...options.codePurpose && { codePurpose: options.codePurpose },
       deviceInfo: deviceInfo,
       ...!options.autoFill && { user: {
         username: username,
@@ -188,10 +192,10 @@ class Passkeys extends LoginIDBase {
    * @param {AuthenticateWithPasskeysOptions} options Additional authentication options.
    * @returns {Promise<any>} Result of the authentication operation.
    */
-  async generateCodeWithPasskey(username: string, codePurpose: CodePurpose, options: AuthenticateWithPasskeysOptions = {}): Promise<PasskeyResult> {
+  async generateCodeWithPasskey(username: string, codePurpose: CodePurpose, options: AuthenticateWithPasskeysOptions = {}): Promise<JWT> {
     options.codePurpose = codePurpose
 
-    const result = await this.authenticateWithPasskey(username, options)
+    const result: JWT = await this.authenticateWithPasskey(username, options)
   
     return result
   }
