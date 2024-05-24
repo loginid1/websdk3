@@ -57,6 +57,7 @@ export class RegService {
             mediaType: 'application/json',
             errors: {
                 400: `BadRequest: Bad Request response.`,
+                401: `Unauthorized: Unauthorized response.`,
                 403: `Forbidden: Forbidden response.`,
                 500: `InternalServerError: Internal Server Error response.`,
             },

@@ -2,12 +2,10 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { CodeResult } from './CodeResult';
-export type JWT = {
-    code?: CodeResult;
+export type GrantCreateResponseBody = {
     /**
-     * JWT access token
+     * Base64 encoded authorization token
      */
-    jwtAccess: string;
+    token: string;
 };
 

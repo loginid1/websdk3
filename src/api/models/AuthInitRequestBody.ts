@@ -7,6 +7,7 @@ import type { DeviceInfo } from './DeviceInfo';
 import type { User } from './User';
 export type AuthInitRequestBody = {
     app: Application;
+    codePurpose?: 'tempAuth' | 'addCred';
     deviceInfo: DeviceInfo;
     user?: User;
 };

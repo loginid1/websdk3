@@ -6,6 +6,72 @@ info:
 servers:
     - url: https://api.loginid.io/fido2/v2
 paths:
+    /fido2/v2/auth/code:
+        post:
+            tags:
+                - auth
+            summary: Authenticate using a code
+            operationId: auth#authCode
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/AuthCodeRequestBody'
+                        example:
+                            code: "123456"
+                            user:
+                                displayName: System Administrator
+                                username: admin@example.com
+                                usernameType: email
+            responses:
+                "200":
+                    description: OK response.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/JWT'
+                            example:
+                                code:
+                                    code: Nam et quisquam exercitationem quibusdam.
+                                    expiresAt: Ut et.
+                                jwtAccess: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                "400":
+                    description: 'BadRequest: Bad Request response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
+                "403":
+                    description: 'Forbidden: Forbidden response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
+                "404":
+                    description: 'NotFound: Not Found response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
+                "500":
+                    description: 'InternalServerError: Internal Server Error response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
     /fido2/v2/auth/complete:
         post:
             tags:
@@ -34,13 +100,16 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/JWT'
                             example:
+                                code:
+                                    code: Nam et quisquam exercitationem quibusdam.
+                                    expiresAt: Ut et.
                                 jwtAccess: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
                 "400":
                     description: 'BadRequest: Bad Request response.'
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/LidError'
+                                $ref: '#/components/schemas/BadRequestError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -49,7 +118,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/LidError'
+                                $ref: '#/components/schemas/BadRequestError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -58,7 +127,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/LidError'
+                                $ref: '#/components/schemas/BadRequestError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -87,6 +156,7 @@ paths:
                         example:
                             app:
                                 id: 2a363a42-a397-4af0-b089-0935fc223017
+                            codePurpose: tempAuth
                             deviceInfo:
                                 clientName: Chrome
                                 clientType: browser
@@ -123,14 +193,23 @@ paths:
                                         appid: https://loalhost:8443
                                     rpId: https://localhost:8443/
                                     timeout: 5000
-                                    userVerification: preferred
+                                    userVerification: discouraged
                                 session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
                 "400":
                     description: 'BadRequest: Bad Request response.'
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/LidError'
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
+                "404":
+                    description: 'NotFound: Not Found response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -139,10 +218,398 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/LidError'
+                                $ref: '#/components/schemas/BadRequestError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
+    /fido2/v2/code:
+        post:
+            tags:
+                - code
+            summary: Generate a short code
+            description: Generate a code for temporary access or adding a new device
+            operationId: code#generateCode
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/GenerateCodeRequestBody'
+                        example:
+                            purpose: tempAuth
+            responses:
+                "200":
+                    description: OK response.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CodeGenerate'
+                            example:
+                                code: "123456"
+                                expiresAt: "2021-01-01T00:00:00Z"
+                "400":
+                    description: 'BadRequest: Bad Request response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
+                "401":
+                    description: 'Unauthorized: Unauthorized response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
+                "403":
+                    description: 'Forbidden: Forbidden response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
+                "500":
+                    description: 'InternalServerError: Internal Server Error response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
+            security:
+                - jwt_header_Authorization:
+                    - user:code
+    /fido2/v2/email/add/init:
+        post:
+            tags:
+                - email
+            summary: Send email to add email number to profile
+            operationId: email#emailAddInit
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/EmailAddInitRequestBody'
+                        example:
+                            email: test@loginid.io
+            responses:
+                "200":
+                    description: OK response.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/EmailAuthInitResponseBody'
+                            example:
+                                expiresAt: 2023-06-15 13:29:41 EDT
+                "400":
+                    description: 'BadRequest: Bad Request response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
+                "401":
+                    description: 'Unauthorized: Unauthorized response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
+                "404":
+                    description: 'NotFound: Not Found response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
+                "500":
+                    description: 'InternalServerError: Internal Server Error response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
+            security:
+                - jwt_header_Authorization:
+                    - user:write
+    /fido2/v2/email/auth/init:
+        post:
+            tags:
+                - email
+            summary: Send email to authenticate into account
+            operationId: email#emailAuthInit
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/EmailAuthInitRequestBody'
+                        example:
+                            email: test@loginid.io
+                            username: testUser
+            responses:
+                "200":
+                    description: OK response.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/EmailAuthInitResponseBody'
+                            example:
+                                expiresAt: 2023-06-15 13:29:41 EDT
+                "400":
+                    description: 'BadRequest: Bad Request response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
+                "404":
+                    description: 'NotFound: Not Found response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
+                "500":
+                    description: 'InternalServerError: Internal Server Error response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
+    /fido2/v2/email/verify:
+        post:
+            tags:
+                - email
+            summary: Verify Email OTP
+            operationId: email#emailVerify
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/EmailVerifyRequestBody'
+                        example:
+                            code: "123456"
+                            purpose: tempAuth
+                            username: testUser
+            responses:
+                "200":
+                    description: OK response.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/JWT'
+                            example:
+                                code:
+                                    code: Nam et quisquam exercitationem quibusdam.
+                                    expiresAt: Ut et.
+                                jwtAccess: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                "400":
+                    description: 'BadRequest: Bad Request response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
+                "404":
+                    description: 'NotFound: Not Found response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
+                "500":
+                    description: 'InternalServerError: Internal Server Error response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
+    /fido2/v2/mgmt/grant:
+        post:
+            tags:
+                - mgmt
+            summary: Create an authorization token for use with /reg/init call
+            operationId: mgmt#grantCreate
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/GrantCreateRequestBody'
+                        example:
+                            grant: passkey:create
+                            username: testUser
+            responses:
+                "200":
+                    description: OK response.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GrantCreateResponseBody'
+                            example:
+                                token: oWIsYWQl6RB0cFC9jM8Hy85TmqAMyc0QqSXMsh0Fo9U=
+                "400":
+                    description: 'BadRequest: Bad Request response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
+                "401":
+                    description: 'Unauthorized: Unauthorized response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
+                "500":
+                    description: 'InternalServerError: Internal Server Error response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
+            security:
+                - apiKey_header_Authorization: []
+    /fido2/v2/mgmt/token/verify:
+        post:
+            tags:
+                - mgmt
+            summary: Validate JWT Access Token
+            operationId: mgmt#tokenVerify
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/TokenVerifyRequestBody'
+                        example:
+                            jwtAccess: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+            responses:
+                "204":
+                    description: No Content response.
+                "400":
+                    description: 'BadRequest: Bad Request response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
+                "401":
+                    description: 'Unauthorized: Unauthorized response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
+                "500":
+                    description: 'InternalServerError: Internal Server Error response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
+            security:
+                - apiKey_header_Authorization: []
+    /fido2/v2/mgmt/user/{id}:
+        delete:
+            tags:
+                - mgmt
+            summary: Delete a user and all associated passkey
+            operationId: mgmt#userDelete
+            parameters:
+                - name: id
+                  in: path
+                  description: Internal user identifier
+                  required: true
+                  schema:
+                    type: string
+                    description: Internal user identifier
+                    example: 2a363a42-a397-4af0-b089-0935fc223017
+                  example: 2a363a42-a397-4af0-b089-0935fc223017
+            responses:
+                "204":
+                    description: No Content response.
+                "400":
+                    description: 'BadRequest: Bad Request response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
+                "401":
+                    description: 'Unauthorized: Unauthorized response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
+                "404":
+                    description: 'NotFound: Not Found response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
+                "500":
+                    description: 'InternalServerError: Internal Server Error response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
+            security:
+                - apiKey_header_Authorization: []
     /fido2/v2/passkeys:
         get:
             tags:
@@ -174,7 +641,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/LidError'
+                                $ref: '#/components/schemas/BadRequestError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -183,7 +650,16 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/LidError'
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
+                "404":
+                    description: 'NotFound: Not Found response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -192,7 +668,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/LidError'
+                                $ref: '#/components/schemas/BadRequestError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -218,12 +694,21 @@ paths:
             responses:
                 "204":
                     description: No Content response.
+                "400":
+                    description: 'BadRequest: Bad Request response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
                 "401":
                     description: 'Unauthorized: Unauthorized response.'
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/LidError'
+                                $ref: '#/components/schemas/BadRequestError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -232,7 +717,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/LidError'
+                                $ref: '#/components/schemas/BadRequestError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -241,7 +726,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/LidError'
+                                $ref: '#/components/schemas/BadRequestError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -250,7 +735,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/LidError'
+                                $ref: '#/components/schemas/BadRequestError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -283,12 +768,21 @@ paths:
             responses:
                 "204":
                     description: No Content response.
+                "400":
+                    description: 'BadRequest: Bad Request response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
                 "401":
                     description: 'Unauthorized: Unauthorized response.'
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/LidError'
+                                $ref: '#/components/schemas/BadRequestError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -297,7 +791,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/LidError'
+                                $ref: '#/components/schemas/BadRequestError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -306,7 +800,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/LidError'
+                                $ref: '#/components/schemas/BadRequestError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -315,13 +809,181 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/LidError'
+                                $ref: '#/components/schemas/BadRequestError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
             security:
                 - jwt_header_Authorization:
                     - passkey:write
+    /fido2/v2/phone/add/init:
+        post:
+            tags:
+                - phone
+            summary: Send SMS to add phone number to profile
+            operationId: phone#phoneAddInit
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/PhoneAddInitRequestBody'
+                        example:
+                            phoneNumber: "+14161234567"
+            responses:
+                "200":
+                    description: OK response.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/EmailAuthInitResponseBody'
+                            example:
+                                expiresAt: 2023-06-15 13:29:41 EDT
+                "400":
+                    description: 'BadRequest: Bad Request response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
+                "401":
+                    description: 'Unauthorized: Unauthorized response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
+                "404":
+                    description: 'NotFound: Not Found response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
+                "500":
+                    description: 'InternalServerError: Internal Server Error response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
+            security:
+                - jwt_header_Authorization:
+                    - user:write
+    /fido2/v2/phone/auth/init:
+        post:
+            tags:
+                - phone
+            summary: Send SMS to authenticate into account
+            operationId: phone#phoneAuthInit
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/PhoneAuthInitRequestBody'
+                        example:
+                            phoneNumber: "+14161234567"
+                            username: testUser
+            responses:
+                "200":
+                    description: OK response.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/EmailAuthInitResponseBody'
+                            example:
+                                expiresAt: 2023-06-15 13:29:41 EDT
+                "400":
+                    description: 'BadRequest: Bad Request response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
+                "404":
+                    description: 'NotFound: Not Found response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
+                "500":
+                    description: 'InternalServerError: Internal Server Error response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
+    /fido2/v2/phone/verify:
+        post:
+            tags:
+                - phone
+            summary: Verify SMS OTP
+            operationId: phone#phoneVerify
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/EmailVerifyRequestBody'
+                        example:
+                            code: "123456"
+                            purpose: addCred
+                            username: testUser
+            responses:
+                "200":
+                    description: OK response.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/JWT'
+                            example:
+                                code:
+                                    code: Nam et quisquam exercitationem quibusdam.
+                                    expiresAt: Ut et.
+                                jwtAccess: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                "400":
+                    description: 'BadRequest: Bad Request response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
+                "404":
+                    description: 'NotFound: Not Found response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
+                "500":
+                    description: 'InternalServerError: Internal Server Error response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
     /fido2/v2/reg/complete:
         post:
             tags:
@@ -343,9 +1005,10 @@ paths:
                                 publicKey: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
                                 publicKeyAlgorithm: -8
                                 transports:
+                                    - nfc
+                                    - nfc
                                     - internal
-                                    - hybrid
-                                    - usb
+                                    - internal
                             session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
             responses:
                 "200":
@@ -355,13 +1018,16 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/JWT'
                             example:
+                                code:
+                                    code: Nam et quisquam exercitationem quibusdam.
+                                    expiresAt: Ut et.
                                 jwtAccess: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
                 "400":
                     description: 'BadRequest: Bad Request response.'
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/LidError'
+                                $ref: '#/components/schemas/BadRequestError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -370,7 +1036,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/LidError'
+                                $ref: '#/components/schemas/BadRequestError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -379,7 +1045,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/LidError'
+                                $ref: '#/components/schemas/BadRequestError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -435,7 +1101,7 @@ paths:
                                 $ref: '#/components/schemas/RegInit'
                             example:
                                 registrationRequestOptions:
-                                    attestation: enterprise
+                                    attestation: direct
                                     authenticatorSelection:
                                         authenticatorAttachment: platform
                                         requireResidentKey: true
@@ -471,7 +1137,16 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/LidError'
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
+                "401":
+                    description: 'Unauthorized: Unauthorized response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -480,7 +1155,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/LidError'
+                                $ref: '#/components/schemas/BadRequestError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -489,45 +1164,13 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/LidError'
+                                $ref: '#/components/schemas/BadRequestError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
-    /fido2/v2/token/verify:
-        post:
-            tags:
-                - token
-            summary: Validate JWT Access Token
-            operationId: token#tokenVerify
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/TokenVerifyRequestBody'
-                        example:
-                            jwtAccess: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-            responses:
-                "204":
-                    description: No Content response.
-                "400":
-                    description: 'BadRequest: Bad Request response.'
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/LidError'
-                            example:
-                                msg: A serious error
-                                msgCode: serious_error
-                "500":
-                    description: 'InternalServerError: Internal Server Error response.'
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/LidError'
-                            example:
-                                msg: A serious error
-                                msgCode: serious_error
+            security:
+                - jwt_header_Authorization:
+                    - passkey:write
     /fido2/v2/tx/complete:
         post:
             tags:
@@ -570,7 +1213,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/LidError'
+                                $ref: '#/components/schemas/BadRequestError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -579,7 +1222,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/LidError'
+                                $ref: '#/components/schemas/BadRequestError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -588,7 +1231,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/LidError'
+                                $ref: '#/components/schemas/BadRequestError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -631,7 +1274,7 @@ paths:
                                         appid: https://loalhost:8443
                                     rpId: https://localhost:8443/
                                     timeout: 5000
-                                    userVerification: preferred
+                                    userVerification: discouraged
                                 session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
                                 txId: 2a363a42-a397-4af0-b089-0935fc223017
                 "400":
@@ -639,7 +1282,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/LidError'
+                                $ref: '#/components/schemas/BadRequestError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -648,7 +1291,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/LidError'
+                                $ref: '#/components/schemas/BadRequestError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -688,6 +1331,24 @@ components:
                 id: 2a363a42-a397-4af0-b089-0935fc223017
             required:
                 - id
+        AuthCodeRequestBody:
+            type: object
+            properties:
+                code:
+                    type: string
+                    description: Code issued to the user
+                    example: "123456"
+                user:
+                    $ref: '#/components/schemas/User'
+            example:
+                code: "123456"
+                user:
+                    displayName: System Administrator
+                    username: admin@example.com
+                    usernameType: email
+            required:
+                - user
+                - code
         AuthCompleteRequestBody:
             type: object
             properties:
@@ -733,7 +1394,7 @@ components:
                         appid: https://loalhost:8443
                     rpId: https://localhost:8443/
                     timeout: 5000
-                    userVerification: preferred
+                    userVerification: discouraged
                 session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
             required:
                 - session
@@ -743,6 +1404,12 @@ components:
             properties:
                 app:
                     $ref: '#/components/schemas/Application'
+                codePurpose:
+                    type: string
+                    example: addCred
+                    enum:
+                        - tempAuth
+                        - addCred
                 deviceInfo:
                     $ref: '#/components/schemas/DeviceInfo'
                 user:
@@ -750,6 +1417,7 @@ components:
             example:
                 app:
                     id: 2a363a42-a397-4af0-b089-0935fc223017
+                codePurpose: tempAuth
                 deviceInfo:
                     clientName: Chrome
                     clientType: browser
@@ -813,7 +1481,7 @@ components:
                 authenticatorAttachment:
                     type: string
                     description: Authenticator attachment modality
-                    example: platform
+                    example: cross-platform
                     enum:
                         - platform
                         - cross-platform
@@ -833,7 +1501,7 @@ components:
                 userVerification:
                     type: string
                     description: Resident key requirement
-                    example: discouraged
+                    example: required
                     enum:
                         - required
                         - preferred
@@ -841,8 +1509,57 @@ components:
             example:
                 authenticatorAttachment: cross-platform
                 requireResidentKey: false
-                residentKey: discouraged
+                residentKey: preferred
                 userVerification: discouraged
+        BadRequestError:
+            type: object
+            properties:
+                msg:
+                    type: string
+                    example: A serious error
+                msgCode:
+                    type: string
+                    example: serious_error
+            example:
+                msg: A serious error
+                msgCode: serious_error
+            required:
+                - msg
+                - msgCode
+        CodeGenerate:
+            type: object
+            properties:
+                code:
+                    type: string
+                    description: Generated code
+                    example: "123456"
+                expiresAt:
+                    type: string
+                    description: Expiration time of the code
+                    example: "2021-01-01T00:00:00Z"
+            example:
+                code: "123456"
+                expiresAt: "2021-01-01T00:00:00Z"
+            required:
+                - code
+                - expiresAt
+        CodeResult:
+            type: object
+            properties:
+                code:
+                    type: string
+                    description: Generated code
+                    example: Facilis quidem quod ab doloribus et explicabo.
+                expiresAt:
+                    type: string
+                    description: Expiration time of the code
+                    example: Aliquam laudantium exercitationem magni itaque.
+            example:
+                code: Omnis beatae voluptate aspernatur et.
+                expiresAt: Sint labore temporibus incidunt libero aliquid.
+            required:
+                - code
+                - expiresAt
         CreationResult:
             type: object
             properties:
@@ -884,7 +1601,7 @@ components:
                     type: array
                     items:
                         type: string
-                        example: usb
+                        example: internal
                         enum:
                             - usb
                             - nfc
@@ -895,9 +1612,9 @@ components:
                         These values are the transports that the authenticator is believed to support,
                         or an empty sequence if the information is unavailable.
                     example:
-                        - ble
                         - internal
-                        - usb
+                        - hybrid
+                        - ble
             example:
                 attestationObject: 5lvuZBkX1w7/0+XKcldttzA7vTwilEq3qnnXSq/a0...
                 authenticatorData: ix523n3XniH01jM4CIuOn1z0Jw6QbRATXYOsCUyQN...
@@ -906,7 +1623,8 @@ components:
                 publicKey: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
                 publicKeyAlgorithm: -8
                 transports:
-                    - hybrid
+                    - nfc
+                    - nfc
                     - hybrid
             required:
                 - clientDataJSON
@@ -971,31 +1689,134 @@ components:
                 osVersion: 14.2.1
                 screenHeight: 1080
                 screenWidth: 1920
+        EmailAddInitRequestBody:
+            type: object
+            properties:
+                email:
+                    type: string
+                    description: email
+                    example: test@loginid.io
+            example:
+                email: test@loginid.io
+            required:
+                - email
+        EmailAuthInitRequestBody:
+            type: object
+            properties:
+                email:
+                    type: string
+                    description: email
+                    example: test@loginid.io
+                username:
+                    type: string
+                    description: User identifier
+                    example: testUser
+            example:
+                email: test@loginid.io
+                username: testUser
+            required:
+                - email
+        EmailAuthInitResponseBody:
+            type: object
+            properties:
+                expiresAt:
+                    type: string
+                    description: Expiration time of the verification code
+                    example: 2023-06-15 13:29:41 EDT
+                    format: date-time
+            example:
+                expiresAt: 2023-06-15 13:29:41 EDT
+            required:
+                - expiresAt
+        EmailVerifyRequestBody:
+            type: object
+            properties:
+                code:
+                    type: string
+                    description: Verification code
+                    example: "123456"
+                purpose:
+                    type: string
+                    description: Purpose of the verification code
+                    example: tempAuth
+                    enum:
+                        - addCred
+                        - tempAuth
+                username:
+                    type: string
+                    description: User identifier
+                    example: testUser
+            example:
+                code: "123456"
+                purpose: addCred
+                username: testUser
+            required:
+                - username
+                - code
+                - purpose
+        GenerateCodeRequestBody:
+            type: object
+            properties:
+                purpose:
+                    type: string
+                    description: Purpose of the code
+                    example: addCred
+                    enum:
+                        - tempAuth
+                        - addCred
+            example:
+                purpose: tempAuth
+            required:
+                - purpose
+        GrantCreateRequestBody:
+            type: object
+            properties:
+                grant:
+                    type: string
+                    description: Grant type, i.e. what operation is permitted
+                    example: passkey:create
+                    enum:
+                        - passkey:list
+                        - passkey:create
+                        - passkey:update
+                        - passkey:delete
+                        - user:delete
+                username:
+                    type: string
+                    description: User identifier
+                    example: testUser
+            example:
+                grant: passkey:create
+                username: testUser
+            required:
+                - grant
+        GrantCreateResponseBody:
+            type: object
+            properties:
+                token:
+                    type: string
+                    description: Base64 encoded authorization token
+                    example: oWIsYWQl6RB0cFC9jM8Hy85TmqAMyc0QqSXMsh0Fo9U=
+            example:
+                token: oWIsYWQl6RB0cFC9jM8Hy85TmqAMyc0QqSXMsh0Fo9U=
+            required:
+                - token
         JWT:
             type: object
             properties:
+                code:
+                    $ref: '#/components/schemas/CodeResult'
                 jwtAccess:
                     type: string
                     description: JWT access token
                     example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
             example:
+                code:
+                    code: Nam et quisquam exercitationem quibusdam.
+                    expiresAt: Ut et.
                 jwtAccess: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
             required:
                 - jwtAccess
-        LidError:
-            type: object
-            properties:
-                msg:
-                    type: string
-                    example: A serious error
-                msgCode:
-                    type: string
-                    example: serious_error
-            example:
-                msg: A serious error
-                msgCode: serious_error
-            required:
-                - msgCode
         Passkey:
             type: object
             properties:
@@ -1054,6 +1875,34 @@ components:
                 name: My iPhone SE
             required:
                 - name
+        PhoneAddInitRequestBody:
+            type: object
+            properties:
+                phoneNumber:
+                    type: string
+                    description: Phone number
+                    example: "+14161234567"
+            example:
+                phoneNumber: "+14161234567"
+            required:
+                - phoneNumber
+        PhoneAuthInitRequestBody:
+            type: object
+            properties:
+                phoneNumber:
+                    type: string
+                    description: Phone number
+                    example: "+14161234567"
+                username:
+                    type: string
+                    description: User identifier
+                    example: testUser
+            example:
+                phoneNumber: "+14161234567"
+                username: testUser
+            required:
+                - username
+                - phoneNumber
         PubKeyCredentialDescriptor:
             type: object
             properties:
@@ -1065,7 +1914,7 @@ components:
                     type: array
                     items:
                         type: string
-                        example: usb
+                        example: ble
                         enum:
                             - usb
                             - nfc
@@ -1073,10 +1922,8 @@ components:
                             - internal
                             - hybrid
                     example:
-                        - usb
-                        - usb
+                        - internal
                         - nfc
-                        - usb
                 type:
                     type: string
                     example: public-key
@@ -1085,8 +1932,9 @@ components:
             example:
                 id: AyQBkTLAPWaLl6HtE3Oh6ovqkspSidX8DA9fYQB6DX4=
                 transports:
-                    - nfc
-                    - hybrid
+                    - internal
+                    - internal
+                    - usb
                 type: public-key
             required:
                 - type
@@ -1097,7 +1945,7 @@ components:
                 attestation:
                     type: string
                     description: A preference for attestation conveyance.
-                    example: indirect
+                    example: none
                     enum:
                         - none
                         - indirect
@@ -1136,7 +1984,7 @@ components:
                         appid: https://loalhost:8443
                     additionalProperties:
                         type: string
-                        example: Ut et.
+                        example: Fuga eos repudiandae.
                 pubKeyCredParams:
                     type: array
                     items:
@@ -1208,7 +2056,7 @@ components:
                         A cryptographic signature algorithm with which the newly generated credential
                         will be used, and thus also the type of asymmetric key pair to be generated,
                         e.g., RSA or Elliptic Curve.
-                    example: -36
+                    example: -7
                     enum:
                         - -7
                         - -35
@@ -1262,7 +2110,7 @@ components:
                         appid: https://loalhost:8443
                     additionalProperties:
                         type: string
-                        example: Perspiciatis numquam est excepturi accusamus unde.
+                        example: Amet laudantium qui.
                 rpId:
                     type: string
                     description: |-
@@ -1286,7 +2134,7 @@ components:
                         client platforms MUST ignore unknown values, treating an unknown value as if
                         the member does not exist. Eligible authenticators are filtered to only those
                         capable of satisfying this requirement.
-                    example: required
+                    example: preferred
                     enum:
                         - required
                         - preferred
@@ -1365,9 +2213,10 @@ components:
                     publicKey: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
                     publicKeyAlgorithm: -8
                     transports:
+                        - nfc
+                        - nfc
                         - internal
-                        - hybrid
-                        - usb
+                        - internal
                 session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
             required:
                 - session
@@ -1383,7 +2232,7 @@ components:
                     example: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
             example:
                 registrationRequestOptions:
-                    attestation: enterprise
+                    attestation: direct
                     authenticatorSelection:
                         authenticatorAttachment: platform
                         requireResidentKey: true
@@ -1608,7 +2457,7 @@ components:
                         appid: https://loalhost:8443
                     rpId: https://localhost:8443/
                     timeout: 5000
-                    userVerification: preferred
+                    userVerification: discouraged
                 session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
                 txId: 2a363a42-a397-4af0-b089-0935fc223017
             required:
@@ -1687,19 +2536,30 @@ components:
             required:
                 - version
     securitySchemes:
+        apiKey_header_Authorization:
+            type: apiKey
+            description: Secures endpoint by requiring an API key.
+            name: Authorization
+            in: header
         jwt_header_Authorization:
             type: http
             scheme: bearer
 tags:
+    - name: code
+      description: Generate codes for temporary access or adding a new device
+    - name: mgmt
+      description: Management API
     - name: passkeys
       description: FIDO2 pass-key management
-    - name: token
-      description: JWT Access Token API
-    - name: auth
-      description: FIDO2 authentication flow
-    - name: reg
-      description: FIDO2 registration flow
     - name: tx
       description: FIDO2 transaction confirmation flow
+    - name: auth
+      description: FIDO2 authentication flow
+    - name: email
+      description: Email Profile API
+    - name: phone
+      description: Phone Profile API
+    - name: reg
+      description: FIDO2 registration flow
     - name: version
       description: Get Version

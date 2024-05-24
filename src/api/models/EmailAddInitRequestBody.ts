@@ -2,12 +2,10 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { CodeResult } from './CodeResult';
-export type JWT = {
-    code?: CodeResult;
+export type EmailAddInitRequestBody = {
     /**
-     * JWT access token
+     * email
      */
-    jwtAccess: string;
+    email: string;
 };
 

@@ -2,12 +2,14 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { CodeResult } from './CodeResult';
-export type JWT = {
-    code?: CodeResult;
+export type PhoneAuthInitRequestBody = {
     /**
-     * JWT access token
+     * Phone number
      */
-    jwtAccess: string;
+    phoneNumber: string;
+    /**
+     * User identifier
+     */
+    username: string;
 };
 

@@ -2,12 +2,10 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { CodeResult } from './CodeResult';
-export type JWT = {
-    code?: CodeResult;
+export type GenerateCodeRequestBody = {
     /**
-     * JWT access token
+     * Purpose of the code
      */
-    jwtAccess: string;
+    purpose: 'tempAuth' | 'addCred';
 };
 

@@ -2,81 +2,73 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { AuthCodeRequestBody } from '../models/AuthCodeRequestBody';
-import type { AuthCompleteRequestBody } from '../models/AuthCompleteRequestBody';
-import type { AuthInit } from '../models/AuthInit';
-import type { AuthInitRequestBody } from '../models/AuthInitRequestBody';
+import type { EmailAddInitRequestBody } from '../models/EmailAddInitRequestBody';
+import type { EmailAuthInitRequestBody } from '../models/EmailAuthInitRequestBody';
+import type { EmailAuthInitResponseBody } from '../models/EmailAuthInitResponseBody';
+import type { EmailVerifyRequestBody } from '../models/EmailVerifyRequestBody';
 import type { JWT } from '../models/JWT';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
-export class AuthService {
+export class EmailService {
     constructor(public readonly httpRequest: BaseHttpRequest) {}
     /**
-     * Authenticate using a code
-     * @returns JWT OK response.
+     * Send email to add email number to profile
+     * @returns EmailAuthInitResponseBody OK response.
      * @throws ApiError
      */
-    public authAuthCode({
+    public emailEmailAddInit({
         requestBody,
     }: {
-        requestBody: AuthCodeRequestBody,
-    }): CancelablePromise<JWT> {
+        requestBody: EmailAddInitRequestBody,
+    }): CancelablePromise<EmailAuthInitResponseBody> {
         return this.httpRequest.request({
             method: 'POST',
-            url: '/fido2/v2/auth/code',
+            url: '/fido2/v2/email/add/init',
             body: requestBody,
             mediaType: 'application/json',
             errors: {
                 400: `BadRequest: Bad Request response.`,
-                403: `Forbidden: Forbidden response.`,
+                401: `Unauthorized: Unauthorized response.`,
                 404: `NotFound: Not Found response.`,
                 500: `InternalServerError: Internal Server Error response.`,
             },
         });
     }
     /**
-     * Complete WebAuthn registration
-     * @returns JWT OK response.
+     * Send email to authenticate into account
+     * @returns EmailAuthInitResponseBody OK response.
      * @throws ApiError
      */
-    public authAuthComplete({
+    public emailEmailAuthInit({
         requestBody,
     }: {
-        requestBody: AuthCompleteRequestBody,
-    }): CancelablePromise<JWT> {
+        requestBody: EmailAuthInitRequestBody,
+    }): CancelablePromise<EmailAuthInitResponseBody> {
         return this.httpRequest.request({
             method: 'POST',
-            url: '/fido2/v2/auth/complete',
+            url: '/fido2/v2/email/auth/init',
             body: requestBody,
             mediaType: 'application/json',
             errors: {
                 400: `BadRequest: Bad Request response.`,
-                403: `Forbidden: Forbidden response.`,
+                404: `NotFound: Not Found response.`,
                 500: `InternalServerError: Internal Server Error response.`,
             },
         });
     }
     /**
-     * Start WebAuthn registration flow
-     * @returns AuthInit OK response.
+     * Verify Email OTP
+     * @returns JWT OK response.
      * @throws ApiError
      */
-    public authAuthInit({
+    public emailEmailVerify({
         requestBody,
-        userAgent,
     }: {
-        requestBody: AuthInitRequestBody,
-        /**
-         * Raw user-agent header as set by a browser
-         */
-        userAgent?: string,
-    }): CancelablePromise<AuthInit> {
+        requestBody: EmailVerifyRequestBody,
+    }): CancelablePromise<JWT> {
         return this.httpRequest.request({
             method: 'POST',
-            url: '/fido2/v2/auth/init',
-            headers: {
-                'User-Agent': userAgent,
-            },
+            url: '/fido2/v2/email/verify',
             body: requestBody,
             mediaType: 'application/json',
             errors: {

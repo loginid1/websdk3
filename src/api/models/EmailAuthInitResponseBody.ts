@@ -2,8 +2,10 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type LidError = {
-    msg?: string;
-    msgCode: string;
+export type EmailAuthInitResponseBody = {
+    /**
+     * Expiration time of the verification code
+     */
+    expiresAt: string;
 };
 

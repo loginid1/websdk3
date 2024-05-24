@@ -2,85 +2,79 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { AuthCodeRequestBody } from '../models/AuthCodeRequestBody';
-import type { AuthCompleteRequestBody } from '../models/AuthCompleteRequestBody';
-import type { AuthInit } from '../models/AuthInit';
-import type { AuthInitRequestBody } from '../models/AuthInitRequestBody';
-import type { JWT } from '../models/JWT';
+import type { GrantCreateRequestBody } from '../models/GrantCreateRequestBody';
+import type { GrantCreateResponseBody } from '../models/GrantCreateResponseBody';
+import type { TokenVerifyRequestBody } from '../models/TokenVerifyRequestBody';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
-export class AuthService {
+export class MgmtService {
     constructor(public readonly httpRequest: BaseHttpRequest) {}
     /**
-     * Authenticate using a code
-     * @returns JWT OK response.
+     * Create an authorization token for use with /reg/init call
+     * @returns GrantCreateResponseBody OK response.
      * @throws ApiError
      */
-    public authAuthCode({
+    public mgmtGrantCreate({
         requestBody,
     }: {
-        requestBody: AuthCodeRequestBody,
-    }): CancelablePromise<JWT> {
+        requestBody: GrantCreateRequestBody,
+    }): CancelablePromise<GrantCreateResponseBody> {
         return this.httpRequest.request({
             method: 'POST',
-            url: '/fido2/v2/auth/code',
+            url: '/fido2/v2/mgmt/grant',
             body: requestBody,
             mediaType: 'application/json',
             errors: {
                 400: `BadRequest: Bad Request response.`,
-                403: `Forbidden: Forbidden response.`,
-                404: `NotFound: Not Found response.`,
+                401: `Unauthorized: Unauthorized response.`,
                 500: `InternalServerError: Internal Server Error response.`,
             },
         });
     }
     /**
-     * Complete WebAuthn registration
-     * @returns JWT OK response.
+     * Validate JWT Access Token
+     * @returns void
      * @throws ApiError
      */
-    public authAuthComplete({
+    public mgmtTokenVerify({
         requestBody,
     }: {
-        requestBody: AuthCompleteRequestBody,
-    }): CancelablePromise<JWT> {
+        requestBody: TokenVerifyRequestBody,
+    }): CancelablePromise<void> {
         return this.httpRequest.request({
             method: 'POST',
-            url: '/fido2/v2/auth/complete',
+            url: '/fido2/v2/mgmt/token/verify',
             body: requestBody,
             mediaType: 'application/json',
             errors: {
                 400: `BadRequest: Bad Request response.`,
-                403: `Forbidden: Forbidden response.`,
+                401: `Unauthorized: Unauthorized response.`,
                 500: `InternalServerError: Internal Server Error response.`,
             },
         });
     }
     /**
-     * Start WebAuthn registration flow
-     * @returns AuthInit OK response.
+     * Delete a user and all associated passkey
+     * @returns void
      * @throws ApiError
      */
-    public authAuthInit({
-        requestBody,
-        userAgent,
+    public mgmtUserDelete({
+        id,
     }: {
-        requestBody: AuthInitRequestBody,
         /**
-         * Raw user-agent header as set by a browser
+         * Internal user identifier
          */
-        userAgent?: string,
-    }): CancelablePromise<AuthInit> {
+        id: string,
+    }): CancelablePromise<void> {
         return this.httpRequest.request({
-            method: 'POST',
-            url: '/fido2/v2/auth/init',
-            headers: {
-                'User-Agent': userAgent,
+            method: 'DELETE',
+            url: '/fido2/v2/mgmt/user/{id}',
+            path: {
+                'id': id,
             },
-            body: requestBody,
-            mediaType: 'application/json',
             errors: {
                 400: `BadRequest: Bad Request response.`,
+                401: `Unauthorized: Unauthorized response.`,
                 404: `NotFound: Not Found response.`,
                 500: `InternalServerError: Internal Server Error response.`,
             },
