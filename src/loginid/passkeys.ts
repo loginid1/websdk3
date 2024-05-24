@@ -223,7 +223,9 @@ class Passkeys extends LoginIDBase {
     }
   
     const result = await this.service
-      .auth.authAuthCode({ requestBody: request })
+      .auth.authAuthCode({
+        requestBody: request
+      })
 
     return result
   }
