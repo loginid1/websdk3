@@ -189,11 +189,9 @@ class Passkeys extends LoginIDBase {
    * @returns {Promise<any>} Result of the authentication operation.
    */
   async generateCodeWithPasskey(username: string, codePurpose: CodePurpose, options: AuthenticateWithPasskeysOptions): Promise<PasskeyResult> {
-    const result = await this.authenticateWithPasskey(username, {
-      codePurpose,
-      ...options.usernameType && { usernameType: options.usernameType },
-      ...options.displayName && { displayName: options.displayName },
-    })
+    options.codePurpose = codePurpose
+
+    const result = await this.authenticateWithPasskey(username, options)
   
     return result
   }
