@@ -153,9 +153,7 @@ class Passkeys extends LoginIDBase {
     if (!options.usernameType) {
       options.usernameType = 'email'
     }
-
-    console.log(options)
-
+  
     const authInitRequestBody: AuthInitRequestBody = {
       app: {
         id: this.config.appId,
