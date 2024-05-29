@@ -1,5 +1,5 @@
 import LoginIDBase from './base'
-import {DeletePasskeyOptions, ListPasskeysOptions, LoginIDConfig, PasskeyOptions, RenamePasskeyOptions} from './types'
+import {DeletePasskeyOptions, ListPasskeysOptions, LoginIDConfig, RenamePasskeyOptions} from './types'
 import type {PasskeyCollection, PasskeyRenameRequestBody} from '../api'
 
 /**
@@ -12,19 +12,6 @@ class PasskeyManager extends LoginIDBase {
    */
   constructor(config: LoginIDConfig) {
     super(config)
-  }
-
-  getToken(options: PasskeyOptions): string {
-    if (options.token) {
-      return options.token
-    } else {
-      const token = this.getJWTAccess()
-      if (token) {
-        return token
-      } else {
-        throw new Error('token is empty')
-      }
-    }
   }
 
   /**

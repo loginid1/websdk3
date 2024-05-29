@@ -1,6 +1,6 @@
 import {LoginIDService} from '../api/LoginIDService'
 import { deleteCookie, getCookie, parseJwt, setCookie } from '../utils'
-import type {LoginIDConfig} from './types'
+import type {LoginIDConfig, PasskeyOptions} from './types'
 
 /**
  * Provides a base class for integrating with the LoginID API services.
@@ -27,11 +27,32 @@ class LoginIDBase {
     this.service = new LoginIDService({BASE: config.baseUrl})
   }
 
+  getToken(options: PasskeyOptions): string {
+    if (options.token) {
+      return options.token
+    } else {
+      const token = this.getJwtCookie()
+      if (token) {
+        return token
+      } else {
+        throw new Error('token is empty')
+      }
+    }
+  }
+
+  /**
+   * 
+   * @returns {string} The name of the cookie
+   */
+  public getJwtCookieName(): string {
+    return `LoginID_${this.config.appId}_token`
+  }
+
   /**
    * Set jwt token to localstorage
    * @param {string} jwt Configuration object for LoginID API, including the base URL.
    */
-  setJwtCookie(jwt: string) {
+  public setJwtCookie(jwt: string) {
     const token = parseJwt(jwt)
     const expiry = new Date(token.exp * 1000).toUTCString()
     const cookie = `${this.getJwtCookieName()}=${jwt}; expires=${expiry}`
@@ -39,18 +60,10 @@ class LoginIDBase {
   }
 
   /**
-   * 
-   * @returns {string} The name of the cookie
-   */
-  getJwtCookieName(): string {
-    return `LoginID_${this.config.appId}_token`
-  }
-
-  /**
    * Retrieves the JWT access token.
    * @returns {string | undefined} The JWT access token.
    */
-  public getJWTAccess(): string | undefined {
+  public getJwtCookie(): string | undefined {
     return getCookie(this.getJwtCookieName())
   }
   
@@ -59,7 +72,7 @@ class LoginIDBase {
      * @returns {boolean}
      */
   public isLoggedIn(): boolean {
-    return !!this.getJWTAccess()
+    return !!this.getJwtCookie()
   }
   
   /**

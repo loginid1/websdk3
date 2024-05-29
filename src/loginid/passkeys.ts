@@ -1,6 +1,6 @@
 import LoginIDBase from './base'
 import { defaultDeviceInfo } from '../browser'
-import { bufferToBase64Url, createUUID, deleteCookie, getCookie } from '../utils'
+import { bufferToBase64Url, createUUID, parseJwt } from '../utils'
 import { createPasskeyCredential, getPasskeyCredential } from '../webauthn/'
 import type {
   AuthenticateWithPasskeysOptions,
@@ -82,10 +82,15 @@ class Passkeys extends LoginIDBase {
       options.usernameType = 'email'
     }
 
-    if (options.token) {
-      const cookieName = this.getJwtCookieName()
-      if (options.token !== getCookie(cookieName)) {
-        deleteCookie(cookieName)
+    if (!options.token) {
+      // get saved cookie jwt
+      const token = this.getToken({})
+      if (token) {
+        // guard against username mismatch
+        const parsedToken = parseJwt(token)
+        if (parsedToken.username === username) {
+          options.token = token
+        }
       }
     }
 
