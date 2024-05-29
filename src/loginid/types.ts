@@ -26,13 +26,13 @@ export interface PasskeyOptions {
 	//hints?: string[]
 }
 
-export interface PasskeyMangementOptions {
+export interface PasskeyManagementOptions {
 	token?: string
 }
 
-export interface ListPasskeysOptions extends PasskeyMangementOptions {}
-export interface RenamePasskeyOptions extends PasskeyMangementOptions {}
-export interface DeletePasskeyOptions extends PasskeyMangementOptions {}
+export interface ListPasskeysOptions extends PasskeyManagementOptions {}
+export interface RenamePasskeyOptions extends PasskeyManagementOptions {}
+export interface DeletePasskeyOptions extends PasskeyManagementOptions {}
 
 export interface AuthenticateWithPasskeysOptions extends PasskeyOptions {
 	// autoFill is conditional UI
