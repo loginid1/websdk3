@@ -15,11 +15,16 @@ class PasskeyManager extends LoginIDBase {
   }
 
   getToken(options: PasskeyOptions): string {
-    if (!options.token) {
-      throw new Error('token is empty')
+    if (options.token) {
+      return options.token
+    } else {
+      const token = this.getJWTAccess()
+      if (token) {
+        return token
+      } else {
+        throw new Error('token is empty')
+      }
     }
-
-    return options.token
   }
 
   /**
@@ -27,7 +32,7 @@ class PasskeyManager extends LoginIDBase {
    * @param {string} authToken Authorization token to authenticate the request.
    * @returns {Promise<PasskeysPasskeyResponseCollection>} A collection of passkeys.
    */
-  async listPasskeys(options: ListPasskeysOptions): Promise<PasskeyCollection> {
+  async listPasskeys(options: ListPasskeysOptions = {}): Promise<PasskeyCollection> {
     const token = this.getToken(options)
 
     return await this.service
@@ -42,7 +47,7 @@ class PasskeyManager extends LoginIDBase {
    * @param {string} name The new name for the passkey.
    * @returns {Promise<null>} A promise that resolves to null upon successful completion.
    */
-  async renamePasskey(id: string, name: string, options: RenamePasskeyOptions): Promise<null> {
+  async renamePasskey(id: string, name: string, options: RenamePasskeyOptions = {}): Promise<null> {
     const token = this.getToken(options)
 
     const passkeyRenameRequestBody: PasskeyRenameRequestBody = {
@@ -66,7 +71,7 @@ class PasskeyManager extends LoginIDBase {
    * @param {string} id The ID of the passkey to delete.
    * @returns {Promise<null>} A promise that resolves to null upon successful deletion.
    */
-  async deletePasskey(id: string, options: DeletePasskeyOptions): Promise<null> {
+  async deletePasskey(id: string, options: DeletePasskeyOptions = {}): Promise<null> {
     const token = this.getToken(options)
 
     await this.service

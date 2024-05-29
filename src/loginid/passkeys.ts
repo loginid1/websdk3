@@ -285,30 +285,6 @@ class Passkeys extends LoginIDBase {
 
     return result
   }
-
-  /**
-   * Retrieves the JWT access token.
-   * @returns {string | undefined} The JWT access token.
-   */
-  public getJWTAccess(): string | undefined {
-    return getCookie(this.getJwtCookieName())
-  }
-
-  /**
-   * checks if the user is logged in.
-   * @returns {boolean}
-   */
-  public isLoggedIn(): boolean {
-    return !!this.getJWTAccess()
-  }
-
-  /**
-   * deletes the jwt cookie.
-   * @returns {boolean}
-   */
-  public signout() {
-    deleteCookie(this.getJwtCookieName())
-  }
 }
 
 export default Passkeys
