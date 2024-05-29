@@ -26,6 +26,14 @@ export interface PasskeyOptions {
 	//hints?: string[]
 }
 
+export interface PasskeyMangementOptions {
+	token?: string
+}
+
+export interface ListPasskeysOptions extends PasskeyMangementOptions {}
+export interface RenamePasskeyOptions extends PasskeyMangementOptions {}
+export interface DeletePasskeyOptions extends PasskeyMangementOptions {}
+
 export interface AuthenticateWithPasskeysOptions extends PasskeyOptions {
 	// autoFill is conditional UI
 	autoFill?: boolean

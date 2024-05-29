@@ -148,6 +148,46 @@ const applyMixins = (derivedCtor: any, constructors: any[]) => {
   })
 }
 
+/**
+ * Parse JWT to decode and access its variables
+ * @param {string} token The jwt token that will be parsed
+ * @returns 
+ */
+const parseJwt = (token: string) => {
+  const base64Url = token.split('.')[1]
+  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
+  const jsonPayload = decodeURIComponent(window.atob(base64).split('').map((c) => {
+    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+  }).join(''))
+
+  return JSON.parse(jsonPayload)
+}
+
+/**
+ * Used to access a specific cookie
+ * @param {string} name The name of the targetted cookie
+ * @returns 
+ */
+const getCookie = (name: string): string | undefined => {
+  const value = `; ${document.cookie}`
+  const parts = value.split(`; ${name}=`)
+  if (parts && parts.length === 2) {
+    return parts.pop()!.split(';').shift()
+  }
+}
+
+/**
+ * Used to set a cookie on the browser
+ * @param {string} cookie The full cookie string
+ */
+const setCookie = (cookie: string) => {
+  document.cookie = cookie
+}
+
+const deleteCookie = (name: string) => {
+  document.cookie = `${name}=; expires=${new Date()}`
+}
+
 export {
   a2b,
   applyMixins,
@@ -155,4 +195,8 @@ export {
   bufferToBase64Url,
   base64UrlToBuffer,
   createUUID,
+  deleteCookie,
+  getCookie,
+  parseJwt,
+  setCookie,
 }

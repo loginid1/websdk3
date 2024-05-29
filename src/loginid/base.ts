@@ -1,4 +1,5 @@
 import {LoginIDService} from '../api/LoginIDService'
+import { parseJwt, setCookie } from '../utils'
 import type {LoginIDConfig} from './types'
 
 /**
@@ -24,6 +25,25 @@ class LoginIDBase {
     this.config = config
     // Initialize the LoginIDService with the base URL provided in the configuration.
     this.service = new LoginIDService({BASE: config.baseUrl})
+  }
+
+  /**
+   * Set jwt token to localstorage
+   * @param {string} jwt Configuration object for LoginID API, including the base URL.
+   */
+  setJwtCookie(jwt: string) {
+    const token = parseJwt(jwt)
+    const expiry = new Date(token.exp * 1000).toUTCString()
+    const cookie = `${this.getJwtCookieName()}=${jwt}; expires=${expiry}`
+    setCookie(cookie)
+  }
+
+  /**
+   * 
+   * @returns {string} The name of the cookie
+   */
+  getJwtCookieName(): string {
+    return `LoginID_${this.config.appId}_token`
   }
 }
 

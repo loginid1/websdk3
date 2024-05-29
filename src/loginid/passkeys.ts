@@ -1,6 +1,6 @@
 import LoginIDBase from './base'
 import { defaultDeviceInfo } from '../browser'
-import { bufferToBase64Url, createUUID } from '../utils'
+import { bufferToBase64Url, createUUID, deleteCookie, getCookie } from '../utils'
 import { createPasskeyCredential, getPasskeyCredential } from '../webauthn/'
 import type {
   AuthenticateWithPasskeysOptions,
@@ -28,8 +28,6 @@ import {
  * Extends LoginIDBase to support creation, registration, and authentication of passkeys.
  */
 class Passkeys extends LoginIDBase {
-  private jwtAccess: string = ''
-
   /**
    * Initializes a new Passkeys instance with the provided configuration.
    * @param {LoginIDConfig} config Configuration object for LoginID.
@@ -84,10 +82,16 @@ class Passkeys extends LoginIDBase {
       options.usernameType = 'email'
     }
 
+    if (options.token) {
+      const cookieName = this.getJwtCookieName()
+      if (options.token !== getCookie(cookieName)) {
+        deleteCookie(cookieName)
+      }
+    }
+
     const regInitRequestBody: RegInitRequestBody = {
       app: {
         id: this.config.appId,
-        ...options.token && { token: options.token },
       },
       deviceInfo: deviceInfo,
       user: {
@@ -109,7 +113,7 @@ class Passkeys extends LoginIDBase {
       .reg
       .regRegComplete({ requestBody: regCompleteRequestBody })
 
-    this.jwtAccess = result.jwtAccess
+    this.setJwtCookie(result.jwtAccess)
 
     return result
   }
@@ -178,7 +182,7 @@ class Passkeys extends LoginIDBase {
       .auth
       .authAuthComplete({ requestBody: authCompleteRequestBody })
 
-    this.jwtAccess = result.jwtAccess
+    this.setJwtCookie(result.jwtAccess)
 
     return result
   }
@@ -224,6 +228,8 @@ class Passkeys extends LoginIDBase {
       .auth.authAuthCode({
         requestBody: request
       })
+
+    this.setJwtCookie(result.jwtAccess)
 
     return result
   }
@@ -275,7 +281,7 @@ class Passkeys extends LoginIDBase {
       .tx
       .txTxComplete({ requestBody: txCompleteRequestBody })
 
-    this.jwtAccess = result.jwtAccess
+    this.setJwtCookie(result.jwtAccess)
 
     return result
   }
@@ -285,7 +291,23 @@ class Passkeys extends LoginIDBase {
    * @returns {string} The JWT access token.
    */
   public getJWTAccess() {
-    return this.jwtAccess
+    return getCookie(this.getJwtCookieName())
+  }
+
+  /**
+   * checks if the user is logged in.
+   * @returns {boolean}
+   */
+  public isLoggedIn() {
+    return !!this.getJWTAccess()
+  }
+
+  /**
+   * deletes the jwt cookie.
+   * @returns {boolean}
+   */
+  public signout() {
+    deleteCookie(this.getJwtCookieName())
   }
 }
 
