@@ -2,10 +2,14 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type EmailAddInitRequestBody = {
+export type AuthCode = {
     /**
-     * email
+     * Generated code
      */
-    email: string;
+    code: string;
+    /**
+     * Expiration time of the code
+     */
+    expiresAt: string;
 };
 

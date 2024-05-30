@@ -4,9 +4,9 @@
 /* eslint-disable */
 export type GrantCreateRequestBody = {
     /**
-     * Grant type, i.e. what operation is permitted
+     * List of requested grants
      */
-    grant: 'passkey:list' | 'passkey:create' | 'passkey:update' | 'passkey:delete' | 'user:delete';
+    grants: Array<'passkey:read' | 'passkey:write'>;
     /**
      * User identifier
      */

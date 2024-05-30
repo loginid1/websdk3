@@ -2,151 +2,163 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { AuthCode } from '../models/AuthCode';
-import type { AuthCodeRequestSMSRequestBody } from '../models/AuthCodeRequestSMSRequestBody';
-import type { AuthCodeVerifyRequestBody } from '../models/AuthCodeVerifyRequestBody';
-import type { AuthCompleteRequestBody } from '../models/AuthCompleteRequestBody';
-import type { AuthInit } from '../models/AuthInit';
-import type { AuthInitRequestBody } from '../models/AuthInitRequestBody';
-import type { JWT } from '../models/JWT';
+import type { ProfileEmailUpdateRequestBody } from '../models/ProfileEmailUpdateRequestBody';
+import type { ProfilePhoneUpdateRequestBody } from '../models/ProfilePhoneUpdateRequestBody';
+import type { ProfilePhoneVerifyRequestBody } from '../models/ProfilePhoneVerifyRequestBody';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
-export class AuthService {
+export class ProfileService {
     constructor(public readonly httpRequest: BaseHttpRequest) {}
     /**
-     * Complete WebAuthn registration
-     * @returns JWT OK response.
+     * Delete a user profile and all associated passkey
+     * @returns void
      * @throws ApiError
      */
-    public authAuthComplete({
-        requestBody,
+    public profileProfileDelete({
+        id,
     }: {
-        requestBody: AuthCompleteRequestBody,
-    }): CancelablePromise<JWT> {
-        return this.httpRequest.request({
-            method: 'POST',
-            url: '/fido2/v2/auth/complete',
-            body: requestBody,
-            mediaType: 'application/json',
-            errors: {
-                400: `BadRequest: Bad Request response.`,
-                403: `Forbidden: Forbidden response.`,
-                500: `InternalServerError: Internal Server Error response.`,
-            },
-        });
-    }
-    /**
-     * Start WebAuthn registration flow
-     * @returns AuthInit OK response.
-     * @throws ApiError
-     */
-    public authAuthInit({
-        requestBody,
-        userAgent,
-    }: {
-        requestBody: AuthInitRequestBody,
         /**
-         * Raw user-agent header as set by a browser
+         * Internal user identifier
          */
-        userAgent?: string,
-    }): CancelablePromise<AuthInit> {
+        id: string,
+    }): CancelablePromise<void> {
         return this.httpRequest.request({
-            method: 'POST',
-            url: '/fido2/v2/auth/init',
-            headers: {
-                'User-Agent': userAgent,
+            method: 'DELETE',
+            url: '/fido2/v2/profile/{id}',
+            path: {
+                'id': id,
             },
-            body: requestBody,
-            mediaType: 'application/json',
             errors: {
-                400: `BadRequest: Bad Request response.`,
                 404: `NotFound: Not Found response.`,
                 500: `InternalServerError: Internal Server Error response.`,
             },
         });
     }
     /**
-     * Request OTP code by an authenticated user
-     * An authenticated user can request an authentication code directly using this
-     * method. The code can be used for authentication from another device.
-     * @returns AuthCode OK response.
+     * Update profile email address
+     * @returns void
      * @throws ApiError
      */
-    public authAuthCodeRequest(): CancelablePromise<AuthCode> {
+    public profileProfileEmailUpdate({
+        id,
+        requestBody,
+    }: {
+        /**
+         * Internal user identifier
+         */
+        id: string,
+        requestBody: ProfileEmailUpdateRequestBody,
+    }): CancelablePromise<void> {
         return this.httpRequest.request({
             method: 'POST',
-            url: '/fido2/v2/auth/otp',
+            url: '/fido2/v2/profile/{id}/email',
+            path: {
+                'id': id,
+            },
+            body: requestBody,
+            mediaType: 'application/json',
             errors: {
+                400: `BadRequest: Bad Request response.`,
                 401: `Unauthorized: Unauthorized response.`,
-                403: `Forbidden: Forbidden response.`,
                 404: `NotFound: Not Found response.`,
                 500: `InternalServerError: Internal Server Error response.`,
             },
         });
     }
     /**
-     * Request OTP code to be sent via email.
-     * Send authentication code to the provided email. The SMS will only be sent
-     * if the email address is known to the application, however, this method will
-     * return success regardless.
+     * Delete phone from the profile
      * @returns void
      * @throws ApiError
      */
-    public authAuthCodeRequestEmail({
+    public profileProfilePhoneDelete({
+        id,
+    }: {
+        /**
+         * Internal user identifier
+         */
+        id: string,
+    }): CancelablePromise<void> {
+        return this.httpRequest.request({
+            method: 'DELETE',
+            url: '/fido2/v2/profile/{id}/phone',
+            path: {
+                'id': id,
+            },
+            errors: {
+                400: `BadRequest: Bad Request response.`,
+                401: `Unauthorized: Unauthorized response.`,
+                404: `NotFound: Not Found response.`,
+                500: `InternalServerError: Internal Server Error response.`,
+            },
+        });
+    }
+    /**
+     * Update the profile phone number
+     * @returns void
+     * @throws ApiError
+     */
+    public profileProfilePhoneUpdate({
+        id,
         requestBody,
     }: {
-        requestBody: AuthCodeRequestSMSRequestBody,
+        /**
+         * Internal user identifier
+         */
+        id: string,
+        requestBody: ProfilePhoneUpdateRequestBody,
     }): CancelablePromise<void> {
         return this.httpRequest.request({
             method: 'POST',
-            url: '/fido2/v2/auth/otp/email',
+            url: '/fido2/v2/profile/{id}/phone',
+            path: {
+                'id': id,
+            },
             body: requestBody,
             mediaType: 'application/json',
             errors: {
                 400: `BadRequest: Bad Request response.`,
+                401: `Unauthorized: Unauthorized response.`,
                 404: `NotFound: Not Found response.`,
                 500: `InternalServerError: Internal Server Error response.`,
             },
         });
     }
     /**
-     * Request OTP code to be sent via SMS.
-     * Send authentication code to the provided phone number. The SMS will only be
-     * sent if the phone is registered with the application, however, it will return
-     * success regardless.
+     * Verify phone number with received authorization code
      * @returns void
      * @throws ApiError
      */
-    public authAuthCodeRequestSms({
+    public profileProfileEmailVerify({
         requestBody,
     }: {
-        requestBody: AuthCodeRequestSMSRequestBody,
+        requestBody: ProfilePhoneVerifyRequestBody,
     }): CancelablePromise<void> {
         return this.httpRequest.request({
             method: 'POST',
-            url: '/fido2/v2/auth/otp/sms',
+            url: '/fido2/v2/profile/email/verify',
             body: requestBody,
             mediaType: 'application/json',
             errors: {
                 400: `BadRequest: Bad Request response.`,
+                401: `Unauthorized: Unauthorized response.`,
                 404: `NotFound: Not Found response.`,
                 500: `InternalServerError: Internal Server Error response.`,
             },
         });
     }
     /**
-     * Verify authentication code and return JWT access token with appropriate scopes
-     * @returns JWT OK response.
+     * Verify phone number with received authorization code
+     * @returns void
      * @throws ApiError
      */
-    public authAuthCodeVerify({
+    public profileProfilePhoneVerify({
         requestBody,
     }: {
-        requestBody: AuthCodeVerifyRequestBody,
-    }): CancelablePromise<JWT> {
+        requestBody: ProfilePhoneVerifyRequestBody,
+    }): CancelablePromise<void> {
         return this.httpRequest.request({
             method: 'POST',
-            url: '/fido2/v2/auth/otp/verify',
+            url: '/fido2/v2/profile/phone/verify',
             body: requestBody,
             mediaType: 'application/json',
             errors: {

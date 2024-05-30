@@ -10,7 +10,7 @@ import type { BaseHttpRequest } from '../core/BaseHttpRequest';
 export class MgmtService {
     constructor(public readonly httpRequest: BaseHttpRequest) {}
     /**
-     * Create an authorization token for use with /reg/init call
+     * Create an authorization token with requested scopes
      * @returns GrantCreateResponseBody OK response.
      * @throws ApiError
      */
@@ -49,33 +49,6 @@ export class MgmtService {
             errors: {
                 400: `BadRequest: Bad Request response.`,
                 401: `Unauthorized: Unauthorized response.`,
-                500: `InternalServerError: Internal Server Error response.`,
-            },
-        });
-    }
-    /**
-     * Delete a user and all associated passkey
-     * @returns void
-     * @throws ApiError
-     */
-    public mgmtUserDelete({
-        id,
-    }: {
-        /**
-         * Internal user identifier
-         */
-        id: string,
-    }): CancelablePromise<void> {
-        return this.httpRequest.request({
-            method: 'DELETE',
-            url: '/fido2/v2/mgmt/user/{id}',
-            path: {
-                'id': id,
-            },
-            errors: {
-                400: `BadRequest: Bad Request response.`,
-                401: `Unauthorized: Unauthorized response.`,
-                404: `NotFound: Not Found response.`,
                 500: `InternalServerError: Internal Server Error response.`,
             },
         });

@@ -16,23 +16,21 @@ class PasskeyManager extends LoginIDBase {
 
   /**
    * Lists all passkeys associated with the account identified by the authToken.
-   * @param {string} authToken Authorization token to authenticate the request.
    * @returns {Promise<PasskeysPasskeyResponseCollection>} A collection of passkeys.
    */
-  async listPasskeys(authToken: string): Promise<PasskeyCollection> {
+  async listPasskeys(): Promise<PasskeyCollection> {
     return await this.service
       .passkeys
-      .passkeysPasskeysList({authorization: authToken})
+      .passkeysPasskeysList()
   }
 
   /**
    * Renames a specified passkey.
-   * @param {string} authToken Authorization token to authenticate the request.
    * @param {string} id The ID of the passkey to rename.
    * @param {string} name The new name for the passkey.
    * @returns {Promise<null>} A promise that resolves to null upon successful completion.
    */
-  async renamePasskey(authToken: string, id: string, name: string): Promise<null> {
+  async renamePasskey(id: string, name: string): Promise<null> {
     const passkeyRenameRequestBody: PasskeyRenameRequestBody = {
       name: name
     }
@@ -40,7 +38,6 @@ class PasskeyManager extends LoginIDBase {
     await this.service
       .passkeys
       .passkeysPasskeyRename({
-        authorization: authToken,
         id: id,
         requestBody: passkeyRenameRequestBody
       })
@@ -50,15 +47,13 @@ class PasskeyManager extends LoginIDBase {
 
   /**
    * Deletes a specified passkey.
-   * @param {string} authToken Authorization token to authenticate the request.
    * @param {string} id The ID of the passkey to delete.
    * @returns {Promise<null>} A promise that resolves to null upon successful deletion.
    */
-  async deletePasskey(authToken: string, id: string): Promise<null> {
+  async deletePasskey(id: string): Promise<null> {
     await this.service
       .passkeys
       .passkeysPasskeyDelete({
-        authorization: authToken,
         id: id
       })
 

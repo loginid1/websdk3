@@ -4,7 +4,6 @@ import { bufferToBase64Url, createUUID } from '../utils'
 import { createPasskeyCredential, getPasskeyCredential } from '../webauthn/'
 import type {
   AuthenticateWithPasskeysOptions,
-  CodePurpose,
   ConfirmTransactionOptions,
   LoginIDConfig,
   PasskeyResult,
@@ -12,11 +11,11 @@ import type {
   Transports
 } from './types'
 import {
-  AuthCodeRequestBody,
+  AuthCode,
+  AuthCodeVerifyRequestBody,
   AuthCompleteRequestBody,
   AuthInit,
   AuthInitRequestBody,
-  JWT,
   RegCompleteRequestBody,
   RegInit,
   RegInitRequestBody,
@@ -95,7 +94,6 @@ class Passkeys extends LoginIDBase {
         usernameType: options.usernameType,
         ...options.displayName && { displayName: options.displayName },
       },
-      ...options.mfa && { mfa: options.mfa },
       ...options.session && { session: options.session },
     }
 
@@ -159,7 +157,6 @@ class Passkeys extends LoginIDBase {
         id: this.config.appId,
         ...options.token && { token: options.token },
       },
-      ...options.codePurpose && { codePurpose: options.codePurpose },
       deviceInfo: deviceInfo,
       ...!options.autoFill && { user: {
         username: username,
@@ -186,16 +183,17 @@ class Passkeys extends LoginIDBase {
   /**
    * Generates a code with passkey.
    * @param {string} username Username to authenticate.
-   * @param {CodePurpose} codePurpose Used to determine if code is for one time authentcation or to add a credential.
    * @param {AuthenticateWithPasskeysOptions} options Additional authentication options.
-   * @returns {Promise<any>} Result of the authentication operation.
+   * @returns {Promise<AuthCode>} Code and expiry.
    */
-  async generateCodeWithPasskey(username: string, codePurpose: CodePurpose, options: AuthenticateWithPasskeysOptions = {}): Promise<JWT> {
-    options.codePurpose = codePurpose
+  async generateCodeWithPasskey(username: string, options: AuthenticateWithPasskeysOptions = {}): Promise<AuthCode> {
+    await this.authenticateWithPasskey(username, options)
 
-    const result: JWT = await this.authenticateWithPasskey(username, options)
+    const code: AuthCode = await this.service
+      .auth
+      .authAuthCodeRequest()
   
-    return result
+    return code
   }
   
   /**
@@ -211,8 +209,8 @@ class Passkeys extends LoginIDBase {
       options.usernameType = 'email'
     }
   
-    const request: AuthCodeRequestBody = {
-      code: code,
+    const request: AuthCodeVerifyRequestBody = {
+      authCode: code,
       user: {
         username: username,
         usernameType: options.usernameType,
@@ -221,7 +219,7 @@ class Passkeys extends LoginIDBase {
     }
   
     const result = await this.service
-      .auth.authAuthCode({
+      .auth.authAuthCodeVerify({
         requestBody: request
       })
 
