@@ -6,6 +6,10 @@ import type { PublicKeyCredentialRequestOptions } from './PublicKeyCredentialReq
 export type AuthInit = {
     assertionOptions: PublicKeyCredentialRequestOptions;
     /**
+     * List of fallback methods (in priority order) available to this client.
+     */
+    fallbackOptions?: Array<'otp:client' | 'otp:email' | 'otp:sms'>;
+    /**
      * An opaque object containing session data.
      */
     session: string;

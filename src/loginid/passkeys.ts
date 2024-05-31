@@ -11,6 +11,8 @@ import type {
   Transports
 } from './types'
 import {
+  AuthCode,
+  AuthCodeVerifyRequestBody,
   AuthCompleteRequestBody,
   AuthInit,
   AuthInitRequestBody,
@@ -92,7 +94,6 @@ class Passkeys extends LoginIDBase {
         usernameType: options.usernameType,
         ...options.displayName && { displayName: options.displayName },
       },
-      ...options.mfa && { mfa: options.mfa },
       ...options.session && { session: options.session },
     }
 
@@ -150,7 +151,7 @@ class Passkeys extends LoginIDBase {
     if (!options.usernameType) {
       options.usernameType = 'email'
     }
-
+  
     const authInitRequestBody: AuthInitRequestBody = {
       app: {
         id: this.config.appId,
@@ -175,6 +176,54 @@ class Passkeys extends LoginIDBase {
       .authAuthComplete({ requestBody: authCompleteRequestBody })
 
     this.jwtAccess = result.jwtAccess
+
+    return result
+  }
+
+  /**
+   * Generates a code with passkey.
+   * @param {string} username Username to authenticate.
+   * @param {AuthenticateWithPasskeysOptions} options Additional authentication options.
+   * @returns {Promise<AuthCode>} Code and expiry.
+   */
+  async generateCodeWithPasskey(username: string, options: AuthenticateWithPasskeysOptions = {}): Promise<AuthCode> {
+    const result = await this.authenticateWithPasskey(username, options)
+
+    const code: AuthCode = await this.service
+      .auth
+      .authAuthCodeRequest({
+        authorization: result.jwtAccess
+      })
+  
+    return code
+  }
+  
+  /**
+   * Authenticate with a code.
+   * @param {string} username Username to authenticate.
+   * @param {string} code code to authenticate.
+   * @param {AuthenticateWithPasskeysOptions} options Additional authentication options.
+   * @returns {Promise<any>} Result of the authentication operation.
+   */
+  async authenticateWithCode(username: string, code: string, options: AuthenticateWithPasskeysOptions = {}) {
+    // Default to email if usernameType is not provided
+    if (!options.usernameType) {
+      options.usernameType = 'email'
+    }
+  
+    const request: AuthCodeVerifyRequestBody = {
+      authCode: code,
+      user: {
+        username: username,
+        usernameType: options.usernameType,
+        ...options.displayName && { displayName: options.displayName },
+      },
+    }
+  
+    const result = await this.service
+      .auth.authAuthCodeVerify({
+        requestBody: request
+      })
 
     return result
   }
