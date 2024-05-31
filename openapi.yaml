@@ -1731,10 +1731,13 @@ components:
                     type: array
                     items:
                         type: string
-                        example: passkey:read
+                        example: passkey:write
                         enum:
                             - passkey:read
                             - passkey:write
+                            - profile:read
+                            - profile:write
+                            - self:write
                     description: List of requested grants
                     example:
                         - passkey:read

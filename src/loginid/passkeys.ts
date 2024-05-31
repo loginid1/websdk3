@@ -187,11 +187,13 @@ class Passkeys extends LoginIDBase {
    * @returns {Promise<AuthCode>} Code and expiry.
    */
   async generateCodeWithPasskey(username: string, options: AuthenticateWithPasskeysOptions = {}): Promise<AuthCode> {
-    await this.authenticateWithPasskey(username, options)
+    const result = await this.authenticateWithPasskey(username, options)
 
     const code: AuthCode = await this.service
       .auth
-      .authAuthCodeRequest()
+      .authAuthCodeRequest({
+        authorization: result.jwtAccess
+      })
   
     return code
   }

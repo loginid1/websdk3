@@ -13,10 +13,17 @@ export class PasskeysService {
      * @returns PasskeyCollection OK response.
      * @throws ApiError
      */
-    public passkeysPasskeysList(): CancelablePromise<PasskeyCollection> {
+    public passkeysPasskeysList({
+        authorization
+    }: {
+        authorization: string
+    }): CancelablePromise<PasskeyCollection> {
         return this.httpRequest.request({
             method: 'GET',
             url: '/fido2/v2/passkeys',
+            headers: {
+                Authorization: authorization,
+            },
             errors: {
                 401: `Unauthorized: Unauthorized response.`,
                 403: `Forbidden: Forbidden response.`,
@@ -32,15 +39,20 @@ export class PasskeysService {
      */
     public passkeysPasskeyDelete({
         id,
+        authorization,
     }: {
         /**
          * Internal passkey identifier
          */
         id: string,
+        authorization: string,
     }): CancelablePromise<void> {
         return this.httpRequest.request({
             method: 'DELETE',
             url: '/fido2/v2/passkeys/{id}',
+            headers: {
+                Authorization: authorization,
+            },
             path: {
                 'id': id,
             },
@@ -61,16 +73,21 @@ export class PasskeysService {
     public passkeysPasskeyRename({
         id,
         requestBody,
+        authorization
     }: {
         /**
          * Internal passkey identifier
          */
         id: string,
         requestBody: PasskeyRenameRequestBody,
+        authorization: string
     }): CancelablePromise<void> {
         return this.httpRequest.request({
             method: 'PUT',
             url: '/fido2/v2/passkeys/{id}',
+            headers: {
+                Authorization: authorization,
+            },
             path: {
                 'id': id,
             },
