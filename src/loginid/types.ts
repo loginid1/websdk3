@@ -2,16 +2,12 @@ import {
   ApiError,
   CreationResult,
   DeviceInfo,
-  GenerateCodeRequestBody,
-  RegInitRequestBody,
   User,
 } from '../api'
 
 export type UsernameType = User['usernameType']
 export type DeviceInfoRequestBody = DeviceInfo
-export type MFA = RegInitRequestBody['mfa']
 export type Transports = CreationResult['transports']
-export type CodePurpose = GenerateCodeRequestBody['purpose']
 
 export interface LoginIDConfig {
 	baseUrl: string
@@ -38,12 +34,10 @@ export interface AuthenticateWithPasskeysOptions extends PasskeyOptions {
 	// autoFill is conditional UI
 	autoFill?: boolean
 	abortSignal?: AbortSignal
-	codePurpose?: CodePurpose
 }
 
 //TODO: add attestationFormats
 export interface RegisterWithPasskeyOptions extends PasskeyOptions {
-	mfa?: MFA
 	session?: string
 }
 

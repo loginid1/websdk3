@@ -2,17 +2,13 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type EmailVerifyRequestBody = {
+export type ProfilePhoneVerifyRequestBody = {
     /**
      * Verification code
      */
-    code: string;
+    authCode: string;
     /**
-     * Purpose of the verification code
-     */
-    purpose: 'addCred' | 'tempAuth';
-    /**
-     * User identifier
+     * Username associated with the code
      */
     username: string;
 };

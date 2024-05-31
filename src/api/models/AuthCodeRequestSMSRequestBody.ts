@@ -2,10 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type EmailAuthInitResponseBody = {
-    /**
-     * Expiration time of the verification code
-     */
-    expiresAt: string;
+import type { UserLogin } from './UserLogin';
+export type AuthCodeRequestSMSRequestBody = {
+    user: UserLogin;
 };
 

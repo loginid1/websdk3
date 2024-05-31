@@ -6,72 +6,6 @@ info:
 servers:
     - url: https://api.loginid.io/fido2/v2
 paths:
-    /fido2/v2/auth/code:
-        post:
-            tags:
-                - auth
-            summary: Authenticate using a code
-            operationId: auth#authCode
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/AuthCodeRequestBody'
-                        example:
-                            code: "123456"
-                            user:
-                                displayName: System Administrator
-                                username: admin@example.com
-                                usernameType: email
-            responses:
-                "200":
-                    description: OK response.
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/JWT'
-                            example:
-                                code:
-                                    code: Nam et quisquam exercitationem quibusdam.
-                                    expiresAt: Ut et.
-                                jwtAccess: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-                "400":
-                    description: 'BadRequest: Bad Request response.'
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/BadRequestError'
-                            example:
-                                msg: A serious error
-                                msgCode: serious_error
-                "403":
-                    description: 'Forbidden: Forbidden response.'
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/BadRequestError'
-                            example:
-                                msg: A serious error
-                                msgCode: serious_error
-                "404":
-                    description: 'NotFound: Not Found response.'
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/BadRequestError'
-                            example:
-                                msg: A serious error
-                                msgCode: serious_error
-                "500":
-                    description: 'InternalServerError: Internal Server Error response.'
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/BadRequestError'
-                            example:
-                                msg: A serious error
-                                msgCode: serious_error
     /fido2/v2/auth/complete:
         post:
             tags:
@@ -101,8 +35,8 @@ paths:
                                 $ref: '#/components/schemas/JWT'
                             example:
                                 code:
-                                    code: Nam et quisquam exercitationem quibusdam.
-                                    expiresAt: Ut et.
+                                    code: Ab nam et quisquam exercitationem quibusdam autem.
+                                    expiresAt: Et totam natus.
                                 jwtAccess: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
                 "400":
                     description: 'BadRequest: Bad Request response.'
@@ -156,7 +90,6 @@ paths:
                         example:
                             app:
                                 id: 2a363a42-a397-4af0-b089-0935fc223017
-                            codePurpose: tempAuth
                             deviceInfo:
                                 clientName: Chrome
                                 clientType: browser
@@ -168,7 +101,6 @@ paths:
                                 screenHeight: 1080
                                 screenWidth: 1920
                             user:
-                                displayName: System Administrator
                                 username: admin@example.com
                                 usernameType: email
             responses:
@@ -194,6 +126,9 @@ paths:
                                     rpId: https://localhost:8443/
                                     timeout: 5000
                                     userVerification: discouraged
+                                fallbackOptions:
+                                    - otp:client
+                                    - otp:email
                                 session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
                 "400":
                     description: 'BadRequest: Bad Request response.'
@@ -222,40 +157,25 @@ paths:
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
-    /fido2/v2/code:
+    /fido2/v2/auth/otp:
         post:
             tags:
-                - code
-            summary: Generate a short code
-            description: Generate a code for temporary access or adding a new device
-            operationId: code#generateCode
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/GenerateCodeRequestBody'
-                        example:
-                            purpose: tempAuth
+                - auth
+            summary: Request OTP code by an authenticated user
+            description: |-
+                An authenticated user can request an authentication code directly using this
+                method. The code can be used for authentication from another device.
+            operationId: auth#authCodeRequest
             responses:
                 "200":
                     description: OK response.
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/CodeGenerate'
+                                $ref: '#/components/schemas/AuthCode'
                             example:
                                 code: "123456"
                                 expiresAt: "2021-01-01T00:00:00Z"
-                "400":
-                    description: 'BadRequest: Bad Request response.'
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/BadRequestError'
-                            example:
-                                msg: A serious error
-                                msgCode: serious_error
                 "401":
                     description: 'Unauthorized: Unauthorized response.'
                     content:
@@ -274,59 +194,6 @@ paths:
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
-                "500":
-                    description: 'InternalServerError: Internal Server Error response.'
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/BadRequestError'
-                            example:
-                                msg: A serious error
-                                msgCode: serious_error
-            security:
-                - jwt_header_Authorization:
-                    - user:code
-    /fido2/v2/email/add/init:
-        post:
-            tags:
-                - email
-            summary: Send email to add email number to profile
-            operationId: email#emailAddInit
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/EmailAddInitRequestBody'
-                        example:
-                            email: test@loginid.io
-            responses:
-                "200":
-                    description: OK response.
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/EmailAuthInitResponseBody'
-                            example:
-                                expiresAt: 2023-06-15 13:29:41 EDT
-                "400":
-                    description: 'BadRequest: Bad Request response.'
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/BadRequestError'
-                            example:
-                                msg: A serious error
-                                msgCode: serious_error
-                "401":
-                    description: 'Unauthorized: Unauthorized response.'
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/BadRequestError'
-                            example:
-                                msg: A serious error
-                                msgCode: serious_error
                 "404":
                     description: 'NotFound: Not Found response.'
                     content:
@@ -347,31 +214,30 @@ paths:
                                 msgCode: serious_error
             security:
                 - jwt_header_Authorization:
-                    - user:write
-    /fido2/v2/email/auth/init:
+                    - self:write
+    /fido2/v2/auth/otp/email:
         post:
             tags:
-                - email
-            summary: Send email to authenticate into account
-            operationId: email#emailAuthInit
+                - auth
+            summary: Request OTP code to be sent via email.
+            description: |-
+                Send authentication code to the provided email. The SMS will only be sent
+                if the email address is known to the application, however, this method will
+                return success regardless.
+            operationId: auth#authCodeRequestEmail
             requestBody:
                 required: true
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/EmailAuthInitRequestBody'
+                            $ref: '#/components/schemas/AuthCodeRequestSMSRequestBody'
                         example:
-                            email: test@loginid.io
-                            username: testUser
+                            user:
+                                username: admin@example.com
+                                usernameType: email
             responses:
-                "200":
-                    description: OK response.
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/EmailAuthInitResponseBody'
-                            example:
-                                expiresAt: 2023-06-15 13:29:41 EDT
+                "204":
+                    description: No Content response.
                 "400":
                     description: 'BadRequest: Bad Request response.'
                     content:
@@ -399,22 +265,73 @@ paths:
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
-    /fido2/v2/email/verify:
+    /fido2/v2/auth/otp/sms:
         post:
             tags:
-                - email
-            summary: Verify Email OTP
-            operationId: email#emailVerify
+                - auth
+            summary: Request OTP code to be sent via SMS.
+            description: |-
+                Send authentication code to the provided phone number. The SMS will only be
+                sent if the phone is registered with the application, however, it will return
+                success regardless.
+            operationId: auth#authCodeRequestSMS
             requestBody:
                 required: true
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/EmailVerifyRequestBody'
+                            $ref: '#/components/schemas/AuthCodeRequestSMSRequestBody'
                         example:
-                            code: "123456"
-                            purpose: tempAuth
-                            username: testUser
+                            user:
+                                username: admin@example.com
+                                usernameType: email
+            responses:
+                "204":
+                    description: No Content response.
+                "400":
+                    description: 'BadRequest: Bad Request response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
+                "404":
+                    description: 'NotFound: Not Found response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
+                "500":
+                    description: 'InternalServerError: Internal Server Error response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
+    /fido2/v2/auth/otp/verify:
+        post:
+            tags:
+                - auth
+            summary: Verify authentication code and return JWT access token with appropriate scopes
+            operationId: auth#authCodeVerify
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/AuthCodeVerifyRequestBody'
+                        example:
+                            authCode: "123456"
+                            user:
+                                username: admin@example.com
+                                usernameType: email
             responses:
                 "200":
                     description: OK response.
@@ -424,8 +341,8 @@ paths:
                                 $ref: '#/components/schemas/JWT'
                             example:
                                 code:
-                                    code: Nam et quisquam exercitationem quibusdam.
-                                    expiresAt: Ut et.
+                                    code: Ab nam et quisquam exercitationem quibusdam autem.
+                                    expiresAt: Et totam natus.
                                 jwtAccess: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
                 "400":
                     description: 'BadRequest: Bad Request response.'
@@ -458,7 +375,7 @@ paths:
         post:
             tags:
                 - mgmt
-            summary: Create an authorization token for use with /reg/init call
+            summary: Create an authorization token with requested scopes
             operationId: mgmt#grantCreate
             requestBody:
                 required: true
@@ -467,7 +384,9 @@ paths:
                         schema:
                             $ref: '#/components/schemas/GrantCreateRequestBody'
                         example:
-                            grant: passkey:create
+                            grants:
+                                - passkey:read
+                                - passkey:write
                             username: testUser
             responses:
                 "200":
@@ -535,63 +454,6 @@ paths:
                                 msgCode: serious_error
                 "401":
                     description: 'Unauthorized: Unauthorized response.'
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/BadRequestError'
-                            example:
-                                msg: A serious error
-                                msgCode: serious_error
-                "500":
-                    description: 'InternalServerError: Internal Server Error response.'
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/BadRequestError'
-                            example:
-                                msg: A serious error
-                                msgCode: serious_error
-            security:
-                - apiKey_header_Authorization: []
-    /fido2/v2/mgmt/user/{id}:
-        delete:
-            tags:
-                - mgmt
-            summary: Delete a user and all associated passkey
-            operationId: mgmt#userDelete
-            parameters:
-                - name: id
-                  in: path
-                  description: Internal user identifier
-                  required: true
-                  schema:
-                    type: string
-                    description: Internal user identifier
-                    example: 2a363a42-a397-4af0-b089-0935fc223017
-                  example: 2a363a42-a397-4af0-b089-0935fc223017
-            responses:
-                "204":
-                    description: No Content response.
-                "400":
-                    description: 'BadRequest: Bad Request response.'
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/BadRequestError'
-                            example:
-                                msg: A serious error
-                                msgCode: serious_error
-                "401":
-                    description: 'Unauthorized: Unauthorized response.'
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/BadRequestError'
-                            example:
-                                msg: A serious error
-                                msgCode: serious_error
-                "404":
-                    description: 'NotFound: Not Found response.'
                     content:
                         application/json:
                             schema:
@@ -816,29 +678,73 @@ paths:
             security:
                 - jwt_header_Authorization:
                     - passkey:write
-    /fido2/v2/phone/add/init:
+    /fido2/v2/profile/{id}:
+        delete:
+            tags:
+                - profile
+            summary: Delete a user profile and all associated passkey
+            operationId: profile#profileDelete
+            parameters:
+                - name: id
+                  in: path
+                  description: Internal user identifier
+                  required: true
+                  schema:
+                    type: string
+                    description: Internal user identifier
+                    example: 2a363a42-a397-4af0-b089-0935fc223017
+                  example: 2a363a42-a397-4af0-b089-0935fc223017
+            responses:
+                "204":
+                    description: No Content response.
+                "404":
+                    description: 'NotFound: Not Found response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
+                "500":
+                    description: 'InternalServerError: Internal Server Error response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
+            security:
+                - apiKey_header_Authorization: []
+    /fido2/v2/profile/{id}/email:
         post:
             tags:
-                - phone
-            summary: Send SMS to add phone number to profile
-            operationId: phone#phoneAddInit
+                - profile
+            summary: Update profile email address
+            operationId: profile#profileEmailUpdate
+            parameters:
+                - name: id
+                  in: path
+                  description: Internal user identifier
+                  required: true
+                  schema:
+                    type: string
+                    description: Internal user identifier
+                    example: 2a363a42-a397-4af0-b089-0935fc223017
+                  example: 2a363a42-a397-4af0-b089-0935fc223017
             requestBody:
                 required: true
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/PhoneAddInitRequestBody'
+                            $ref: '#/components/schemas/ProfileEmailUpdateRequestBody'
                         example:
-                            phoneNumber: "+14161234567"
+                            email: luke.skywalker@tatuin.com
+                            requestVerification: false
             responses:
-                "200":
-                    description: OK response.
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/EmailAuthInitResponseBody'
-                            example:
-                                expiresAt: 2023-06-15 13:29:41 EDT
+                "204":
+                    description: No Content response.
                 "400":
                     description: 'BadRequest: Bad Request response.'
                     content:
@@ -876,34 +782,37 @@ paths:
                                 msg: A serious error
                                 msgCode: serious_error
             security:
-                - jwt_header_Authorization:
-                    - user:write
-    /fido2/v2/phone/auth/init:
-        post:
+                - apiKey_header_Authorization: []
+    /fido2/v2/profile/{id}/phone:
+        delete:
             tags:
-                - phone
-            summary: Send SMS to authenticate into account
-            operationId: phone#phoneAuthInit
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/PhoneAuthInitRequestBody'
-                        example:
-                            phoneNumber: "+14161234567"
-                            username: testUser
+                - profile
+            summary: Delete phone from the profile
+            operationId: profile#profilePhoneDelete
+            parameters:
+                - name: id
+                  in: path
+                  description: Internal user identifier
+                  required: true
+                  schema:
+                    type: string
+                    description: Internal user identifier
+                    example: 2a363a42-a397-4af0-b089-0935fc223017
+                  example: 2a363a42-a397-4af0-b089-0935fc223017
             responses:
-                "200":
-                    description: OK response.
+                "204":
+                    description: No Content response.
+                "400":
+                    description: 'BadRequest: Bad Request response.'
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/EmailAuthInitResponseBody'
+                                $ref: '#/components/schemas/BadRequestError'
                             example:
-                                expiresAt: 2023-06-15 13:29:41 EDT
-                "400":
-                    description: 'BadRequest: Bad Request response.'
+                                msg: A serious error
+                                msgCode: serious_error
+                "401":
+                    description: 'Unauthorized: Unauthorized response.'
                     content:
                         application/json:
                             schema:
@@ -929,34 +838,146 @@ paths:
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
-    /fido2/v2/phone/verify:
+            security:
+                - apiKey_header_Authorization: []
         post:
             tags:
-                - phone
-            summary: Verify SMS OTP
-            operationId: phone#phoneVerify
+                - profile
+            summary: Update the profile phone number
+            operationId: profile#profilePhoneUpdate
+            parameters:
+                - name: id
+                  in: path
+                  description: Internal user identifier
+                  required: true
+                  schema:
+                    type: string
+                    description: Internal user identifier
+                    example: 2a363a42-a397-4af0-b089-0935fc223017
+                  example: 2a363a42-a397-4af0-b089-0935fc223017
             requestBody:
                 required: true
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/EmailVerifyRequestBody'
+                            $ref: '#/components/schemas/ProfilePhoneUpdateRequestBody'
                         example:
-                            code: "123456"
-                            purpose: addCred
-                            username: testUser
+                            messagingConsent: true
+                            phoneNumber: "+14161234567"
+                            requestVerification: true
             responses:
-                "200":
-                    description: OK response.
+                "204":
+                    description: No Content response.
+                "400":
+                    description: 'BadRequest: Bad Request response.'
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/JWT'
+                                $ref: '#/components/schemas/BadRequestError'
                             example:
-                                code:
-                                    code: Nam et quisquam exercitationem quibusdam.
-                                    expiresAt: Ut et.
-                                jwtAccess: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                                msg: A serious error
+                                msgCode: serious_error
+                "401":
+                    description: 'Unauthorized: Unauthorized response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
+                "404":
+                    description: 'NotFound: Not Found response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
+                "500":
+                    description: 'InternalServerError: Internal Server Error response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
+            security:
+                - apiKey_header_Authorization: []
+    /fido2/v2/profile/email/verify:
+        post:
+            tags:
+                - profile
+            summary: Verify phone number with received authorization code
+            operationId: profile#profileEmailVerify
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/ProfilePhoneVerifyRequestBody'
+                        example:
+                            authCode: "123456"
+                            username: user@example.com
+            responses:
+                "204":
+                    description: No Content response.
+                "400":
+                    description: 'BadRequest: Bad Request response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
+                "401":
+                    description: 'Unauthorized: Unauthorized response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
+                "404":
+                    description: 'NotFound: Not Found response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
+                "500":
+                    description: 'InternalServerError: Internal Server Error response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
+    /fido2/v2/profile/phone/verify:
+        post:
+            tags:
+                - profile
+            summary: Verify phone number with received authorization code
+            operationId: profile#profilePhoneVerify
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/ProfilePhoneVerifyRequestBody'
+                        example:
+                            authCode: "123456"
+                            username: user@example.com
+            responses:
+                "204":
+                    description: No Content response.
                 "400":
                     description: 'BadRequest: Bad Request response.'
                     content:
@@ -1005,10 +1026,10 @@ paths:
                                 publicKey: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
                                 publicKeyAlgorithm: -8
                                 transports:
-                                    - nfc
-                                    - nfc
-                                    - internal
-                                    - internal
+                                    - hybrid
+                                    - hybrid
+                                    - ble
+                                    - usb
                             session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
             responses:
                 "200":
@@ -1019,8 +1040,8 @@ paths:
                                 $ref: '#/components/schemas/JWT'
                             example:
                                 code:
-                                    code: Nam et quisquam exercitationem quibusdam.
-                                    expiresAt: Ut et.
+                                    code: Ab nam et quisquam exercitationem quibusdam autem.
+                                    expiresAt: Et totam natus.
                                 jwtAccess: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
                 "400":
                     description: 'BadRequest: Bad Request response.'
@@ -1084,9 +1105,6 @@ paths:
                                 osVersion: 14.2.1
                                 screenHeight: 1080
                                 screenWidth: 1920
-                            mfa:
-                                - fido2
-                                - email
                             session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
                             user:
                                 displayName: System Administrator
@@ -1101,7 +1119,7 @@ paths:
                                 $ref: '#/components/schemas/RegInit'
                             example:
                                 registrationRequestOptions:
-                                    attestation: direct
+                                    attestation: indirect
                                     authenticatorSelection:
                                         authenticatorAttachment: platform
                                         requireResidentKey: true
@@ -1331,24 +1349,51 @@ components:
                 id: 2a363a42-a397-4af0-b089-0935fc223017
             required:
                 - id
-        AuthCodeRequestBody:
+        AuthCode:
             type: object
             properties:
                 code:
                     type: string
-                    description: Code issued to the user
+                    description: Generated code
                     example: "123456"
-                user:
-                    $ref: '#/components/schemas/User'
+                expiresAt:
+                    type: string
+                    description: Expiration time of the code
+                    example: "2021-01-01T00:00:00Z"
             example:
                 code: "123456"
+                expiresAt: "2021-01-01T00:00:00Z"
+            required:
+                - code
+                - expiresAt
+        AuthCodeRequestSMSRequestBody:
+            type: object
+            properties:
                 user:
-                    displayName: System Administrator
+                    $ref: '#/components/schemas/UserLogin'
+            example:
+                user:
                     username: admin@example.com
                     usernameType: email
             required:
                 - user
-                - code
+        AuthCodeVerifyRequestBody:
+            type: object
+            properties:
+                authCode:
+                    type: string
+                    description: Authentication code
+                    example: "123456"
+                user:
+                    $ref: '#/components/schemas/UserLogin'
+            example:
+                authCode: "123456"
+                user:
+                    username: admin@example.com
+                    usernameType: email
+            required:
+                - authCode
+                - user
         AuthCompleteRequestBody:
             type: object
             properties:
@@ -1375,6 +1420,19 @@ components:
             properties:
                 assertionOptions:
                     $ref: '#/components/schemas/PublicKeyCredentialRequestOptions'
+                fallbackOptions:
+                    type: array
+                    items:
+                        type: string
+                        example: otp:email
+                        enum:
+                            - otp:client
+                            - otp:email
+                            - otp:sms
+                    description: List of fallback methods (in priority order) available to this client.
+                    example:
+                        - otp:client
+                        - otp:email
                 session:
                     type: string
                     description: An opaque object containing session data.
@@ -1395,6 +1453,9 @@ components:
                     rpId: https://localhost:8443/
                     timeout: 5000
                     userVerification: discouraged
+                fallbackOptions:
+                    - otp:client
+                    - otp:email
                 session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
             required:
                 - session
@@ -1404,20 +1465,13 @@ components:
             properties:
                 app:
                     $ref: '#/components/schemas/Application'
-                codePurpose:
-                    type: string
-                    example: addCred
-                    enum:
-                        - tempAuth
-                        - addCred
                 deviceInfo:
                     $ref: '#/components/schemas/DeviceInfo'
                 user:
-                    $ref: '#/components/schemas/User'
+                    $ref: '#/components/schemas/UserLogin'
             example:
                 app:
                     id: 2a363a42-a397-4af0-b089-0935fc223017
-                codePurpose: tempAuth
                 deviceInfo:
                     clientName: Chrome
                     clientType: browser
@@ -1429,7 +1483,6 @@ components:
                     screenHeight: 1080
                     screenWidth: 1920
                 user:
-                    displayName: System Administrator
                     username: admin@example.com
                     usernameType: email
             required:
@@ -1501,16 +1554,16 @@ components:
                 userVerification:
                     type: string
                     description: Resident key requirement
-                    example: required
+                    example: preferred
                     enum:
                         - required
                         - preferred
                         - discouraged
             example:
-                authenticatorAttachment: cross-platform
+                authenticatorAttachment: platform
                 requireResidentKey: false
-                residentKey: preferred
-                userVerification: discouraged
+                residentKey: required
+                userVerification: preferred
         BadRequestError:
             type: object
             properties:
@@ -1526,37 +1579,20 @@ components:
             required:
                 - msg
                 - msgCode
-        CodeGenerate:
-            type: object
-            properties:
-                code:
-                    type: string
-                    description: Generated code
-                    example: "123456"
-                expiresAt:
-                    type: string
-                    description: Expiration time of the code
-                    example: "2021-01-01T00:00:00Z"
-            example:
-                code: "123456"
-                expiresAt: "2021-01-01T00:00:00Z"
-            required:
-                - code
-                - expiresAt
         CodeResult:
             type: object
             properties:
                 code:
                     type: string
                     description: Generated code
-                    example: Facilis quidem quod ab doloribus et explicabo.
+                    example: Sapiente dolorum ut consequatur praesentium.
                 expiresAt:
                     type: string
                     description: Expiration time of the code
-                    example: Aliquam laudantium exercitationem magni itaque.
+                    example: Fugit amet laudantium.
             example:
-                code: Omnis beatae voluptate aspernatur et.
-                expiresAt: Sint labore temporibus incidunt libero aliquid.
+                code: Veritatis quae.
+                expiresAt: Labore facilis quidem quod ab.
             required:
                 - code
                 - expiresAt
@@ -1601,7 +1637,7 @@ components:
                     type: array
                     items:
                         type: string
-                        example: internal
+                        example: ble
                         enum:
                             - usb
                             - nfc
@@ -1612,9 +1648,9 @@ components:
                         These values are the transports that the authenticator is believed to support,
                         or an empty sequence if the information is unavailable.
                     example:
+                        - nfc
                         - internal
-                        - hybrid
-                        - ble
+                        - nfc
             example:
                 attestationObject: 5lvuZBkX1w7/0+XKcldttzA7vTwilEq3qnnXSq/a0...
                 authenticatorData: ix523n3XniH01jM4CIuOn1z0Jw6QbRATXYOsCUyQN...
@@ -1623,7 +1659,6 @@ components:
                 publicKey: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
                 publicKeyAlgorithm: -8
                 transports:
-                    - nfc
                     - nfc
                     - hybrid
             required:
@@ -1689,107 +1724,35 @@ components:
                 osVersion: 14.2.1
                 screenHeight: 1080
                 screenWidth: 1920
-        EmailAddInitRequestBody:
-            type: object
-            properties:
-                email:
-                    type: string
-                    description: email
-                    example: test@loginid.io
-            example:
-                email: test@loginid.io
-            required:
-                - email
-        EmailAuthInitRequestBody:
-            type: object
-            properties:
-                email:
-                    type: string
-                    description: email
-                    example: test@loginid.io
-                username:
-                    type: string
-                    description: User identifier
-                    example: testUser
-            example:
-                email: test@loginid.io
-                username: testUser
-            required:
-                - email
-        EmailAuthInitResponseBody:
-            type: object
-            properties:
-                expiresAt:
-                    type: string
-                    description: Expiration time of the verification code
-                    example: 2023-06-15 13:29:41 EDT
-                    format: date-time
-            example:
-                expiresAt: 2023-06-15 13:29:41 EDT
-            required:
-                - expiresAt
-        EmailVerifyRequestBody:
-            type: object
-            properties:
-                code:
-                    type: string
-                    description: Verification code
-                    example: "123456"
-                purpose:
-                    type: string
-                    description: Purpose of the verification code
-                    example: tempAuth
-                    enum:
-                        - addCred
-                        - tempAuth
-                username:
-                    type: string
-                    description: User identifier
-                    example: testUser
-            example:
-                code: "123456"
-                purpose: addCred
-                username: testUser
-            required:
-                - username
-                - code
-                - purpose
-        GenerateCodeRequestBody:
-            type: object
-            properties:
-                purpose:
-                    type: string
-                    description: Purpose of the code
-                    example: addCred
-                    enum:
-                        - tempAuth
-                        - addCred
-            example:
-                purpose: tempAuth
-            required:
-                - purpose
         GrantCreateRequestBody:
             type: object
             properties:
-                grant:
-                    type: string
-                    description: Grant type, i.e. what operation is permitted
-                    example: passkey:create
-                    enum:
-                        - passkey:list
-                        - passkey:create
-                        - passkey:update
-                        - passkey:delete
-                        - user:delete
+                grants:
+                    type: array
+                    items:
+                        type: string
+                        example: passkey:write
+                        enum:
+                            - passkey:read
+                            - passkey:write
+                            - profile:read
+                            - profile:write
+                            - self:write
+                    description: List of requested grants
+                    example:
+                        - passkey:read
+                        - passkey:write
                 username:
                     type: string
                     description: User identifier
                     example: testUser
             example:
-                grant: passkey:create
+                grants:
+                    - passkey:read
+                    - passkey:write
                 username: testUser
             required:
-                - grant
+                - grants
         GrantCreateResponseBody:
             type: object
             properties:
@@ -1812,8 +1775,8 @@ components:
                     example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
             example:
                 code:
-                    code: Nam et quisquam exercitationem quibusdam.
-                    expiresAt: Ut et.
+                    code: Ab nam et quisquam exercitationem quibusdam autem.
+                    expiresAt: Et totam natus.
                 jwtAccess: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
             required:
                 - jwtAccess
@@ -1875,34 +1838,70 @@ components:
                 name: My iPhone SE
             required:
                 - name
-        PhoneAddInitRequestBody:
+        ProfileEmailUpdateRequestBody:
             type: object
             properties:
+                email:
+                    type: string
+                    description: Email address
+                    example: luke.skywalker@tatuin.com
+                requestVerification:
+                    type: boolean
+                    description: |-
+                        Whether to update the email address immediately or send an authorization code
+                        to verify.
+                    default: true
+                    example: false
+            example:
+                email: luke.skywalker@tatuin.com
+                requestVerification: true
+            required:
+                - email
+        ProfilePhoneUpdateRequestBody:
+            type: object
+            properties:
+                messagingConsent:
+                    type: boolean
+                    description: |-
+                        Whether the user consents to receiving SMS messages on this number. The phone
+                        will not be used for sending messages if no consent is provided.
+                    default: false
+                    example: true
                 phoneNumber:
                     type: string
                     description: Phone number
                     example: "+14161234567"
+                requestVerification:
+                    type: boolean
+                    description: |-
+                        Whether to update the phone number immediately or send an authorization code
+                        to verify. This method will fail if verification is requested but no consent
+                        is provided.
+                    default: true
+                    example: true
             example:
+                messagingConsent: true
                 phoneNumber: "+14161234567"
+                requestVerification: true
             required:
                 - phoneNumber
-        PhoneAuthInitRequestBody:
+        ProfilePhoneVerifyRequestBody:
             type: object
             properties:
-                phoneNumber:
+                authCode:
                     type: string
-                    description: Phone number
-                    example: "+14161234567"
+                    description: Verification code
+                    example: "123456"
                 username:
                     type: string
-                    description: User identifier
-                    example: testUser
+                    description: Username associated with the code
+                    example: user@example.com
             example:
-                phoneNumber: "+14161234567"
-                username: testUser
+                authCode: "123456"
+                username: user@example.com
             required:
+                - authCode
                 - username
-                - phoneNumber
         PubKeyCredentialDescriptor:
             type: object
             properties:
@@ -1914,7 +1913,7 @@ components:
                     type: array
                     items:
                         type: string
-                        example: ble
+                        example: nfc
                         enum:
                             - usb
                             - nfc
@@ -1923,7 +1922,8 @@ components:
                             - hybrid
                     example:
                         - internal
-                        - nfc
+                        - internal
+                        - usb
                 type:
                     type: string
                     example: public-key
@@ -1932,9 +1932,10 @@ components:
             example:
                 id: AyQBkTLAPWaLl6HtE3Oh6ovqkspSidX8DA9fYQB6DX4=
                 transports:
+                    - ble
                     - internal
+                    - nfc
                     - internal
-                    - usb
                 type: public-key
             required:
                 - type
@@ -1945,7 +1946,7 @@ components:
                 attestation:
                     type: string
                     description: A preference for attestation conveyance.
-                    example: none
+                    example: indirect
                     enum:
                         - none
                         - indirect
@@ -1984,7 +1985,7 @@ components:
                         appid: https://loalhost:8443
                     additionalProperties:
                         type: string
-                        example: Fuga eos repudiandae.
+                        example: Et eveniet.
                 pubKeyCredParams:
                     type: array
                     items:
@@ -2056,7 +2057,7 @@ components:
                         A cryptographic signature algorithm with which the newly generated credential
                         will be used, and thus also the type of asymmetric key pair to be generated,
                         e.g., RSA or Elliptic Curve.
-                    example: -7
+                    example: -36
                     enum:
                         - -7
                         - -35
@@ -2071,7 +2072,7 @@ components:
                         - public-key
             description: Additional parameters when creating a new credential.
             example:
-                alg: -257
+                alg: -35
                 type: public-key
         PublicKeyCredentialRequestOptions:
             type: object
@@ -2110,7 +2111,7 @@ components:
                         appid: https://loalhost:8443
                     additionalProperties:
                         type: string
-                        example: Amet laudantium qui.
+                        example: Minus quidem enim.
                 rpId:
                     type: string
                     description: |-
@@ -2134,7 +2135,7 @@ components:
                         client platforms MUST ignore unknown values, treating an unknown value as if
                         the member does not exist. Eligible authenticators are filtered to only those
                         capable of satisfying this requirement.
-                    example: preferred
+                    example: required
                     enum:
                         - required
                         - preferred
@@ -2153,7 +2154,7 @@ components:
                     appid: https://loalhost:8443
                 rpId: https://localhost:8443/
                 timeout: 5000
-                userVerification: discouraged
+                userVerification: required
             required:
                 - challenge
         PublicKeyCredentialRpEntity:
@@ -2213,10 +2214,10 @@ components:
                     publicKey: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
                     publicKeyAlgorithm: -8
                     transports:
-                        - nfc
-                        - nfc
-                        - internal
-                        - internal
+                        - hybrid
+                        - hybrid
+                        - ble
+                        - usb
                 session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
             required:
                 - session
@@ -2232,7 +2233,7 @@ components:
                     example: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
             example:
                 registrationRequestOptions:
-                    attestation: direct
+                    attestation: indirect
                     authenticatorSelection:
                         authenticatorAttachment: platform
                         requireResidentKey: true
@@ -2273,26 +2274,6 @@ components:
                     $ref: '#/components/schemas/Application'
                 deviceInfo:
                     $ref: '#/components/schemas/DeviceInfo'
-                mfa:
-                    type: array
-                    items:
-                        type: string
-                        example: pin
-                        enum:
-                            - fido2
-                            - email
-                            - phone
-                            - password
-                            - pin
-                    description: |-
-                        Set of authentication factors:
-                        - Single factor: Username (i.e. email or phone) + FIDO2 credential;
-                        - Two factor: Username + password + FIDO2 credential;
-                        - Passwordless: FIDO2 discoverable credentials;
-                        - Passwordless + MFA: FIDO2 discoverable credentials + PIN;
-                    example:
-                        - fido2
-                        - email
                 session:
                     type: string
                     description: |-
@@ -2318,9 +2299,6 @@ components:
                     osVersion: 14.2.1
                     screenHeight: 1080
                     screenWidth: 1920
-                mfa:
-                    - fido2
-                    - email
                 session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
                 user:
                     displayName: System Administrator
@@ -2519,6 +2497,27 @@ components:
             required:
                 - username
                 - usernameType
+        UserLogin:
+            type: object
+            properties:
+                username:
+                    type: string
+                    description: Username
+                    example: user01
+                usernameType:
+                    type: string
+                    description: Username type
+                    default: email
+                    example: email
+                    enum:
+                        - email
+                        - phone
+            example:
+                username: admin@example.com
+                usernameType: email
+            required:
+                - username
+                - usernameType
         Version:
             type: object
             properties:
@@ -2545,20 +2544,16 @@ components:
             type: http
             scheme: bearer
 tags:
-    - name: code
-      description: Generate codes for temporary access or adding a new device
     - name: mgmt
       description: Management API
     - name: passkeys
       description: FIDO2 pass-key management
+    - name: profile
+      description: User Profile API
     - name: tx
       description: FIDO2 transaction confirmation flow
     - name: auth
       description: FIDO2 authentication flow
-    - name: email
-      description: Email Profile API
-    - name: phone
-      description: Phone Profile API
     - name: reg
       description: FIDO2 registration flow
     - name: version

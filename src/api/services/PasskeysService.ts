@@ -16,7 +16,7 @@ export class PasskeysService {
     public passkeysPasskeysList({
         authorization
     }: {
-        authorization: string,
+        authorization: string
     }): CancelablePromise<PasskeyCollection> {
         return this.httpRequest.request({
             method: 'GET',
@@ -27,6 +27,7 @@ export class PasskeysService {
             errors: {
                 401: `Unauthorized: Unauthorized response.`,
                 403: `Forbidden: Forbidden response.`,
+                404: `NotFound: Not Found response.`,
                 500: `InternalServerError: Internal Server Error response.`,
             },
         });
@@ -56,6 +57,7 @@ export class PasskeysService {
                 'id': id,
             },
             errors: {
+                400: `BadRequest: Bad Request response.`,
                 401: `Unauthorized: Unauthorized response.`,
                 403: `Forbidden: Forbidden response.`,
                 404: `NotFound: Not Found response.`,
@@ -78,7 +80,7 @@ export class PasskeysService {
          */
         id: string,
         requestBody: PasskeyRenameRequestBody,
-        authorization: string,
+        authorization: string
     }): CancelablePromise<void> {
         return this.httpRequest.request({
             method: 'PUT',
@@ -92,6 +94,7 @@ export class PasskeysService {
             body: requestBody,
             mediaType: 'application/json',
             errors: {
+                400: `BadRequest: Bad Request response.`,
                 401: `Unauthorized: Unauthorized response.`,
                 403: `Forbidden: Forbidden response.`,
                 404: `NotFound: Not Found response.`,

@@ -2,7 +2,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { AuthCodeRequestBody } from '../models/AuthCodeRequestBody';
+import type { AuthCode } from '../models/AuthCode';
+import type { AuthCodeRequestSMSRequestBody } from '../models/AuthCodeRequestSMSRequestBody';
+import type { AuthCodeVerifyRequestBody } from '../models/AuthCodeVerifyRequestBody';
 import type { AuthCompleteRequestBody } from '../models/AuthCompleteRequestBody';
 import type { AuthInit } from '../models/AuthInit';
 import type { AuthInitRequestBody } from '../models/AuthInitRequestBody';
@@ -11,29 +13,6 @@ import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
 export class AuthService {
     constructor(public readonly httpRequest: BaseHttpRequest) {}
-    /**
-     * Authenticate using a code
-     * @returns JWT OK response.
-     * @throws ApiError
-     */
-    public authAuthCode({
-        requestBody,
-    }: {
-        requestBody: AuthCodeRequestBody,
-    }): CancelablePromise<JWT> {
-        return this.httpRequest.request({
-            method: 'POST',
-            url: '/fido2/v2/auth/code',
-            body: requestBody,
-            mediaType: 'application/json',
-            errors: {
-                400: `BadRequest: Bad Request response.`,
-                403: `Forbidden: Forbidden response.`,
-                404: `NotFound: Not Found response.`,
-                500: `InternalServerError: Internal Server Error response.`,
-            },
-        });
-    }
     /**
      * Complete WebAuthn registration
      * @returns JWT OK response.
@@ -77,6 +56,104 @@ export class AuthService {
             headers: {
                 'User-Agent': userAgent,
             },
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                400: `BadRequest: Bad Request response.`,
+                404: `NotFound: Not Found response.`,
+                500: `InternalServerError: Internal Server Error response.`,
+            },
+        });
+    }
+    /**
+     * Request OTP code by an authenticated user
+     * An authenticated user can request an authentication code directly using this
+     * method. The code can be used for authentication from another device.
+     * @returns AuthCode OK response.
+     * @throws ApiError
+     */
+    public authAuthCodeRequest({
+        authorization
+    }: {
+        authorization: string
+    }): CancelablePromise<AuthCode> {
+        return this.httpRequest.request({
+            method: 'POST',
+            url: '/fido2/v2/auth/otp',
+            headers: {
+                Authorization: authorization,
+            },
+            errors: {
+                401: `Unauthorized: Unauthorized response.`,
+                403: `Forbidden: Forbidden response.`,
+                404: `NotFound: Not Found response.`,
+                500: `InternalServerError: Internal Server Error response.`,
+            },
+        });
+    }
+    /**
+     * Request OTP code to be sent via email.
+     * Send authentication code to the provided email. The SMS will only be sent
+     * if the email address is known to the application, however, this method will
+     * return success regardless.
+     * @returns void
+     * @throws ApiError
+     */
+    public authAuthCodeRequestEmail({
+        requestBody,
+    }: {
+        requestBody: AuthCodeRequestSMSRequestBody,
+    }): CancelablePromise<void> {
+        return this.httpRequest.request({
+            method: 'POST',
+            url: '/fido2/v2/auth/otp/email',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                400: `BadRequest: Bad Request response.`,
+                404: `NotFound: Not Found response.`,
+                500: `InternalServerError: Internal Server Error response.`,
+            },
+        });
+    }
+    /**
+     * Request OTP code to be sent via SMS.
+     * Send authentication code to the provided phone number. The SMS will only be
+     * sent if the phone is registered with the application, however, it will return
+     * success regardless.
+     * @returns void
+     * @throws ApiError
+     */
+    public authAuthCodeRequestSms({
+        requestBody,
+    }: {
+        requestBody: AuthCodeRequestSMSRequestBody,
+    }): CancelablePromise<void> {
+        return this.httpRequest.request({
+            method: 'POST',
+            url: '/fido2/v2/auth/otp/sms',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                400: `BadRequest: Bad Request response.`,
+                404: `NotFound: Not Found response.`,
+                500: `InternalServerError: Internal Server Error response.`,
+            },
+        });
+    }
+    /**
+     * Verify authentication code and return JWT access token with appropriate scopes
+     * @returns JWT OK response.
+     * @throws ApiError
+     */
+    public authAuthCodeVerify({
+        requestBody,
+    }: {
+        requestBody: AuthCodeVerifyRequestBody,
+    }): CancelablePromise<JWT> {
+        return this.httpRequest.request({
+            method: 'POST',
+            url: '/fido2/v2/auth/otp/verify',
             body: requestBody,
             mediaType: 'application/json',
             errors: {
