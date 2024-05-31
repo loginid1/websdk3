@@ -1,6 +1,6 @@
 import LoginIDBase from './base'
 import { defaultDeviceInfo } from '../browser'
-import { bufferToBase64Url, createUUID } from '../utils'
+import { bufferToBase64Url, createUUID, parseJwt } from '../utils'
 import { createPasskeyCredential, getPasskeyCredential } from '../webauthn/'
 import type {
   AuthenticateWithPasskeysOptions,
@@ -27,8 +27,6 @@ import {
  * Extends LoginIDBase to support creation, registration, and authentication of passkeys.
  */
 class Passkeys extends LoginIDBase {
-  private jwtAccess: string = ''
-
   /**
    * Initializes a new Passkeys instance with the provided configuration.
    * @param {LoginIDConfig} config Configuration object for LoginID.
@@ -83,10 +81,26 @@ class Passkeys extends LoginIDBase {
       options.usernameType = 'email'
     }
 
+    if (!options.token) {
+      // get saved cookie jwt
+      let token = ''
+      try {
+        token = this.getToken({})
+      } catch (e) {
+        // catch error so rest doesn't fail
+      }
+      if (token) {
+        // guard against username mismatch
+        const parsedToken = parseJwt(token)
+        if (parsedToken.username === username) {
+          options.token = token
+        }
+      }
+    }
+
     const regInitRequestBody: RegInitRequestBody = {
       app: {
         id: this.config.appId,
-        ...options.token && { token: options.token },
       },
       deviceInfo: deviceInfo,
       user: {
@@ -107,7 +121,7 @@ class Passkeys extends LoginIDBase {
       .reg
       .regRegComplete({ requestBody: regCompleteRequestBody })
 
-    this.jwtAccess = result.jwtAccess
+    this.setJwtCookie(result.jwtAccess)
 
     return result
   }
@@ -175,7 +189,7 @@ class Passkeys extends LoginIDBase {
       .auth
       .authAuthComplete({ requestBody: authCompleteRequestBody })
 
-    this.jwtAccess = result.jwtAccess
+    this.setJwtCookie(result.jwtAccess)
 
     return result
   }
@@ -187,12 +201,24 @@ class Passkeys extends LoginIDBase {
    * @returns {Promise<AuthCode>} Code and expiry.
    */
   async generateCodeWithPasskey(username: string, options: AuthenticateWithPasskeysOptions = {}): Promise<AuthCode> {
-    const result = await this.authenticateWithPasskey(username, options)
+    let token = ''
+
+    if (!options.token) {
+      try {
+        token = this.getToken({})
+      } catch (e) {
+        // if no token is found, perform authentication
+        const result = await this.authenticateWithPasskey(username, options)
+        token = result.jwtAccess
+      }
+    } else {
+      token = options.token
+    }
 
     const code: AuthCode = await this.service
       .auth
       .authAuthCodeRequest({
-        authorization: result.jwtAccess
+        authorization: token
       })
   
     return code
@@ -224,6 +250,8 @@ class Passkeys extends LoginIDBase {
       .auth.authAuthCodeVerify({
         requestBody: request
       })
+
+    this.setJwtCookie(result.jwtAccess)
 
     return result
   }
@@ -275,17 +303,9 @@ class Passkeys extends LoginIDBase {
       .tx
       .txTxComplete({ requestBody: txCompleteRequestBody })
 
-    this.jwtAccess = result.jwtAccess
+    this.setJwtCookie(result.jwtAccess)
 
     return result
-  }
-
-  /**
-   * Retrieves the JWT access token.
-   * @returns {string} The JWT access token.
-   */
-  public getJWTAccess() {
-    return this.jwtAccess
   }
 }
 
