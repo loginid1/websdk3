@@ -83,7 +83,12 @@ class Passkeys extends LoginIDBase {
 
     if (!options.token) {
       // get saved cookie jwt
-      const token = this.getToken({})
+      let token = ''
+      try {
+        token = this.getToken({})
+      } catch (e) {
+        // catch error so rest doesn't fail
+      }
       if (token) {
         // guard against username mismatch
         const parsedToken = parseJwt(token)
