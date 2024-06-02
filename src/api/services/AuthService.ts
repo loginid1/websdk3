@@ -73,15 +73,18 @@ export class AuthService {
      * @throws ApiError
      */
     public authAuthCodeRequest({
-        authorization
+        authorization,
     }: {
-        authorization: string
+        /**
+         * JWT Authorization header
+         */
+        authorization?: string,
     }): CancelablePromise<AuthCode> {
         return this.httpRequest.request({
             method: 'POST',
             url: '/fido2/v2/auth/otp',
             headers: {
-                Authorization: authorization,
+                'Authorization': authorization,
             },
             errors: {
                 401: `Unauthorized: Unauthorized response.`,
