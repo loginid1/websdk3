@@ -40,18 +40,24 @@ export class RegService {
     public regRegInit({
         requestBody,
         userAgent,
+        authorization,
     }: {
         requestBody: RegInitRequestBody,
         /**
          * Raw user-agent header as set by a browser
          */
         userAgent?: string,
+        /**
+         * JWT Authorization header
+         */
+        authorization?: string,
     }): CancelablePromise<RegInit> {
         return this.httpRequest.request({
             method: 'POST',
             url: '/fido2/v2/reg/init',
             headers: {
                 'User-Agent': userAgent,
+                'Authorization': authorization,
             },
             body: requestBody,
             mediaType: 'application/json',
