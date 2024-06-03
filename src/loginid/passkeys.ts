@@ -81,20 +81,12 @@ class Passkeys extends LoginIDBase {
       options.usernameType = 'email'
     }
 
-    if (!options.token) {
-      // get saved cookie jwt
-      let token = ''
-      try {
-        token = this.getToken({})
-      } catch (e) {
-        // catch error so rest doesn't fail
-      }
-      if (token) {
-        // guard against username mismatch
-        const parsedToken = parseJwt(token)
-        if (parsedToken.username === username) {
-          options.token = token
-        }
+    options.token = this.getToken(options)
+    if (options.token) {
+      // guard against username mismatch
+      const parsedToken = parseJwt(options.token)
+      if (parsedToken.username !== username) {
+        options.token = ''
       }
     }
 
@@ -113,7 +105,10 @@ class Passkeys extends LoginIDBase {
 
     const regInitResponseBody = await this.service
       .reg
-      .regRegInit({ requestBody: regInitRequestBody })
+      .regRegInit({ 
+        requestBody: regInitRequestBody,
+        ...options.token && { authorization: options.token },
+      })
 
     const regCompleteRequestBody = await this.createNavigatorCredential(regInitResponseBody)
 
@@ -201,24 +196,18 @@ class Passkeys extends LoginIDBase {
    * @returns {Promise<AuthCode>} Code and expiry.
    */
   async generateCodeWithPasskey(username: string, options: AuthenticateWithPasskeysOptions = {}): Promise<AuthCode> {
-    let token = ''
-
+    options.token = this.getToken(options)
+    // if no token is found, perform authentication
     if (!options.token) {
-      try {
-        token = this.getToken({})
-      } catch (e) {
-        // if no token is found, perform authentication
-        const result = await this.authenticateWithPasskey(username, options)
-        token = result.jwtAccess
-      }
-    } else {
-      token = options.token
+      const result = await this.authenticateWithPasskey(username, options)
+      // get token after authentication
+      options.token = result.jwtAccess
     }
 
     const code: AuthCode = await this.service
       .auth
       .authAuthCodeRequest({
-        authorization: token
+        authorization: options.token,
       })
   
     return code
@@ -242,7 +231,6 @@ class Passkeys extends LoginIDBase {
       user: {
         username: username,
         usernameType: options.usernameType,
-        ...options.displayName && { displayName: options.displayName },
       },
     }
   

@@ -35,7 +35,7 @@ class LoginIDBase {
       if (token) {
         return token
       } else {
-        throw new Error('token is empty')
+        return ''
       }
     }
   }
