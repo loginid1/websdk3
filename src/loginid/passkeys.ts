@@ -6,6 +6,7 @@ import type {
   AuthenticateWithPasskeysOptions,
   ConfirmTransactionOptions,
   LoginIDConfig,
+  PasskeyOptions,
   PasskeyResult,
   RegisterWithPasskeyOptions,
   Transports
@@ -240,6 +241,41 @@ class Passkeys extends LoginIDBase {
       })
 
     this.setJwtCookie(result.jwtAccess)
+
+    return result
+  }
+
+  /**
+   * Add passkey
+   * @param username Username to authenticate.
+   * @param options Additional authentication options.
+   * @returns {Promise<PasskeyResult>} Result of the add passkey operation.
+   */
+  async addPasskey(username: string, options: PasskeyOptions = {}): Promise<PasskeyResult> {
+    const token = this.getToken(options)
+    if (!token) {
+      throw new Error(
+        'User needs to be logged in to perform this operation.'
+      )
+    }
+    options.token = token
+
+    const result = await this.registerWithPasskey(username, options)
+
+    return result
+  }
+
+  /**
+   * Add passkey with code
+   * @param username Username to authenticate.
+   * @param code Code to authenticate.
+   * @param options Additional authentication options.
+   * @returns @returns {Promise<PasskeyResult>} Result of the add passkey with code operation.
+   */
+  async addPasskeyWithCode(username: string, code: string, options: PasskeyOptions = {}): Promise<PasskeyResult> {
+    await this.authenticateWithCode(username, code, options)
+
+    const result = await this.registerWithPasskey(username, options)
 
     return result
   }
