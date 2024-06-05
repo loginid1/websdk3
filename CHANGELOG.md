@@ -1,3 +1,11 @@
+## [1.3.0](https://gitlab.com/loginid/software/sdks/websdk3/compare/v1.2.0...v1.3.0) (2024-06-05)
+
+### Features
+
+* **add-passkey:** add addPasskey and addPasskeyWithCode functions ([01c6cce](https://gitlab.com/loginid/software/sdks/websdk3/commit/01c6cceb2e962da532d51873e066e1101111b8da))
+* adds auth with code and generate code with passkey endpoints ([0f83096](https://gitlab.com/loginid/software/sdks/websdk3/commit/0f830965acf76a28eb94296c86dedd1f41018cfc))
+* **jwt:** add utilities for jwt cookie management ([6f5ddea](https://gitlab.com/loginid/software/sdks/websdk3/commit/6f5ddea646f02d8568a0457578098b2d28cf6698))
+
 ## [1.2.0](https://gitlab.com/loginid/software/sdks/websdk3/compare/v1.1.1...v1.2.0) (2024-04-09)
 
 
