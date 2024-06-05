@@ -2,69 +2,53 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { JWT } from '../models/JWT';
-import type { RegCompleteRequestBody } from '../models/RegCompleteRequestBody';
-import type { RegInit } from '../models/RegInit';
-import type { RegInitRequestBody } from '../models/RegInitRequestBody';
+import type { GrantCreateRequestBody } from '../models/GrantCreateRequestBody';
+import type { GrantCreateResponseBody } from '../models/GrantCreateResponseBody';
+import type { TokenVerifyRequestBody } from '../models/TokenVerifyRequestBody';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
-export class RegService {
+export class MgmtService {
     constructor(public readonly httpRequest: BaseHttpRequest) {}
     /**
-     * Complete WebAuthn registration flow
-     * @returns JWT OK response.
+     * Create an authorization token with requested scopes
+     * @returns GrantCreateResponseBody OK response.
      * @throws ApiError
      */
-    public regRegComplete({
+    public mgmtGrantCreate({
         requestBody,
     }: {
-        requestBody: RegCompleteRequestBody,
-    }): CancelablePromise<JWT> {
+        requestBody: GrantCreateRequestBody,
+    }): CancelablePromise<GrantCreateResponseBody> {
         return this.httpRequest.request({
             method: 'POST',
-            url: '/fido2/v2/reg/complete',
-            body: requestBody,
-            mediaType: 'application/json',
-            errors: {
-                400: `BadRequest: Bad Request response.`,
-                403: `Forbidden: Forbidden response.`,
-                500: `InternalServerError: Internal Server Error response.`,
-            },
-        });
-    }
-    /**
-     * Start WebAuthn registration flow
-     * @returns RegInit OK response.
-     * @throws ApiError
-     */
-    public regRegInit({
-        requestBody,
-        userAgent,
-        authorization,
-    }: {
-        requestBody: RegInitRequestBody,
-        /**
-         * Raw user-agent header as set by a browser
-         */
-        userAgent?: string,
-        /**
-         * JWT Authorization header
-         */
-        authorization?: string,
-    }): CancelablePromise<RegInit> {
-        return this.httpRequest.request({
-            method: 'POST',
-            url: '/fido2/v2/reg/init',
-            headers: {
-                'User-Agent': userAgent,
-                'Authorization': authorization,
-            },
+            url: '/fido2/v2/mgmt/grant',
             body: requestBody,
             mediaType: 'application/json',
             errors: {
                 400: `BadRequest: Bad Request response.`,
                 401: `Unauthorized: Unauthorized response.`,
-                403: `Forbidden: Forbidden response.`,
+                500: `InternalServerError: Internal Server Error response.`,
+            },
+        });
+    }
+    /**
+     * Validate JWT Access Token
+     * @returns void
+     * @throws ApiError
+     */
+    public mgmtTokenVerify({
+        requestBody,
+    }: {
+        requestBody: TokenVerifyRequestBody,
+    }): CancelablePromise<void> {
+        return this.httpRequest.request({
+            method: 'POST',
+            url: '/fido2/v2/mgmt/token/verify',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                400: `BadRequest: Bad Request response.`,
+                401: `Unauthorized: Unauthorized response.`,
                 500: `InternalServerError: Internal Server Error response.`,
             },
         });

@@ -4,10 +4,10 @@
 /* eslint-disable */
 import type { Application } from './Application';
 import type { DeviceInfo } from './DeviceInfo';
-import type { User } from './User';
+import type { UserLogin } from './UserLogin';
 export type AuthInitRequestBody = {
     app: Application;
     deviceInfo: DeviceInfo;
-    user?: User;
+    user?: UserLogin;
 };
 

@@ -2,8 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type LidError = {
-    msg?: string;
-    msgCode: string;
+import type { UserLogin } from './UserLogin';
+export type AuthCodeRequestSMSRequestBody = {
+    user: UserLogin;
 };
 

@@ -14,19 +14,23 @@ export class PasskeysService {
      * @throws ApiError
      */
     public passkeysPasskeysList({
-        authorization
+        authorization,
     }: {
-        authorization: string,
+        /**
+         * JWT Authorization header
+         */
+        authorization?: string,
     }): CancelablePromise<PasskeyCollection> {
         return this.httpRequest.request({
             method: 'GET',
             url: '/fido2/v2/passkeys',
             headers: {
-                Authorization: authorization,
+                'Authorization': authorization,
             },
             errors: {
                 401: `Unauthorized: Unauthorized response.`,
                 403: `Forbidden: Forbidden response.`,
+                404: `NotFound: Not Found response.`,
                 500: `InternalServerError: Internal Server Error response.`,
             },
         });
@@ -44,18 +48,22 @@ export class PasskeysService {
          * Internal passkey identifier
          */
         id: string,
-        authorization: string,
+        /**
+         * JWT Authorization header
+         */
+        authorization?: string,
     }): CancelablePromise<void> {
         return this.httpRequest.request({
             method: 'DELETE',
             url: '/fido2/v2/passkeys/{id}',
-            headers: {
-                Authorization: authorization,
-            },
             path: {
                 'id': id,
             },
+            headers: {
+                'Authorization': authorization,
+            },
             errors: {
+                400: `BadRequest: Bad Request response.`,
                 401: `Unauthorized: Unauthorized response.`,
                 403: `Forbidden: Forbidden response.`,
                 404: `NotFound: Not Found response.`,
@@ -71,27 +79,31 @@ export class PasskeysService {
     public passkeysPasskeyRename({
         id,
         requestBody,
-        authorization
+        authorization,
     }: {
         /**
          * Internal passkey identifier
          */
         id: string,
         requestBody: PasskeyRenameRequestBody,
-        authorization: string,
+        /**
+         * JWT Authorization header
+         */
+        authorization?: string,
     }): CancelablePromise<void> {
         return this.httpRequest.request({
             method: 'PUT',
             url: '/fido2/v2/passkeys/{id}',
-            headers: {
-                Authorization: authorization,
-            },
             path: {
                 'id': id,
+            },
+            headers: {
+                'Authorization': authorization,
             },
             body: requestBody,
             mediaType: 'application/json',
             errors: {
+                400: `BadRequest: Bad Request response.`,
                 401: `Unauthorized: Unauthorized response.`,
                 403: `Forbidden: Forbidden response.`,
                 404: `NotFound: Not Found response.`,

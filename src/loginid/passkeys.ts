@@ -1,16 +1,19 @@
 import LoginIDBase from './base'
 import { defaultDeviceInfo } from '../browser'
-import { bufferToBase64Url, createUUID } from '../utils'
+import { bufferToBase64Url, createUUID, parseJwt } from '../utils'
 import { createPasskeyCredential, getPasskeyCredential } from '../webauthn/'
 import type {
   AuthenticateWithPasskeysOptions,
   ConfirmTransactionOptions,
   LoginIDConfig,
+  PasskeyOptions,
   PasskeyResult,
   RegisterWithPasskeyOptions,
   Transports
 } from './types'
 import {
+  AuthCode,
+  AuthCodeVerifyRequestBody,
   AuthCompleteRequestBody,
   AuthInit,
   AuthInitRequestBody,
@@ -25,8 +28,6 @@ import {
  * Extends LoginIDBase to support creation, registration, and authentication of passkeys.
  */
 class Passkeys extends LoginIDBase {
-  private jwtAccess: string = ''
-
   /**
    * Initializes a new Passkeys instance with the provided configuration.
    * @param {LoginIDConfig} config Configuration object for LoginID.
@@ -81,10 +82,18 @@ class Passkeys extends LoginIDBase {
       options.usernameType = 'email'
     }
 
+    options.token = this.getToken(options)
+    if (options.token) {
+      // guard against username mismatch
+      const parsedToken = parseJwt(options.token)
+      if (parsedToken.username !== username) {
+        options.token = ''
+      }
+    }
+
     const regInitRequestBody: RegInitRequestBody = {
       app: {
         id: this.config.appId,
-        ...options.token && { token: options.token },
       },
       deviceInfo: deviceInfo,
       user: {
@@ -92,13 +101,15 @@ class Passkeys extends LoginIDBase {
         usernameType: options.usernameType,
         ...options.displayName && { displayName: options.displayName },
       },
-      ...options.mfa && { mfa: options.mfa },
       ...options.session && { session: options.session },
     }
 
     const regInitResponseBody = await this.service
       .reg
-      .regRegInit({ requestBody: regInitRequestBody })
+      .regRegInit({ 
+        requestBody: regInitRequestBody,
+        ...options.token && { authorization: options.token },
+      })
 
     const regCompleteRequestBody = await this.createNavigatorCredential(regInitResponseBody)
 
@@ -106,7 +117,7 @@ class Passkeys extends LoginIDBase {
       .reg
       .regRegComplete({ requestBody: regCompleteRequestBody })
 
-    this.jwtAccess = result.jwtAccess
+    this.setJwtCookie(result.jwtAccess)
 
     return result
   }
@@ -150,7 +161,7 @@ class Passkeys extends LoginIDBase {
     if (!options.usernameType) {
       options.usernameType = 'email'
     }
-
+  
     const authInitRequestBody: AuthInitRequestBody = {
       app: {
         id: this.config.appId,
@@ -174,7 +185,97 @@ class Passkeys extends LoginIDBase {
       .auth
       .authAuthComplete({ requestBody: authCompleteRequestBody })
 
-    this.jwtAccess = result.jwtAccess
+    this.setJwtCookie(result.jwtAccess)
+
+    return result
+  }
+
+  /**
+   * Generates a code with passkey.
+   * @param {string} username Username to authenticate.
+   * @param {AuthenticateWithPasskeysOptions} options Additional authentication options.
+   * @returns {Promise<AuthCode>} Code and expiry.
+   */
+  async generateCodeWithPasskey(username: string, options: AuthenticateWithPasskeysOptions = {}): Promise<AuthCode> {
+    options.token = this.getToken(options)
+    // if no token is found, perform authentication
+    if (!options.token) {
+      const result = await this.authenticateWithPasskey(username, options)
+      // get token after authentication
+      options.token = result.jwtAccess
+    }
+
+    const code: AuthCode = await this.service
+      .auth
+      .authAuthCodeRequest({
+        authorization: options.token,
+      })
+  
+    return code
+  }
+  
+  /**
+   * Authenticate with a code.
+   * @param {string} username Username to authenticate.
+   * @param {string} code code to authenticate.
+   * @param {AuthenticateWithPasskeysOptions} options Additional authentication options.
+   * @returns {Promise<any>} Result of the authentication operation.
+   */
+  async authenticateWithCode(username: string, code: string, options: AuthenticateWithPasskeysOptions = {}) {
+    // Default to email if usernameType is not provided
+    if (!options.usernameType) {
+      options.usernameType = 'email'
+    }
+  
+    const request: AuthCodeVerifyRequestBody = {
+      authCode: code,
+      user: {
+        username: username,
+        usernameType: options.usernameType,
+      },
+    }
+  
+    const result = await this.service
+      .auth.authAuthCodeVerify({
+        requestBody: request
+      })
+
+    this.setJwtCookie(result.jwtAccess)
+
+    return result
+  }
+
+  /**
+   * Add passkey
+   * @param username Username to authenticate.
+   * @param options Additional authentication options.
+   * @returns {Promise<PasskeyResult>} Result of the add passkey operation.
+   */
+  async addPasskey(username: string, options: PasskeyOptions = {}): Promise<PasskeyResult> {
+    const token = this.getToken(options)
+    if (!token) {
+      throw new Error(
+        'User needs to be logged in to perform this operation.'
+      )
+    }
+    options.token = token
+
+    const result = await this.registerWithPasskey(username, options)
+
+    return result
+  }
+
+  /**
+   * Add passkey with code
+   * @param username Username to authenticate.
+   * @param code Code to authenticate.
+   * @param options Additional authentication options.
+   * @returns @returns {Promise<PasskeyResult>} Result of the add passkey with code operation.
+   */
+  async addPasskeyWithCode(username: string, code: string, options: PasskeyOptions = {}): Promise<PasskeyResult> {
+    await this.authenticateWithCode(username, code, options)
+
+    const result = await this.registerWithPasskey(username, options)
 
     return result
   }
@@ -226,17 +327,9 @@ class Passkeys extends LoginIDBase {
       .tx
       .txTxComplete({ requestBody: txCompleteRequestBody })
 
-    this.jwtAccess = result.jwtAccess
+    this.setJwtCookie(result.jwtAccess)
 
     return result
-  }
-
-  /**
-   * Retrieves the JWT access token.
-   * @returns {string} The JWT access token.
-   */
-  public getJWTAccess() {
-    return this.jwtAccess
   }
 }
 
