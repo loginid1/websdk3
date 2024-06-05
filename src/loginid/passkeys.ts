@@ -258,7 +258,7 @@ class Passkeys extends LoginIDBase {
         'User needs to be logged in to perform this operation.'
       )
     }
-    options.token = this.getToken(options)
+    options.token = token
 
     const result = await this.registerWithPasskey(username, options)
 
