@@ -206,6 +206,13 @@ class Passkeys extends LoginIDBase {
   async enablePasskeyAutofill(options: AuthenticateWithPasskeysOptions = {}): Promise<PasskeyResult> {
     const deviceInfo = defaultDeviceInfo()
 
+    // Abort signal override
+    if (options.abortSignal) {
+      options.abortSignal.addEventListener('abort', () => {
+        this.abortController.abort()
+      })
+    }
+
     const authInitRequestBody: AuthInitRequestBody = {
       app: {
         id: this.config.appId,
@@ -220,7 +227,7 @@ class Passkeys extends LoginIDBase {
 
     const authCompleteRequestBody = await this.getNavigatorCredential(authInitResponseBody, {
       autoFill: true,
-      abortSignal: options.abortSignal || this.abortController.signal,
+      abortSignal: this.abortController.signal,
     })
 
     const result = await this.service
