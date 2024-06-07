@@ -220,7 +220,7 @@ class Passkeys extends LoginIDBase {
 
     const authCompleteRequestBody = await this.getNavigatorCredential(authInitResponseBody, {
       autoFill: true,
-      abortSignal: this.abortController.signal,
+      abortSignal: options.abortSignal || this.abortController.signal,
     })
 
     const result = await this.service
