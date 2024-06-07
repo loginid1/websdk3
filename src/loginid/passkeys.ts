@@ -28,7 +28,7 @@ import {
  * Extends LoginIDBase to support creation, registration, and authentication of passkeys.
  */
 class Passkeys extends LoginIDBase {
-  private abortController: AbortController = new AbortController();
+  private abortController: AbortController = new AbortController()
 
   /**
    * Initializes a new Passkeys instance with the provided configuration.
@@ -175,8 +175,8 @@ class Passkeys extends LoginIDBase {
       },
       deviceInfo: deviceInfo,
       user: {
-          username: username,
-          usernameType: options.usernameType,
+        username: username,
+        usernameType: options.usernameType,
         ...options.displayName && { displayName: options.displayName },
       },
     }
@@ -197,7 +197,7 @@ class Passkeys extends LoginIDBase {
   }
 
 
-    /**
+  /**
    * Authenticates a user with a passkey.
    * @param {string} username Username to authenticate.
    * @param {AuthenticateWithPasskeysOptions} options Additional authentication options.
