@@ -1,3 +1,9 @@
+## [1.3.1](https://gitlab.com/loginid/software/sdks/websdk3/compare/v1.3.0...v1.3.1) (2024-06-08)
+
+### Bug Fixes
+
+* **security vuln:** fix braces 3.0.2 vuln ([d3a2a8c](https://gitlab.com/loginid/software/sdks/websdk3/commit/d3a2a8ce64295192332a3c63c165cc6d0ddce848))
+
 ## [1.3.0](https://gitlab.com/loginid/software/sdks/websdk3/compare/v1.2.0...v1.3.0) (2024-06-05)
 
 ### Features
