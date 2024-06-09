@@ -1,3 +1,9 @@
+## [1.4.0](https://gitlab.com/loginid/software/sdks/websdk3/compare/v1.3.1...v1.4.0) (2024-06-09)
+
+### Features
+
+* **webauthn helper:** added a static helper class for WebAuthn API calls ([f3e09a0](https://gitlab.com/loginid/software/sdks/websdk3/commit/f3e09a08f4e4021ff61c7f9be03b7a17f315929b))
+
 ## [1.3.1](https://gitlab.com/loginid/software/sdks/websdk3/compare/v1.3.0...v1.3.1) (2024-06-08)
 
 ### Bug Fixes
