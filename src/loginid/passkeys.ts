@@ -80,6 +80,7 @@ class Passkeys extends LoginIDBase {
    */
   async registerWithPasskey(username: string, options: RegisterWithPasskeyOptions = {}): Promise<PasskeyResult> {
     this.abortController.abort()
+
     const deviceInfo = defaultDeviceInfo()
 
     // Default to email if usernameType is not provided
@@ -135,6 +136,7 @@ class Passkeys extends LoginIDBase {
    */
   async getNavigatorCredential(authInitResponseBody: AuthInit, options: AuthenticateWithPasskeysOptions = {}) {
     this.abortController.abort()
+
     const { assertionOptions, session } = authInitResponseBody
 
     const credential = await getPasskeyCredential(assertionOptions, options)
@@ -161,6 +163,8 @@ class Passkeys extends LoginIDBase {
    * @returns {Promise<any>} Result of the authentication operation.
    */
   async authenticateWithPasskey(username = '', options: AuthenticateWithPasskeysOptions = {}): Promise<PasskeyResult> {
+    this.abortController.abort()
+
     const deviceInfo = defaultDeviceInfo()
 
     // Default to email if usernameType is not provided
@@ -204,6 +208,8 @@ class Passkeys extends LoginIDBase {
    * @returns {Promise<any>} Result of the authentication operation.
    */
   async enablePasskeyAutofill(options: AuthenticateWithPasskeysOptions = {}): Promise<PasskeyResult> {
+    this.abortController.abort()
+
     const deviceInfo = defaultDeviceInfo()
 
     // Abort signal override
@@ -246,6 +252,7 @@ class Passkeys extends LoginIDBase {
    * @returns {Promise<AuthCode>} Code and expiry.
    */
   async generateCodeWithPasskey(username: string, options: AuthenticateWithPasskeysOptions = {}): Promise<AuthCode> {
+    
     options.token = this.getToken(options)
     // if no token is found, perform authentication
     if (!options.token) {
@@ -271,6 +278,8 @@ class Passkeys extends LoginIDBase {
    * @returns {Promise<any>} Result of the authentication operation.
    */
   async authenticateWithCode(username: string, code: string, options: AuthenticateWithPasskeysOptions = {}) {
+    this.abortController.abort()
+
     // Default to email if usernameType is not provided
     if (!options.usernameType) {
       options.usernameType = 'email'
@@ -301,7 +310,6 @@ class Passkeys extends LoginIDBase {
    * @returns {Promise<PasskeyResult>} Result of the add passkey operation.
    */
   async addPasskey(username: string, options: PasskeyOptions = {}): Promise<PasskeyResult> {
-    this.abortController.abort()
     const token = this.getToken(options)
     if (!token) {
       throw new Error(
@@ -323,7 +331,6 @@ class Passkeys extends LoginIDBase {
    * @returns @returns {Promise<PasskeyResult>} Result of the add passkey with code operation.
    */
   async addPasskeyWithCode(username: string, code: string, options: PasskeyOptions = {}): Promise<PasskeyResult> {
-    this.abortController.abort()
     await this.authenticateWithCode(username, code, options)
 
     const result = await this.registerWithPasskey(username, options)
@@ -349,6 +356,7 @@ class Passkeys extends LoginIDBase {
    */
   async confirmTransaction(username: string, txPayload: string, options: ConfirmTransactionOptions = {}) {
     this.abortController.abort()
+    
     const txInitRequestBody: TxInitRequestBody = {
       username: username,
       txPayload: txPayload,
