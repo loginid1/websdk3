@@ -39,12 +39,21 @@ class Passkeys extends LoginIDBase {
   }
 
   /**
+   * Aborts all ongoing operations.
+   * And creates a new AbortController instance.
+   */
+  abortAllOperations() {
+    this.abortController.abort()
+    this.abortController = new AbortController()
+  }
+
+  /**
    * Creates a navigator credential using WebAuthn.
    * @param {RegInit} regInitResponseBody The response body from registration initialization.
    * @returns {Promise<RegRegCompleteRequestBody>} Completion request body for registration.
    */
   async createNavigatorCredential(regInitResponseBody: RegInit) {
-    this.abortController.abort()
+    this.abortAllOperations()
 
     const { registrationRequestOptions, session } = regInitResponseBody
 
@@ -79,7 +88,7 @@ class Passkeys extends LoginIDBase {
    * @returns {Promise<any>} Result of the registration operation.
    */
   async registerWithPasskey(username: string, options: RegisterWithPasskeyOptions = {}): Promise<PasskeyResult> {
-    this.abortController.abort()
+    this.abortAllOperations()
 
     const deviceInfo = defaultDeviceInfo()
 
@@ -135,7 +144,7 @@ class Passkeys extends LoginIDBase {
    * @returns {Promise<AuthAuthCompleteRequestBody>} Completion request body for authentication.
    */
   async getNavigatorCredential(authInitResponseBody: AuthInit, options: AuthenticateWithPasskeysOptions = {}) {
-    this.abortController.abort()
+    this.abortAllOperations()
 
     const { assertionOptions, session } = authInitResponseBody
 
@@ -163,7 +172,7 @@ class Passkeys extends LoginIDBase {
    * @returns {Promise<any>} Result of the authentication operation.
    */
   async authenticateWithPasskey(username = '', options: AuthenticateWithPasskeysOptions = {}): Promise<PasskeyResult> {
-    this.abortController.abort()
+    this.abortAllOperations()
 
     const deviceInfo = defaultDeviceInfo()
 
@@ -208,14 +217,14 @@ class Passkeys extends LoginIDBase {
    * @returns {Promise<any>} Result of the authentication operation.
    */
   async enablePasskeyAutofill(options: AuthenticateWithPasskeysOptions = {}): Promise<PasskeyResult> {
-    this.abortController.abort()
+    this.abortAllOperations()
 
     const deviceInfo = defaultDeviceInfo()
 
     // Abort signal override
     if (options.abortSignal) {
       options.abortSignal.addEventListener('abort', () => {
-        this.abortController.abort()
+        this.abortAllOperations()
       })
     }
 
@@ -278,7 +287,7 @@ class Passkeys extends LoginIDBase {
    * @returns {Promise<any>} Result of the authentication operation.
    */
   async authenticateWithCode(username: string, code: string, options: AuthenticateWithPasskeysOptions = {}) {
-    this.abortController.abort()
+    this.abortAllOperations()
 
     // Default to email if usernameType is not provided
     if (!options.usernameType) {
@@ -355,7 +364,7 @@ class Passkeys extends LoginIDBase {
    * The result includes details about the transaction's details and includes a new JWT access token.
    */
   async confirmTransaction(username: string, txPayload: string, options: ConfirmTransactionOptions = {}) {
-    this.abortController.abort()
+    this.abortAllOperations()
     
     const txInitRequestBody: TxInitRequestBody = {
       username: username,
