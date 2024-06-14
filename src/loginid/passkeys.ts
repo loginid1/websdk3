@@ -1,5 +1,6 @@
 import LoginIDBase from './base'
 import { defaultDeviceInfo } from '../browser'
+import { renewWebAuthnAbortController } from './errors'
 import { bufferToBase64Url, createUUID, parseJwt } from '../utils'
 import { createPasskeyCredential, getPasskeyCredential } from '../webauthn/'
 import type {
@@ -37,23 +38,14 @@ class Passkeys extends LoginIDBase {
   }
 
   /**
-   * Aborts all ongoing operations.
-   * And creates a new AbortController instance.
-   */
-  abortAllOperations() {
-    this.abortController.abort()
-    this.abortController = new AbortController()
-  }
-
-  /**
    * Creates a navigator credential using WebAuthn.
    * @param {RegInit} regInitResponseBody The response body from registration initialization.
    * @returns {Promise<RegRegCompleteRequestBody>} Completion request body for registration.
    */
   async createNavigatorCredential(regInitResponseBody: RegInit) {
-    this.abortAllOperations()
-
     const { registrationRequestOptions, session } = regInitResponseBody
+
+    this.abortController = renewWebAuthnAbortController(this.abortController)
 
     const credential = await createPasskeyCredential(registrationRequestOptions)
     const response = credential.response as AuthenticatorAttestationResponse
@@ -86,8 +78,6 @@ class Passkeys extends LoginIDBase {
    * @returns {Promise<any>} Result of the registration operation.
    */
   async registerWithPasskey(username: string, options: RegisterWithPasskeyOptions = {}): Promise<PasskeyResult> {
-    this.abortAllOperations()
-
     const deviceInfo = defaultDeviceInfo()
 
     // Default to email if usernameType is not provided
@@ -142,9 +132,12 @@ class Passkeys extends LoginIDBase {
    * @returns {Promise<AuthAuthCompleteRequestBody>} Completion request body for authentication.
    */
   async getNavigatorCredential(authInitResponseBody: AuthInit, options: AuthenticateWithPasskeysOptions = {}) {
-    this.abortAllOperations()
-
     const { assertionOptions, session } = authInitResponseBody
+
+    if (!options.abortSignal) {
+      this.abortController = renewWebAuthnAbortController(this.abortController)
+      options.abortSignal = this.abortController.signal
+    }
 
     const credential = await getPasskeyCredential(assertionOptions, options)
     const response = credential.response as AuthenticatorAssertionResponse
@@ -170,8 +163,6 @@ class Passkeys extends LoginIDBase {
    * @returns {Promise<any>} Result of the authentication operation.
    */
   async authenticateWithPasskey(username = '', options: AuthenticateWithPasskeysOptions = {}): Promise<PasskeyResult> {
-    this.abortAllOperations()
-
     const deviceInfo = defaultDeviceInfo()
 
     // Default to email if usernameType is not provided
@@ -207,49 +198,14 @@ class Passkeys extends LoginIDBase {
     return result
   }
 
-
   /**
-   * Authenticates a user with a passkey.
-   * @param {string} username Username to authenticate.
+   * Authenticates a user with condtional UI (passkey autofill).
    * @param {AuthenticateWithPasskeysOptions} options Additional authentication options.
    * @returns {Promise<any>} Result of the authentication operation.
    */
   async enablePasskeyAutofill(options: AuthenticateWithPasskeysOptions = {}): Promise<PasskeyResult> {
-    this.abortAllOperations()
-
-    const deviceInfo = defaultDeviceInfo()
-
-    // Abort signal override
-    if (options.abortSignal) {
-      options.abortSignal.addEventListener('abort', () => {
-        this.abortAllOperations()
-      })
-    }
-
-    const authInitRequestBody: AuthInitRequestBody = {
-      app: {
-        id: this.config.appId,
-        ...options.token && { token: options.token },
-      },
-      deviceInfo: deviceInfo,
-    }
-
-    const authInitResponseBody = await this.service
-      .auth
-      .authAuthInit({ requestBody: authInitRequestBody })
-
-    const authCompleteRequestBody = await this.getNavigatorCredential(authInitResponseBody, {
-      autoFill: true,
-      abortSignal: this.abortController.signal,
-    })
-
-    const result = await this.service
-      .auth
-      .authAuthComplete({ requestBody: authCompleteRequestBody })
-
-    this.setJwtCookie(result.jwtAccess)
-
-    return result
+    options.autoFill = true
+    return await this.authenticateWithPasskey('', options)
   }
 
   /**
@@ -259,7 +215,6 @@ class Passkeys extends LoginIDBase {
    * @returns {Promise<AuthCode>} Code and expiry.
    */
   async generateCodeWithPasskey(username: string, options: AuthenticateWithPasskeysOptions = {}): Promise<AuthCode> {
-    
     options.token = this.getToken(options)
     // if no token is found, perform authentication
     if (!options.token) {
@@ -285,8 +240,6 @@ class Passkeys extends LoginIDBase {
    * @returns {Promise<any>} Result of the authentication operation.
    */
   async authenticateWithCode(username: string, code: string, options: AuthenticateWithPasskeysOptions = {}) {
-    this.abortAllOperations()
-
     // Default to email if usernameType is not provided
     if (!options.usernameType) {
       options.usernameType = 'email'
@@ -304,6 +257,9 @@ class Passkeys extends LoginIDBase {
       .auth.authAuthCodeVerify({
         requestBody: request
       })
+
+    // Renew abort cpontroller since authentication is complete
+    this.abortController = renewWebAuthnAbortController(this.abortController)
 
     this.setJwtCookie(result.jwtAccess)
 
@@ -362,8 +318,6 @@ class Passkeys extends LoginIDBase {
    * The result includes details about the transaction's details and includes a new JWT access token.
    */
   async confirmTransaction(username: string, txPayload: string, options: ConfirmTransactionOptions = {}) {
-    this.abortAllOperations()
-    
     const txInitRequestBody: TxInitRequestBody = {
       username: username,
       txPayload: txPayload,
