@@ -47,7 +47,7 @@ class LoginIDBase {
     }
   }
 
-/**
+  /**
  * Retrieves the currently authenticated user's information.
  * @returns {LoginIDUser} The currently authenticated user's information, including username and id.
  * @throws {Error} If the user is not logged in, throws USER_NO_OP_ERROR.
