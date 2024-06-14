@@ -34,10 +34,6 @@ export interface AuthenticateWithPasskeysOptions extends PasskeyOptions {
 	// autoFill is conditional UI
 	autoFill?: boolean
 	abortSignal?: AbortSignal
-	
-	displayName?: string
-	usernameType?: UsernameType
-	token?: string
 }
 
 //TODO: add attestationFormats
@@ -52,6 +48,11 @@ export interface ConfirmTransactionOptions extends PasskeyOptions {
 
 export interface PasskeyResult {
 	jwtAccess: string
+}
+
+export interface LoginIDUser {
+  username: string
+  id: string
 }
 
 export { ApiError }

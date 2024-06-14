@@ -1,8 +1,8 @@
 import LoginIDBase from './base'
 import { defaultDeviceInfo } from '../browser'
-import { renewWebAuthnAbortController } from './errors'
-import { bufferToBase64Url, createUUID, parseJwt } from '../utils'
+import { renewWebAuthnAbortController, USER_NO_OP_ERROR } from './errors'
 import { createPasskeyCredential, getPasskeyCredential } from '../webauthn/'
+import { bufferToBase64Url, createUUID, parseJwt } from '../utils'
 import type {
   AuthenticateWithPasskeysOptions,
   ConfirmTransactionOptions,
@@ -275,9 +275,7 @@ class Passkeys extends LoginIDBase {
   async addPasskey(username: string, options: PasskeyOptions = {}): Promise<PasskeyResult> {
     const token = this.getToken(options)
     if (!token) {
-      throw new Error(
-        'User needs to be logged in to perform this operation.'
-      )
+      throw USER_NO_OP_ERROR
     }
     options.token = token
 
