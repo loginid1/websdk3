@@ -28,8 +28,6 @@ import {
  * Extends LoginIDBase to support creation, registration, and authentication of passkeys.
  */
 class Passkeys extends LoginIDBase {
-  private abortController: AbortController = new AbortController()
-
   /**
    * Initializes a new Passkeys instance with the provided configuration.
    * @param {LoginIDConfig} config Configuration object for LoginID.

@@ -18,6 +18,12 @@ class LoginIDBase {
   protected readonly service: LoginIDService
 
   /**
+   * AbortController to manage the lifecycle of asynchronous WebAuthn requests,
+   * allowing them to be cancelled when another request needs to be made.
+   */
+  protected abortController: AbortController = new AbortController()
+
+  /**
    * Constructs a new instance of the LoginIDBase class, initializing the service with the provided configuration.
    * @param {LoginIDConfig} config Configuration object for LoginID API, including the base URL.
    */
