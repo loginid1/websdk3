@@ -34,6 +34,10 @@ export interface AuthenticateWithPasskeysOptions extends PasskeyOptions {
 	// autoFill is conditional UI
 	autoFill?: boolean
 	abortSignal?: AbortSignal
+	
+	displayName?: string
+	usernameType?: UsernameType
+	token?: string
 }
 
 //TODO: add attestationFormats

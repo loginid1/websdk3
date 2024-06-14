@@ -1,5 +1,6 @@
 import LoginIDBase from './base'
 import { defaultDeviceInfo } from '../browser'
+import { renewWebAuthnAbortController } from './errors'
 import { bufferToBase64Url, createUUID, parseJwt } from '../utils'
 import { createPasskeyCredential, getPasskeyCredential } from '../webauthn/'
 import type {
@@ -43,6 +44,8 @@ class Passkeys extends LoginIDBase {
    */
   async createNavigatorCredential(regInitResponseBody: RegInit) {
     const { registrationRequestOptions, session } = regInitResponseBody
+
+    this.abortController = renewWebAuthnAbortController(this.abortController)
 
     const credential = await createPasskeyCredential(registrationRequestOptions)
     const response = credential.response as AuthenticatorAttestationResponse
@@ -131,6 +134,11 @@ class Passkeys extends LoginIDBase {
   async getNavigatorCredential(authInitResponseBody: AuthInit, options: AuthenticateWithPasskeysOptions = {}) {
     const { assertionOptions, session } = authInitResponseBody
 
+    if (!options.abortSignal) {
+      this.abortController = renewWebAuthnAbortController(this.abortController)
+      options.abortSignal = this.abortController.signal
+    }
+
     const credential = await getPasskeyCredential(assertionOptions, options)
     const response = credential.response as AuthenticatorAssertionResponse
 
@@ -168,11 +176,11 @@ class Passkeys extends LoginIDBase {
         ...options.token && { token: options.token },
       },
       deviceInfo: deviceInfo,
-      ...!options.autoFill && { user: {
+      user: {
         username: username,
         usernameType: options.usernameType,
         ...options.displayName && { displayName: options.displayName },
-      }},
+      },
     }
 
     const authInitResponseBody = await this.service
@@ -188,6 +196,16 @@ class Passkeys extends LoginIDBase {
     this.setJwtCookie(result.jwtAccess)
 
     return result
+  }
+
+  /**
+   * Authenticates a user with condtional UI (passkey autofill).
+   * @param {AuthenticateWithPasskeysOptions} options Additional authentication options.
+   * @returns {Promise<any>} Result of the authentication operation.
+   */
+  async enablePasskeyAutofill(options: AuthenticateWithPasskeysOptions = {}): Promise<PasskeyResult> {
+    options.autoFill = true
+    return await this.authenticateWithPasskey('', options)
   }
 
   /**
@@ -239,6 +257,9 @@ class Passkeys extends LoginIDBase {
       .auth.authAuthCodeVerify({
         requestBody: request
       })
+
+    // Renew abort cpontroller since authentication is complete
+    this.abortController = renewWebAuthnAbortController(this.abortController)
 
     this.setJwtCookie(result.jwtAccess)
 
