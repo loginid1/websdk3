@@ -1,3 +1,13 @@
+## [1.5.0](https://gitlab.com/loginid/software/sdks/websdk3/compare/v1.4.0...v1.5.0) (2024-06-14)
+
+### Features
+
+* **getuser:** added getUser method to retrieve basic user data from JWT ([3814896](https://gitlab.com/loginid/software/sdks/websdk3/commit/3814896809b87f5baaaad4b77983e6e6efe359b1))
+
+### Bug Fixes
+
+* **autofill:** fix for abortcontroller management ([269fc5a](https://gitlab.com/loginid/software/sdks/websdk3/commit/269fc5ac1a5a920cbd5f1c7d5281e59500717435))
+
 ## [1.4.0](https://gitlab.com/loginid/software/sdks/websdk3/compare/v1.3.1...v1.4.0) (2024-06-09)
 
 ### Features
