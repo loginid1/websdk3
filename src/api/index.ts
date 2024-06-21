@@ -20,7 +20,6 @@ export type { AuthenticatorSelectionCriteria } from './models/AuthenticatorSelec
 export type { AuthInit } from './models/AuthInit';
 export type { AuthInitRequestBody } from './models/AuthInitRequestBody';
 export type { BadRequestError } from './models/BadRequestError';
-export type { CodeResult } from './models/CodeResult';
 export type { CreationResult } from './models/CreationResult';
 export type { DeviceInfo } from './models/DeviceInfo';
 export type { GrantCreateRequestBody } from './models/GrantCreateRequestBody';

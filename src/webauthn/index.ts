@@ -14,8 +14,8 @@ import type {
  * @throws {LoginIdError} If any errors occur during credential creation or if the credential type is invalid.
  */
 const createPasskeyCredential = async (init: PublicKeyCredentialCreationOptions): Promise<PublicKeyCredential> => {
-  // Represents a list of public key credential descriptors (excludeCredentials).
-  let excludeCredentials: PublicKeyCredentialDescriptor[] | undefined = undefined
+  // eslint-disable-next-line
+  let excludeCredentials: any[] | undefined = undefined
 
   // Check if excludeCredentials is defined in the registration initiation response.
   if (init.excludeCredentials !== undefined) {
@@ -91,8 +91,8 @@ const getPasskeyCredential = async (
   init: PublicKeyCredentialRequestOptions,
   options: AuthenticateWithPasskeysOptions = {}
 ): Promise<PublicKeyCredential> => {
-  // Represents a list of public key credential descriptors (allowCredentials).
-  let allowCredentials: PublicKeyCredentialDescriptor[] | undefined = undefined
+  // eslint-disable-next-line
+  let allowCredentials: any[] | undefined = undefined
 
   // Check if allowCredentials is defined in the registration initiation response.
   if (init.allowCredentials !== undefined) {

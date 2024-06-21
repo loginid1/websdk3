@@ -34,9 +34,7 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/JWT'
                             example:
-                                code:
-                                    code: Ab nam et quisquam exercitationem quibusdam autem.
-                                    expiresAt: Et totam natus.
+                                deviceID: 2a363a42-a397-4af0-b089-0935fc223017
                                 jwtAccess: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
                 "400":
                     description: 'BadRequest: Bad Request response.'
@@ -125,10 +123,12 @@ paths:
                                         appid: https://loalhost:8443
                                     rpId: https://localhost:8443/
                                     timeout: 5000
-                                    userVerification: discouraged
+                                    userVerification: preferred
                                 fallbackOptions:
                                     - otp:client
                                     - otp:email
+                                matchScore: 100
+                                passkeyType: device
                                 session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
                 "400":
                     description: 'BadRequest: Bad Request response.'
@@ -340,9 +340,7 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/JWT'
                             example:
-                                code:
-                                    code: Ab nam et quisquam exercitationem quibusdam autem.
-                                    expiresAt: Et totam natus.
+                                deviceID: 2a363a42-a397-4af0-b089-0935fc223017
                                 jwtAccess: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
                 "400":
                     description: 'BadRequest: Bad Request response.'
@@ -1026,10 +1024,10 @@ paths:
                                 publicKey: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
                                 publicKeyAlgorithm: -8
                                 transports:
+                                    - internal
+                                    - nfc
+                                    - smart-card
                                     - hybrid
-                                    - hybrid
-                                    - ble
-                                    - usb
                             session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
             responses:
                 "200":
@@ -1039,9 +1037,7 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/JWT'
                             example:
-                                code:
-                                    code: Ab nam et quisquam exercitationem quibusdam autem.
-                                    expiresAt: Et totam natus.
+                                deviceID: 2a363a42-a397-4af0-b089-0935fc223017
                                 jwtAccess: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
                 "400":
                     description: 'BadRequest: Bad Request response.'
@@ -1119,7 +1115,7 @@ paths:
                                 $ref: '#/components/schemas/RegInit'
                             example:
                                 registrationRequestOptions:
-                                    attestation: indirect
+                                    attestation: direct
                                     authenticatorSelection:
                                         authenticatorAttachment: platform
                                         requireResidentKey: true
@@ -1292,7 +1288,7 @@ paths:
                                         appid: https://loalhost:8443
                                     rpId: https://localhost:8443/
                                     timeout: 5000
-                                    userVerification: discouraged
+                                    userVerification: preferred
                                 session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
                                 txId: 2a363a42-a397-4af0-b089-0935fc223017
                 "400":
@@ -1424,7 +1420,7 @@ components:
                     type: array
                     items:
                         type: string
-                        example: otp:email
+                        example: otp:client
                         enum:
                             - otp:client
                             - otp:email
@@ -1433,6 +1429,15 @@ components:
                     example:
                         - otp:client
                         - otp:email
+                matchScore:
+                    type: integer
+                    description: Match score of the device
+                    example: 100
+                    format: int64
+                passkeyType:
+                    type: string
+                    description: Type of passkey supported by the client.
+                    example: device
                 session:
                     type: string
                     description: An opaque object containing session data.
@@ -1452,10 +1457,12 @@ components:
                         appid: https://loalhost:8443
                     rpId: https://localhost:8443/
                     timeout: 5000
-                    userVerification: discouraged
+                    userVerification: preferred
                 fallbackOptions:
                     - otp:client
                     - otp:email
+                matchScore: 100
+                passkeyType: device
                 session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
             required:
                 - session
@@ -1542,7 +1549,7 @@ components:
                     type: boolean
                     description: Resident key requirement
                     default: false
-                    example: false
+                    example: true
                 residentKey:
                     type: string
                     description: Resident key requirement
@@ -1554,7 +1561,7 @@ components:
                 userVerification:
                     type: string
                     description: Resident key requirement
-                    example: preferred
+                    example: discouraged
                     enum:
                         - required
                         - preferred
@@ -1563,7 +1570,7 @@ components:
                 authenticatorAttachment: platform
                 requireResidentKey: false
                 residentKey: required
-                userVerification: preferred
+                userVerification: discouraged
         BadRequestError:
             type: object
             properties:
@@ -1579,23 +1586,6 @@ components:
             required:
                 - msg
                 - msgCode
-        CodeResult:
-            type: object
-            properties:
-                code:
-                    type: string
-                    description: Generated code
-                    example: Sapiente dolorum ut consequatur praesentium.
-                expiresAt:
-                    type: string
-                    description: Expiration time of the code
-                    example: Fugit amet laudantium.
-            example:
-                code: Veritatis quae.
-                expiresAt: Labore facilis quidem quod ab.
-            required:
-                - code
-                - expiresAt
         CreationResult:
             type: object
             properties:
@@ -1637,20 +1627,23 @@ components:
                     type: array
                     items:
                         type: string
-                        example: ble
+                        example: hybrid
                         enum:
                             - usb
                             - nfc
                             - ble
                             - internal
                             - hybrid
+                            - cable
+                            - smart-card
                     description: |-
                         These values are the transports that the authenticator is believed to support,
                         or an empty sequence if the information is unavailable.
                     example:
-                        - nfc
-                        - internal
-                        - nfc
+                        - ble
+                        - usb
+                        - ble
+                        - cable
             example:
                 attestationObject: 5lvuZBkX1w7/0+XKcldttzA7vTwilEq3qnnXSq/a0...
                 authenticatorData: ix523n3XniH01jM4CIuOn1z0Jw6QbRATXYOsCUyQN...
@@ -1659,6 +1652,7 @@ components:
                 publicKey: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
                 publicKeyAlgorithm: -8
                 transports:
+                    - nfc
                     - nfc
                     - hybrid
             required:
@@ -1731,7 +1725,7 @@ components:
                     type: array
                     items:
                         type: string
-                        example: passkey:write
+                        example: passkey:read
                         enum:
                             - passkey:read
                             - passkey:write
@@ -1767,16 +1761,16 @@ components:
         JWT:
             type: object
             properties:
-                code:
-                    $ref: '#/components/schemas/CodeResult'
+                deviceID:
+                    type: string
+                    description: Device ID
+                    example: 2a363a42-a397-4af0-b089-0935fc223017
                 jwtAccess:
                     type: string
                     description: JWT access token
                     example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
             example:
-                code:
-                    code: Ab nam et quisquam exercitationem quibusdam autem.
-                    expiresAt: Et totam natus.
+                deviceID: 2a363a42-a397-4af0-b089-0935fc223017
                 jwtAccess: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
             required:
                 - jwtAccess
@@ -1851,7 +1845,7 @@ components:
                         Whether to update the email address immediately or send an authorization code
                         to verify.
                     default: true
-                    example: false
+                    example: true
             example:
                 email: luke.skywalker@tatuin.com
                 requestVerification: true
@@ -1920,10 +1914,11 @@ components:
                             - ble
                             - internal
                             - hybrid
+                            - cable
+                            - smart-card
                     example:
-                        - internal
-                        - internal
-                        - usb
+                        - hybrid
+                        - nfc
                 type:
                     type: string
                     example: public-key
@@ -1932,10 +1927,8 @@ components:
             example:
                 id: AyQBkTLAPWaLl6HtE3Oh6ovqkspSidX8DA9fYQB6DX4=
                 transports:
+                    - smart-card
                     - ble
-                    - internal
-                    - nfc
-                    - internal
                 type: public-key
             required:
                 - type
@@ -1985,7 +1978,7 @@ components:
                         appid: https://loalhost:8443
                     additionalProperties:
                         type: string
-                        example: Et eveniet.
+                        example: Delectus aperiam eligendi voluptatum earum illum.
                 pubKeyCredParams:
                     type: array
                     items:
@@ -2057,7 +2050,7 @@ components:
                         A cryptographic signature algorithm with which the newly generated credential
                         will be used, and thus also the type of asymmetric key pair to be generated,
                         e.g., RSA or Elliptic Curve.
-                    example: -36
+                    example: -7
                     enum:
                         - -7
                         - -35
@@ -2072,7 +2065,7 @@ components:
                         - public-key
             description: Additional parameters when creating a new credential.
             example:
-                alg: -35
+                alg: -257
                 type: public-key
         PublicKeyCredentialRequestOptions:
             type: object
@@ -2111,7 +2104,7 @@ components:
                         appid: https://loalhost:8443
                     additionalProperties:
                         type: string
-                        example: Minus quidem enim.
+                        example: Sit quos explicabo excepturi perferendis fugit expedita.
                 rpId:
                     type: string
                     description: |-
@@ -2135,7 +2128,7 @@ components:
                         client platforms MUST ignore unknown values, treating an unknown value as if
                         the member does not exist. Eligible authenticators are filtered to only those
                         capable of satisfying this requirement.
-                    example: required
+                    example: discouraged
                     enum:
                         - required
                         - preferred
@@ -2214,10 +2207,10 @@ components:
                     publicKey: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
                     publicKeyAlgorithm: -8
                     transports:
+                        - internal
+                        - nfc
+                        - smart-card
                         - hybrid
-                        - hybrid
-                        - ble
-                        - usb
                 session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
             required:
                 - session
@@ -2233,7 +2226,7 @@ components:
                     example: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
             example:
                 registrationRequestOptions:
-                    attestation: indirect
+                    attestation: direct
                     authenticatorSelection:
                         authenticatorAttachment: platform
                         requireResidentKey: true
@@ -2435,7 +2428,7 @@ components:
                         appid: https://loalhost:8443
                     rpId: https://localhost:8443/
                     timeout: 5000
-                    userVerification: discouraged
+                    userVerification: preferred
                 session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
                 txId: 2a363a42-a397-4af0-b089-0935fc223017
             required:
@@ -2550,11 +2543,11 @@ tags:
       description: FIDO2 pass-key management
     - name: profile
       description: User Profile API
-    - name: tx
-      description: FIDO2 transaction confirmation flow
     - name: auth
       description: FIDO2 authentication flow
     - name: reg
       description: FIDO2 registration flow
+    - name: tx
+      description: FIDO2 transaction confirmation flow
     - name: version
       description: Get Version
