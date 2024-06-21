@@ -1,3 +1,9 @@
+## [1.6.0](https://gitlab.com/loginid/software/sdks/websdk3/compare/v1.5.0...v1.6.0) (2024-06-21)
+
+### Features
+
+* **rule engine:** added typings for device ID ([a15add8](https://gitlab.com/loginid/software/sdks/websdk3/commit/a15add8466aa3306200ea560a043bfece2c653e4))
+
 ## [1.5.0](https://gitlab.com/loginid/software/sdks/websdk3/compare/v1.4.0...v1.5.0) (2024-06-14)
 
 ### Features
