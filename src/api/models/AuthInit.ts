@@ -13,5 +13,13 @@ export type AuthInit = {
      * An opaque object containing session data.
      */
     session: string;
+    /**
+     * probability of passkey on current device
+     */
+    matchScore: number;
+    /**
+     * passkey type [ device, local, cloud]
+     */
+    passkeyType: string;
 };
 

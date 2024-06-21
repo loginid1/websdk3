@@ -48,6 +48,7 @@ export interface ConfirmTransactionOptions extends PasskeyOptions {
 
 export interface PasskeyResult {
 	jwtAccess: string
+	deviceID: string
 }
 
 export interface LoginIDUser {
