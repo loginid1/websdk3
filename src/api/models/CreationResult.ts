@@ -34,6 +34,6 @@ export type CreationResult = {
      * These values are the transports that the authenticator is believed to support,
      * or an empty sequence if the information is unavailable.
      */
-    transports?: Array<'usb' | 'nfc' | 'ble' | 'internal' | 'hybrid'>;
+    transports?: Array<'usb' | 'nfc' | 'ble' | 'internal' | 'hybrid' | 'cable' | 'smart-card'>;
 };
 

@@ -10,6 +10,14 @@ export type AuthInit = {
      */
     fallbackOptions?: Array<'otp:client' | 'otp:email' | 'otp:sms'>;
     /**
+     * Match score of the device
+     */
+    matchScore?: number;
+    /**
+     * Type of passkey supported by the client.
+     */
+    passkeyType?: string;
+    /**
      * An opaque object containing session data.
      */
     session: string;

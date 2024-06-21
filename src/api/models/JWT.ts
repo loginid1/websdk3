@@ -2,9 +2,11 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { CodeResult } from './CodeResult';
 export type JWT = {
-    code?: CodeResult;
+    /**
+     * Device ID
+     */
+    deviceID?: string;
     /**
      * JWT access token
      */

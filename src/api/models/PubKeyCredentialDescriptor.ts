@@ -7,7 +7,7 @@ export type PubKeyCredentialDescriptor = {
      * Base64 encoded byte array of the public key identifier.
      */
     id: string;
-    transports?: Array<'usb' | 'nfc' | 'ble' | 'internal' | 'hybrid'>;
+    transports?: Array<'usb' | 'nfc' | 'ble' | 'internal' | 'hybrid' | 'cable' | 'smart-card'>;
     type: 'public-key';
 };
 
