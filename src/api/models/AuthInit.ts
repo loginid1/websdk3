@@ -16,10 +16,10 @@ export type AuthInit = {
     /**
      * probability of passkey on current device
      */
-    matchScore: number;
+    matchScore?: number;
     /**
      * passkey type [ device, local, cloud]
      */
-    passkeyType: string;
+    passkeyType?: string;
 };
 

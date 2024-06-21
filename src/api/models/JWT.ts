@@ -9,5 +9,6 @@ export type JWT = {
      * JWT access token
      */
     jwtAccess: string;
+    deviceID?: string;
 };
 
