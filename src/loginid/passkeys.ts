@@ -1,8 +1,10 @@
-import LoginIDBase from './base'
+import Code from './code'
+import AbortControllerManager from '../abort-controller'
 import { defaultDeviceInfo } from '../browser'
-import { renewWebAuthnAbortController, USER_NO_OP_ERROR } from './errors'
+import { USER_NO_OP_ERROR } from '../loginid/errors'
+import { confirmTransactionOptions, passkeyOptions } from './defaults'
 import { createPasskeyCredential, getPasskeyCredential } from '../webauthn/'
-import { bufferToBase64Url, createUUID, parseJwt } from '../utils'
+import { bufferToBase64Url, parseJwt } from '../utils'
 import type {
   AuthenticateWithPasskeysOptions,
   ConfirmTransactionOptions,
@@ -14,13 +16,13 @@ import type {
 } from './types'
 import {
   AuthCode,
-  AuthCodeVerifyRequestBody,
   AuthCompleteRequestBody,
   AuthInit,
   AuthInitRequestBody,
   RegCompleteRequestBody,
   RegInit,
   RegInitRequestBody,
+  TxComplete,
   TxCompleteRequestBody,
   TxInitRequestBody,
 } from '../api'
@@ -28,7 +30,7 @@ import {
 /**
  * Extends LoginIDBase to support creation, registration, and authentication of passkeys.
  */
-class Passkeys extends LoginIDBase {
+class Passkeys extends Code {
   /**
    * Initializes a new Passkeys instance with the provided configuration.
    * @param {LoginIDConfig} config Configuration object for LoginID.
@@ -45,7 +47,7 @@ class Passkeys extends LoginIDBase {
   async createNavigatorCredential(regInitResponseBody: RegInit) {
     const { registrationRequestOptions, session } = regInitResponseBody
 
-    this.abortController = renewWebAuthnAbortController(this.abortController)
+    AbortControllerManager.renewWebAuthnAbortController()
 
     const credential = await createPasskeyCredential(registrationRequestOptions)
     const response = credential.response as AuthenticatorAttestationResponse
@@ -79,13 +81,9 @@ class Passkeys extends LoginIDBase {
    */
   async registerWithPasskey(username: string, options: RegisterWithPasskeyOptions = {}): Promise<PasskeyResult> {
     const deviceInfo = defaultDeviceInfo()
+    const opts = passkeyOptions(username, options)
 
-    // Default to email if usernameType is not provided
-    if (!options.usernameType) {
-      options.usernameType = 'email'
-    }
-
-    options.token = this.getToken(options)
+    options.token = this.session.getToken(options)
     if (options.token) {
       // guard against username mismatch
       const parsedToken = parseJwt(options.token)
@@ -101,8 +99,8 @@ class Passkeys extends LoginIDBase {
       deviceInfo: deviceInfo,
       user: {
         username: username,
-        usernameType: options.usernameType,
-        ...options.displayName && { displayName: options.displayName },
+        usernameType: opts.usernameType,
+        displayName: opts.displayName,
       },
       ...options.session && { session: options.session },
     }
@@ -120,7 +118,7 @@ class Passkeys extends LoginIDBase {
       .reg
       .regRegComplete({ requestBody: regCompleteRequestBody })
 
-    this.setJwtCookie(result.jwtAccess)
+    this.session.setJwtCookie(result.jwtAccess)
 
     return result
   }
@@ -135,8 +133,8 @@ class Passkeys extends LoginIDBase {
     const { assertionOptions, session } = authInitResponseBody
 
     if (!options.abortSignal) {
-      this.abortController = renewWebAuthnAbortController(this.abortController)
-      options.abortSignal = this.abortController.signal
+      AbortControllerManager.renewWebAuthnAbortController()
+      options.abortSignal = AbortControllerManager.abortController.signal
     }
 
     const credential = await getPasskeyCredential(assertionOptions, options)
@@ -164,22 +162,16 @@ class Passkeys extends LoginIDBase {
    */
   async authenticateWithPasskey(username = '', options: AuthenticateWithPasskeysOptions = {}): Promise<PasskeyResult> {
     const deviceInfo = defaultDeviceInfo()
-
-    // Default to email if usernameType is not provided
-    if (!options.usernameType) {
-      options.usernameType = 'email'
-    }
+    const opts = passkeyOptions(username, options)
   
     const authInitRequestBody: AuthInitRequestBody = {
       app: {
         id: this.config.appId,
-        ...options.token && { token: options.token },
       },
       deviceInfo: deviceInfo,
       user: {
         username: username,
-        usernameType: options.usernameType,
-        ...options.displayName && { displayName: options.displayName },
+        usernameType: opts.usernameType,
       },
     }
 
@@ -193,13 +185,13 @@ class Passkeys extends LoginIDBase {
       .auth
       .authAuthComplete({ requestBody: authCompleteRequestBody })
 
-    this.setJwtCookie(result.jwtAccess)
+    this.session.setJwtCookie(result.jwtAccess)
 
     return result
   }
 
   /**
-   * Authenticates a user with condtional UI (passkey autofill).
+   * Authenticates a user with conditional UI (passkey autofill).
    * @param {AuthenticateWithPasskeysOptions} options Additional authentication options.
    * @returns {Promise<any>} Result of the authentication operation.
    */
@@ -215,7 +207,7 @@ class Passkeys extends LoginIDBase {
    * @returns {Promise<AuthCode>} Code and expiry.
    */
   async generateCodeWithPasskey(username: string, options: AuthenticateWithPasskeysOptions = {}): Promise<AuthCode> {
-    options.token = this.getToken(options)
+    options.token = this.session.getToken(options)
     // if no token is found, perform authentication
     if (!options.token) {
       const result = await this.authenticateWithPasskey(username, options)
@@ -231,40 +223,6 @@ class Passkeys extends LoginIDBase {
   
     return code
   }
-  
-  /**
-   * Authenticate with a code.
-   * @param {string} username Username to authenticate.
-   * @param {string} code code to authenticate.
-   * @param {AuthenticateWithPasskeysOptions} options Additional authentication options.
-   * @returns {Promise<any>} Result of the authentication operation.
-   */
-  async authenticateWithCode(username: string, code: string, options: AuthenticateWithPasskeysOptions = {}) {
-    // Default to email if usernameType is not provided
-    if (!options.usernameType) {
-      options.usernameType = 'email'
-    }
-  
-    const request: AuthCodeVerifyRequestBody = {
-      authCode: code,
-      user: {
-        username: username,
-        usernameType: options.usernameType,
-      },
-    }
-  
-    const result = await this.service
-      .auth.authAuthCodeVerify({
-        requestBody: request
-      })
-
-    // Renew abort cpontroller since authentication is complete
-    this.abortController = renewWebAuthnAbortController(this.abortController)
-
-    this.setJwtCookie(result.jwtAccess)
-
-    return result
-  }
 
   /**
    * Add passkey
@@ -273,7 +231,7 @@ class Passkeys extends LoginIDBase {
    * @returns {Promise<PasskeyResult>} Result of the add passkey operation.
    */
   async addPasskey(username: string, options: PasskeyOptions = {}): Promise<PasskeyResult> {
-    const token = this.getToken(options)
+    const token = this.session.getToken(options)
     if (!token) {
       throw USER_NO_OP_ERROR
     }
@@ -315,12 +273,13 @@ class Passkeys extends LoginIDBase {
    * @returns {Promise<any>} A promise that resolves with the result of the transaction confirmation operation. 
    * The result includes details about the transaction's details and includes a new JWT access token.
    */
-  async confirmTransaction(username: string, txPayload: string, options: ConfirmTransactionOptions = {}) {
+  async confirmTransaction(username: string, txPayload: string, options: ConfirmTransactionOptions = {}): Promise<TxComplete> {
+    const opts = confirmTransactionOptions(username, options)
     const txInitRequestBody: TxInitRequestBody = {
       username: username,
       txPayload: txPayload,
-      nonce: options.nonce || createUUID(),
-      txType: options.txType || 'raw',
+      nonce: opts.nonce,
+      txType: opts.txType,
     }
 
     const {assertionOptions, session} = await this.service
@@ -328,6 +287,9 @@ class Passkeys extends LoginIDBase {
       .txTxInit({ requestBody: txInitRequestBody })
 
     const authInitResponseBody: AuthInit = {
+      action: 'proceed',
+      affirmMethods: [],
+      fallbackMethods: [],
       assertionOptions: assertionOptions,
       session: session,
     } 
@@ -346,7 +308,7 @@ class Passkeys extends LoginIDBase {
       .tx
       .txTxComplete({ requestBody: txCompleteRequestBody })
 
-    this.setJwtCookie(result.jwtAccess)
+    this.session.setJwtCookie(result.jwtAccess)
 
     return result
   }
