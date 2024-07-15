@@ -48,6 +48,7 @@ e2e-test:
       docker run --rm --name test-suite
       -e TEST_URL="$TEST_URL"
       -e TESTING_ENVIRONMENT="$TESTING_ENVIRONMENT"
+      -e MAILSLURP_API_KEY="$MAILSLURP_API_KEY"
       -e SE_NODE_MAX_SESSIONS="2"
       -e SE_NODE_OVERRIDE_MAX_SESSIONS="true"
       -e NODE_ENV="$NODE_ENV"

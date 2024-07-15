@@ -20,7 +20,7 @@ class PasskeyManager extends LoginIDBase {
    * @returns {Promise<PasskeysPasskeyResponseCollection>} A collection of passkeys.
    */
   async listPasskeys(options: ListPasskeysOptions = {}): Promise<PasskeyCollection> {
-    const token = this.getToken(options)
+    const token = this.session.getToken(options)
 
     return await this.service
       .passkeys
@@ -35,7 +35,7 @@ class PasskeyManager extends LoginIDBase {
    * @returns {Promise<null>} A promise that resolves to null upon successful completion.
    */
   async renamePasskey(id: string, name: string, options: RenamePasskeyOptions = {}): Promise<null> {
-    const token = this.getToken(options)
+    const token = this.session.getToken(options)
 
     const passkeyRenameRequestBody: PasskeyRenameRequestBody = {
       name: name
@@ -59,7 +59,7 @@ class PasskeyManager extends LoginIDBase {
    * @returns {Promise<null>} A promise that resolves to null upon successful deletion.
    */
   async deletePasskey(id: string, options: DeletePasskeyOptions = {}): Promise<null> {
-    const token = this.getToken(options)
+    const token = this.session.getToken(options)
 
     await this.service
       .passkeys

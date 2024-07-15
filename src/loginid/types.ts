@@ -5,9 +5,15 @@ import {
   User,
 } from '../api'
 
+export type Complete<T> = {
+  [P in keyof T]-?: T[P];
+}
+
 export type UsernameType = User['usernameType']
 export type DeviceInfoRequestBody = DeviceInfo
 export type Transports = CreationResult['transports']
+
+export type Message = 'email' | 'sms'
 
 export interface LoginIDConfig {
 	baseUrl: string
@@ -44,6 +50,10 @@ export interface RegisterWithPasskeyOptions extends PasskeyOptions {
 export interface ConfirmTransactionOptions extends PasskeyOptions {
 	txType?: string
 	nonce?: string
+}
+
+export interface SendCodeOptions {
+	usernameType?: UsernameType
 }
 
 export interface PasskeyResult {

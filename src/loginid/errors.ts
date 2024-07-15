@@ -139,24 +139,6 @@ export const identifyGetError = (
 }
 
 /**
- * Refreshes an existing WebAuthn AbortController by aborting the current request and initiating a new controller.
- * This function is useful for handling scenarios where a WebAuthn request needs to be programmatically cancelled
- * to handle new user interactions.
- * 
- * @param {AbortController} previous The previous AbortController instance that needs to be aborted.
- * @returns {AbortController} A new AbortController instance, ready to be used for a new WebAuthn request.
- */
-export const renewWebAuthnAbortController = (
-  previous: AbortController
-): AbortController => {
-  const error = new Error('Cancelling current WebAuthn request')
-  error.name = 'AbortError'
-  previous.abort(error)
-  const controller = new AbortController()
-  return controller
-}
-
-/**
  * Error indicating that a user operation was attempted without the user being logged in.
  * This error is thrown when an action requires authentication but the user is not authenticated.
  * @constant

@@ -45,8 +45,8 @@ paths:
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
-                "403":
-                    description: 'Forbidden: Forbidden response.'
+                "404":
+                    description: 'NotFound: Not Found response.'
                     content:
                         application/json:
                             schema:
@@ -109,6 +109,11 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/AuthInit'
                             example:
+                                action: proceed
+                                affirmMethods:
+                                    - otp
+                                    - otp:sms
+                                    - otp:email
                                 assertionOptions:
                                     allowCredentials:
                                         - id: oAjxAhjnoQXLmRRAczwPg2E/S2zVS+DKlO6WNvgH9ys=
@@ -124,10 +129,8 @@ paths:
                                     rpId: https://localhost:8443/
                                     timeout: 5000
                                     userVerification: preferred
-                                fallbackOptions:
-                                    - otp:client
-                                    - otp:email
-                                matchScore: 100
+                                fallbackMethods:
+                                    - ciam
                                 passkeyType: device
                                 session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
                 "400":
@@ -1114,6 +1117,7 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/RegInit'
                             example:
+                                action: proceed
                                 registrationRequestOptions:
                                     attestation: direct
                                     authenticatorSelection:
@@ -1414,26 +1418,48 @@ components:
         AuthInit:
             type: object
             properties:
-                assertionOptions:
-                    $ref: '#/components/schemas/PublicKeyCredentialRequestOptions'
-                fallbackOptions:
+                action:
+                    type: string
+                    description: An action to be performed by the front-end to complete the authentication flow.
+                    default: proceed
+                    example: proceed
+                    enum:
+                        - proceed
+                        - affirm
+                        - fallback
+                affirmMethods:
                     type: array
                     items:
                         type: string
-                        example: otp:client
+                        example: otp:sms
                         enum:
-                            - otp:client
-                            - otp:email
+                            - otp
                             - otp:sms
-                    description: List of fallback methods (in priority order) available to this client.
+                            - otp:email
+                    description: List of cross authentication methods in the order of preference
                     example:
-                        - otp:client
+                        - otp
+                        - otp:sms
                         - otp:email
-                matchScore:
-                    type: integer
-                    description: Match score of the device
-                    example: 100
-                    format: int64
+                assertionOptions:
+                    $ref: '#/components/schemas/PublicKeyCredentialRequestOptions'
+                fallbackMethods:
+                    type: array
+                    items:
+                        type: string
+                        example: ciam
+                        enum:
+                            - ciam
+                    description: |-
+                        The list contains available fallback methods in the order of preference. The
+                        list is dynamic and shall not be cached. The default fallback mechanism is
+                        the one provided by CIAM but our system may provide additional ones as well.
+                        These methods may be enabled by customer via application configuration but
+                        they are disabled by default. The list may be empty which means no fallback
+                        is available and authentication flow shall terminate at this point.
+                    default: []
+                    example:
+                        - ciam
                 passkeyType:
                     type: string
                     description: Type of passkey supported by the client.
@@ -1443,6 +1469,11 @@ components:
                     description: An opaque object containing session data.
                     example: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
             example:
+                action: proceed
+                affirmMethods:
+                    - otp
+                    - otp:sms
+                    - otp:email
                 assertionOptions:
                     allowCredentials:
                         - id: oAjxAhjnoQXLmRRAczwPg2E/S2zVS+DKlO6WNvgH9ys=
@@ -1458,15 +1489,16 @@ components:
                     rpId: https://localhost:8443/
                     timeout: 5000
                     userVerification: preferred
-                fallbackOptions:
-                    - otp:client
-                    - otp:email
-                matchScore: 100
+                fallbackMethods:
+                    - ciam
                 passkeyType: device
                 session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
             required:
                 - session
                 - assertionOptions
+                - action
+                - affirmMethods
+                - fallbackMethods
         AuthInitRequestBody:
             type: object
             properties:
@@ -1541,7 +1573,7 @@ components:
                 authenticatorAttachment:
                     type: string
                     description: Authenticator attachment modality
-                    example: cross-platform
+                    example: platform
                     enum:
                         - platform
                         - cross-platform
@@ -1549,11 +1581,11 @@ components:
                     type: boolean
                     description: Resident key requirement
                     default: false
-                    example: true
+                    example: false
                 residentKey:
                     type: string
                     description: Resident key requirement
-                    example: discouraged
+                    example: required
                     enum:
                         - discouraged
                         - preferred
@@ -1561,14 +1593,14 @@ components:
                 userVerification:
                     type: string
                     description: Resident key requirement
-                    example: discouraged
+                    example: required
                     enum:
                         - required
                         - preferred
                         - discouraged
             example:
                 authenticatorAttachment: platform
-                requireResidentKey: false
+                requireResidentKey: true
                 residentKey: required
                 userVerification: discouraged
         BadRequestError:
@@ -1627,7 +1659,7 @@ components:
                     type: array
                     items:
                         type: string
-                        example: hybrid
+                        example: smart-card
                         enum:
                             - usb
                             - nfc
@@ -1640,10 +1672,10 @@ components:
                         These values are the transports that the authenticator is believed to support,
                         or an empty sequence if the information is unavailable.
                     example:
-                        - ble
                         - usb
+                        - usb
+                        - hybrid
                         - ble
-                        - cable
             example:
                 attestationObject: 5lvuZBkX1w7/0+XKcldttzA7vTwilEq3qnnXSq/a0...
                 authenticatorData: ix523n3XniH01jM4CIuOn1z0Jw6QbRATXYOsCUyQN...
@@ -1652,9 +1684,8 @@ components:
                 publicKey: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
                 publicKeyAlgorithm: -8
                 transports:
-                    - nfc
-                    - nfc
-                    - hybrid
+                    - usb
+                    - ble
             required:
                 - clientDataJSON
                 - attestationObject
@@ -1725,7 +1756,7 @@ components:
                     type: array
                     items:
                         type: string
-                        example: passkey:read
+                        example: profile:read
                         enum:
                             - passkey:read
                             - passkey:write
@@ -1845,7 +1876,7 @@ components:
                         Whether to update the email address immediately or send an authorization code
                         to verify.
                     default: true
-                    example: true
+                    example: false
             example:
                 email: luke.skywalker@tatuin.com
                 requestVerification: true
@@ -1907,7 +1938,7 @@ components:
                     type: array
                     items:
                         type: string
-                        example: nfc
+                        example: usb
                         enum:
                             - usb
                             - nfc
@@ -1917,8 +1948,10 @@ components:
                             - cable
                             - smart-card
                     example:
-                        - hybrid
+                        - ble
                         - nfc
+                        - ble
+                        - hybrid
                 type:
                     type: string
                     example: public-key
@@ -1927,8 +1960,10 @@ components:
             example:
                 id: AyQBkTLAPWaLl6HtE3Oh6ovqkspSidX8DA9fYQB6DX4=
                 transports:
+                    - internal
                     - smart-card
                     - ble
+                    - hybrid
                 type: public-key
             required:
                 - type
@@ -1978,7 +2013,7 @@ components:
                         appid: https://loalhost:8443
                     additionalProperties:
                         type: string
-                        example: Delectus aperiam eligendi voluptatum earum illum.
+                        example: Aut quod delectus aperiam.
                 pubKeyCredParams:
                     type: array
                     items:
@@ -2006,7 +2041,7 @@ components:
                 user:
                     $ref: '#/components/schemas/PublicKeyCredentialUserEntity'
             example:
-                attestation: enterprise
+                attestation: none
                 authenticatorSelection:
                     authenticatorAttachment: platform
                     requireResidentKey: true
@@ -2050,7 +2085,7 @@ components:
                         A cryptographic signature algorithm with which the newly generated credential
                         will be used, and thus also the type of asymmetric key pair to be generated,
                         e.g., RSA or Elliptic Curve.
-                    example: -7
+                    example: -36
                     enum:
                         - -7
                         - -35
@@ -2065,7 +2100,7 @@ components:
                         - public-key
             description: Additional parameters when creating a new credential.
             example:
-                alg: -257
+                alg: -7
                 type: public-key
         PublicKeyCredentialRequestOptions:
             type: object
@@ -2104,7 +2139,7 @@ components:
                         appid: https://loalhost:8443
                     additionalProperties:
                         type: string
-                        example: Sit quos explicabo excepturi perferendis fugit expedita.
+                        example: Quos explicabo excepturi.
                 rpId:
                     type: string
                     description: |-
@@ -2128,7 +2163,7 @@ components:
                         client platforms MUST ignore unknown values, treating an unknown value as if
                         the member does not exist. Eligible authenticators are filtered to only those
                         capable of satisfying this requirement.
-                    example: discouraged
+                    example: preferred
                     enum:
                         - required
                         - preferred
@@ -2147,7 +2182,7 @@ components:
                     appid: https://loalhost:8443
                 rpId: https://localhost:8443/
                 timeout: 5000
-                userVerification: required
+                userVerification: discouraged
             required:
                 - challenge
         PublicKeyCredentialRpEntity:
@@ -2218,6 +2253,15 @@ components:
         RegInit:
             type: object
             properties:
+                action:
+                    type: string
+                    description: An action to be performed by the front-end to complete the registration flow.
+                    default: proceed
+                    example: proceed
+                    enum:
+                        - proceed
+                        - signIn
+                        - fail
                 registrationRequestOptions:
                     $ref: '#/components/schemas/PublicKeyCredentialCreationOptions'
                 session:
@@ -2225,6 +2269,7 @@ components:
                     description: An opaque object containing session data.
                     example: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
             example:
+                action: proceed
                 registrationRequestOptions:
                     attestation: direct
                     authenticatorSelection:
@@ -2260,6 +2305,7 @@ components:
             required:
                 - session
                 - registrationRequestOptions
+                - action
         RegInitRequestBody:
             type: object
             properties:
