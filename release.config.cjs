@@ -26,10 +26,6 @@ module.exports = {
             scope: 'README',
             release: 'patch',
           },
-          {
-            type: 'chore',
-            release: 'patch',
-          },
         ],
         parserOpts: {
           noteKeywords: ['BREAKING CHANGE', 'BREAKING CHANGES', 'BREAKING'],

@@ -94,7 +94,7 @@ class Passkeys extends Code {
 
     const regInitRequestBody: RegInitRequestBody = {
       app: {
-        id: this.config.appId,
+        id: this.config.getAppId(),
       },
       deviceInfo: deviceInfo,
       user: {
@@ -166,7 +166,7 @@ class Passkeys extends Code {
   
     const authInitRequestBody: AuthInitRequestBody = {
       app: {
-        id: this.config.appId,
+        id: this.config.getAppId(),
       },
       deviceInfo: deviceInfo,
       user: {

@@ -1,4 +1,5 @@
 // Copyright (C) LoginID
+import LoginIDConfigValidator from '../loginid/validators'
 import { USER_NO_OP_ERROR } from '../loginid/errors'
 import { LoginIDConfig, LoginIDUser, PasskeyOptions } from '../loginid/types'
 import { 
@@ -12,14 +13,14 @@ class SessionManager {
   /**
    * Holds the configuration settings for the LoginID integration, including API base URL.
    */
-  private config: LoginIDConfig
+  private config: LoginIDConfigValidator
 
   /**
    * Initializes a new instance of SessionManager with the provided configuration.
    * @param {LoginIDConfig} config Configuration object for LoginID.
    */
   constructor(config: LoginIDConfig) {
-    this.config = config
+    this.config = new LoginIDConfigValidator(config)
   }
 
   /**
@@ -62,7 +63,7 @@ class SessionManager {
    * @returns {string} The name of the cookie
    */
   public getJwtCookieName(): string {
-    return `LoginID_${this.config.appId}_token`
+    return `LoginID_${this.config.getAppId()}_token`
   }
 
   /**
