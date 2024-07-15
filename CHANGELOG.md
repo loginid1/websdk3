@@ -1,3 +1,13 @@
+## [1.7.0](https://gitlab.com/loginid/software/sdks/websdk3/compare/v1.6.0...v1.7.0) (2024-07-15)
+
+### Features
+
+* **code:** send email/sms OTP ([ca64719](https://gitlab.com/loginid/software/sdks/websdk3/commit/ca6471982bc8ca1f9545436aaae10f466a0a1112))
+
+### Miscellaneous Chores
+
+* **openapi gen:** openAPI generation is now totally automated ([df35aad](https://gitlab.com/loginid/software/sdks/websdk3/commit/df35aad986f9ce5c2c531cfe2ac594b22778919e))
+
 ## [1.6.0](https://gitlab.com/loginid/software/sdks/websdk3/compare/v1.5.0...v1.6.0) (2024-06-21)
 
 ### Features
