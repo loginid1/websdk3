@@ -66,7 +66,7 @@ class SessionManager {
   }
 
   /**
-   * Set jwt token to localstorage
+   * Set jwt token to local Cookie
    * @param {string} jwt Configuration object for LoginID API, including the base URL.
    */
   public setJwtCookie(jwt: string) {

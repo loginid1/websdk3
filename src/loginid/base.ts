@@ -20,7 +20,7 @@ class LoginIDBase {
   /**
    * Instance of SessionManager, providing access to the session management methods.
    */
-  protected readonly session: SessionManager
+  public readonly session: SessionManager
 
   /**
    * Constructs a new instance of the LoginIDBase class, initializing the service with the provided configuration.
@@ -31,6 +31,31 @@ class LoginIDBase {
     // Initialize the LoginIDService with the base URL provided in the configuration.
     this.service = new LoginIDService({BASE: config.baseUrl})
     this.session = new SessionManager(config)
+  }
+
+  /**
+   * Retrieves the currently authenticated user's information.
+   * @returns {LoginIDUser} The currently authenticated user's information, including username and id.
+   * @throws {Error} If the user is not logged in, throws USER_NO_OP_ERROR.
+   */
+  public getUser() {
+    return this.session.getUser()
+  }
+
+  /**
+   * checks if the user is logged in.
+   * @returns {boolean}
+   */
+  public isLoggedIn() {
+    return this.session.isLoggedIn()
+  }
+
+  /**
+   * deletes the jwt cookie.
+   * @returns {boolean}
+   */
+  public signout() {
+    this.session.signout()
   }
 }
 
