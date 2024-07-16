@@ -70,6 +70,8 @@ release:
   image: node:latest
   rules:
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+    - if: $CI_PIPELINE_SOURCE == "pipeline" 
+      when: never # don't run on pipeline triggers
   variables:
     GITLAB_TOKEN: $PROJECT_CI_TOKEN
     NPM_TOKEN: $NPM_AUTH_TOKEN
