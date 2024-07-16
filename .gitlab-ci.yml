@@ -11,6 +11,10 @@ stages:
 
 install:
   stage: build
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "pipeline" 
+      when: never # don't run on pipeline triggers
+    - when: always
   script:
     - npm install
   artifacts:
@@ -21,6 +25,10 @@ install:
 
 unit-test:
   stage: test
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "pipeline" 
+      when: never # don't run on pipeline triggers
+    - when: always
   script:
     - npm run lint
     - npm audit --audit-level=low
@@ -29,6 +37,8 @@ unit-test:
 e2e-test:
   stage: test
   image: docker
+  rules:
+    - when: always
   variables:
     TEST_URL: http://localhost:3000
     TESTING_ENVIRONMENT: dev
