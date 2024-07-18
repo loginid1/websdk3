@@ -1,5 +1,5 @@
 import { bufferToBase64Url } from '../utils'
-import { createPasskeyCredential, getPasskeyCredential } from '.'
+import { createPasskeyCredential, getPasskeyCredential } from '../loginid/lib/webauthn'
 import { AuthenticateWithPasskeysOptions, Transports } from '../loginid/types'
 import { AuthCompleteRequestBody, AuthInit, RegCompleteRequestBody, RegInit } from '../api'
 

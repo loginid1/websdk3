@@ -1,5 +1,5 @@
-import SessionManager from '../session'
-import LoginIDConfigValidator from './validators'
+import SessionManager from './lib/session'
+import LoginIDConfigValidator from './lib/validators'
 import { LoginIDService } from '../api/LoginIDService'
 import type { LoginIDConfig } from './types'
 

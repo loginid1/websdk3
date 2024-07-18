@@ -1,7 +1,7 @@
 import LoginIDBase from './base'
-import Passkeys from './passkeys'
-import Code from './code'
-import PasskeyManager from './passkey-manager'
+import Passkeys from './controllers/passkeys'
+import Code from './controllers/code'
+import PasskeyManager from './controllers/passkey-manager'
 import {applyMixins} from '../utils'
 import type {LoginIDConfig} from './types'
 

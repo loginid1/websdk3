@@ -1,10 +1,10 @@
 import Code from './code'
-import AbortControllerManager from '../abort-controller'
-import { defaultDeviceInfo } from '../browser'
-import { USER_NO_OP_ERROR } from '../loginid/errors'
-import { confirmTransactionOptions, passkeyOptions } from './defaults'
-import { createPasskeyCredential, getPasskeyCredential } from '../webauthn/'
-import { bufferToBase64Url, parseJwt } from '../utils'
+import AbortControllerManager from '../../abort-controller'
+import { defaultDeviceInfo } from '../../browser'
+import { USER_NO_OP_ERROR } from '../lib/errors'
+import { confirmTransactionOptions, passkeyOptions } from '../lib/defaults'
+import { createPasskeyCredential, getPasskeyCredential } from '../lib/webauthn'
+import { bufferToBase64Url, parseJwt } from '../../utils'
 import type {
   AuthenticateWithPasskeysOptions,
   ConfirmTransactionOptions,
@@ -13,7 +13,7 @@ import type {
   PasskeyResult,
   RegisterWithPasskeyOptions,
   Transports
-} from './types'
+} from '../types'
 import {
   AuthCode,
   AuthCompleteRequestBody,
@@ -25,7 +25,7 @@ import {
   TxComplete,
   TxCompleteRequestBody,
   TxInitRequestBody,
-} from '../api'
+} from '../../api'
 
 /**
  * Extends LoginIDBase to support creation, registration, and authentication of passkeys.

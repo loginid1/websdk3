@@ -1,6 +1,6 @@
-import LoginIDBase from './base'
-import {DeletePasskeyOptions, ListPasskeysOptions, LoginIDConfig, RenamePasskeyOptions} from './types'
-import type {PasskeyCollection, PasskeyRenameRequestBody} from '../api'
+import LoginIDBase from '../base'
+import {DeletePasskeyOptions, ListPasskeysOptions, LoginIDConfig, RenamePasskeyOptions} from '../types'
+import type {PasskeyCollection, PasskeyRenameRequestBody} from '../../api'
 
 /**
  * Extends LoginIDBase to manage Passkeys, including listing, renaming, and deleting passkeys.
