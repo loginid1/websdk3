@@ -1,5 +1,5 @@
 import LoginIDBase from '../base'
-import { ApiError, AuthInitRequestBody } from '@/src/api'
+import { ApiError, AuthInitRequestBody } from '../../api/'
 import { passkeyOptions } from '../lib/defaults'
 import { LoginIDConfig, VerifyConfigResult } from '../types'
 
