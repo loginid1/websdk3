@@ -1,15 +1,15 @@
 // Copyright (C) LoginID
-import LoginIDBase from './base'
-import AbortControllerManager from '../abort-controller'
-import { passkeyOptions } from './defaults'
-import { AuthCodeRequestSMSRequestBody, AuthCodeVerifyRequestBody } from '../api'
+import LoginIDBase from '../base'
+import AbortControllerManager from '../../abort-controller'
+import { passkeyOptions } from '../lib/defaults'
+import { AuthCodeRequestSMSRequestBody, AuthCodeVerifyRequestBody } from '../../api'
 import {
   AuthenticateWithPasskeysOptions,
   LoginIDConfig,
   Message,
   PasskeyResult,
   SendCodeOptions,
-} from './types'
+} from '../types'
 
 /**
  * Extends LoginIDBase to support OTP codes.

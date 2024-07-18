@@ -1,4 +1,5 @@
 // Copyright (C) LoginID
+import AbortError from '../errors/abort'
 
 class AbortControllerManager {
   /**
@@ -13,9 +14,7 @@ class AbortControllerManager {
    * to handle new user interactions.
    */
   public static renewWebAuthnAbortController = () => {
-    const error = new Error('Cancelling current WebAuthn request')
-    error.name = 'AbortError'
-
+    const error = new AbortError('Cancelling current WebAuthn request')
     AbortControllerManager.abortController.abort(error)
     const controller = new AbortController()
     AbortControllerManager.abortController = controller

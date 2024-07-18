@@ -1,5 +1,5 @@
-import SessionManager from '../session'
-import LoginIDConfigValidator from './validators'
+import SessionManager from './lib/session'
+import LoginIDConfigValidator from './lib/validators'
 import { LoginIDService } from '../api/LoginIDService'
 import type { LoginIDConfig } from './types'
 
@@ -31,31 +31,6 @@ class LoginIDBase {
     this.config = new LoginIDConfigValidator(config)
     this.service = new LoginIDService({BASE: config.baseUrl})
     this.session = new SessionManager(config)
-  }
-
-  /**
-   * Retrieves the currently authenticated user's information.
-   * @returns {LoginIDUser} The currently authenticated user's information, including username and id.
-   * @throws {Error} If the user is not logged in, throws USER_NO_OP_ERROR.
-   */
-  public getUser() {
-    return this.session.getUser()
-  }
-
-  /**
-   * checks if the user is logged in.
-   * @returns {boolean}
-   */
-  public isLoggedIn() {
-    return this.session.isLoggedIn()
-  }
-
-  /**
-   * deletes the jwt cookie.
-   * @returns {boolean}
-   */
-  public signout() {
-    this.session.signout()
   }
 }
 

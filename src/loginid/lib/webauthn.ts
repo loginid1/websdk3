@@ -1,10 +1,10 @@
-import {base64UrlToBuffer} from '../utils'
-import { AuthenticateWithPasskeysOptions } from '..'
-import {identifyCreateError, identifyGetError} from '../loginid/errors'
+import {base64UrlToBuffer} from '../../utils'
+import { AuthenticateWithPasskeysOptions } from '../..'
+import {identifyCreateError, identifyGetError} from './errors'
 import type {
   PublicKeyCredentialCreationOptions,
   PublicKeyCredentialRequestOptions,
-} from '../api/'
+} from '../../api'
 
 /**
  * Asynchronously creates a passkey credential using the provided registration response.

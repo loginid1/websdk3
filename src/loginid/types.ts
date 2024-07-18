@@ -66,4 +66,11 @@ export interface LoginIDUser {
   id: string
 }
 
+export interface VerifyConfigResult {
+  isValid: boolean
+  solution?: string
+  message?: string
+  code?: string
+}
+
 export { ApiError }

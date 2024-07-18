@@ -1,13 +1,13 @@
 // Copyright (C) LoginID
-import LoginIDConfigValidator from '../loginid/validators'
-import { USER_NO_OP_ERROR } from '../loginid/errors'
-import { LoginIDConfig, LoginIDUser, PasskeyOptions } from '../loginid/types'
+import LoginIDConfigValidator from './validators'
+import { USER_NO_OP_ERROR } from './errors'
+import { LoginIDConfig, LoginIDUser, PasskeyOptions } from '../types'
 import { 
   deleteCookie,
   getCookie,
   parseJwt,
   setCookie
-} from '../utils'
+} from '../../utils'
 
 class SessionManager {
   /**

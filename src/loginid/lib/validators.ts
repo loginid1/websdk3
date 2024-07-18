@@ -1,5 +1,5 @@
 // Copyright (C) LoginID
-import { LoginIDConfig } from './types'
+import { LoginIDConfig } from '../types'
 
 class LoginIDConfigValidator {
   /**

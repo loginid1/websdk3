@@ -1,4 +1,4 @@
-import PasskeyError from '../errors/passkey'
+import PasskeyError from '../../errors/passkey'
 
 /**
  * Identifies the error that occurred during passkey creation.

@@ -1,10 +1,10 @@
 // Copyright (C) LoginID
-import { createUUID } from '../utils'
+import { createUUID } from '../../utils'
 import { 
   Complete,
   ConfirmTransactionOptions,
   PasskeyOptions,
-} from './types'
+} from '../types'
 
 /**
  * Merges provided options with default values for passkey options.
