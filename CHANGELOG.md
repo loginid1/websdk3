@@ -1,3 +1,9 @@
+## [1.8.0](https://gitlab.com/loginid/software/sdks/websdk3/compare/v1.7.0...v1.8.0) (2024-07-18)
+
+### Features
+
+* **utils:** added verifyConfigSettings to validate config ([3077733](https://gitlab.com/loginid/software/sdks/websdk3/commit/307773382ca51fd89c87927060fc72fe0c730e9f))
+
 ## [1.7.0](https://gitlab.com/loginid/software/sdks/websdk3/compare/v1.6.0...v1.7.0) (2024-07-15)
 
 ### Features
