@@ -67,7 +67,6 @@ e2e-test:
 
 release:
   stage: release
-  image: node:latest
   rules:
     - if: $CI_PIPELINE_SOURCE == "pipeline" 
       when: never # don't run on pipeline triggers
