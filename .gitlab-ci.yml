@@ -5,72 +5,61 @@ include:
   - template: Security/SAST.gitlab-ci.yml
 
 stages:
-  - build
+  - install
   - test
   - release
 
 install:
-  stage: build
+  stage: install
   rules:
-    - if: $CI_PIPELINE_SOURCE == "pipeline" 
-      when: never # don't run on pipeline triggers
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: never
     - when: always
   script:
     - npm install
+    - npm run build
+    - npm pack
   artifacts:
     expire_in: 10 minutes
     when: on_success
     paths:
       - node_modules/
+      - loginid-*.tgz
 
 unit-test:
   stage: test
   rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: never
     - if: $CI_PIPELINE_SOURCE == "pipeline" 
-      when: never # don't run on pipeline triggers
+      when: never
     - when: always
   script:
     - npm run lint
     - npm audit --audit-level=low
     - npm run test
 
-e2e-test:
+chrome-test:
   stage: test
-  image: docker
   rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: never
     - when: always
   variables:
-    TEST_URL: http://localhost:3000
-    TESTING_ENVIRONMENT: dev
-    REMOTE_URL: http://localhost:4444/wd/hub
-    NODE_ENV: test
-  services:
-    - docker:dind
-  before_script:
-    - apk update
-    - apk add --no-cache git
-  script:
-    - git clone -b staging --single-branch "https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/loginid/software/testing-tools/auto-directweb.git" ../auto-directweb
-    - cd ../auto-directweb
-    - mv ../websdk3 ./web
-    - docker build -t test-suite -f Dockerfile.dev.integration.test .
-    - >
-      docker run --rm --name test-suite
-      -e TEST_URL="$TEST_URL"
-      -e TESTING_ENVIRONMENT="$TESTING_ENVIRONMENT"
-      -e MAILSLURP_API_KEY="$MAILSLURP_API_KEY"
-      -e SE_NODE_MAX_SESSIONS="2"
-      -e SE_NODE_OVERRIDE_MAX_SESSIONS="true"
-      -e NODE_ENV="$NODE_ENV"
-      -e SE_OPTS="--log-level INFO"
-      -e REMOTE_URL="$REMOTE_URL" test-suite
+    BRANCH: $CI_COMMIT_REF_NAME
+  trigger:
+    project: loginid/software/testing-tools/auto-directweb
+    strategy: depend
+
 
 release:
   stage: release
   rules:
-    - if: $CI_PIPELINE_SOURCE == "pipeline" 
-      when: never # don't run on pipeline triggers
-    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+    - if: '$CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH'
+      when: never
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: never
+    - when: always
   variables:
     GITLAB_TOKEN: $PROJECT_CI_TOKEN
     NPM_TOKEN: $NPM_AUTH_TOKEN
