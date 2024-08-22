@@ -19,7 +19,7 @@ export {
 }
 export type {DoesDeviceSupportPasskeysResponse}
 
+export * as LoginIDAPI from './api'
 export * from './loginid/types'
-export * from './api'
 
 export default LoginIDWebSDK

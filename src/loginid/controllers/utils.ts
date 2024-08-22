@@ -1,6 +1,7 @@
 import LoginIDBase from '../base'
-import { ApiError, AuthInitRequestBody } from '../../api/'
 import { passkeyOptions } from '../lib/defaults'
+import { defaultDeviceInfo } from '../../browser'
+import { ApiError, AuthInitRequestBody } from '../../api/'
 import { LoginIDConfig, VerifyConfigResult } from '../types'
 
 class Utils extends LoginIDBase{
@@ -37,7 +38,7 @@ class Utils extends LoginIDBase{
         app: {
           id: this.config.getAppId(),
         },
-        deviceInfo: {},
+        deviceInfo: defaultDeviceInfo(),
         user: {
           username: '',
           usernameType: opts.usernameType,

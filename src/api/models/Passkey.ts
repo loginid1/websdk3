@@ -8,6 +8,10 @@ export type Passkey = {
      */
     createdAt: string;
     /**
+     * Credential available on multiple devices
+     */
+    credentialSynced?: boolean;
+    /**
      * Device type
      */
     device: string;

@@ -7,12 +7,12 @@ export type AuthInit = {
     /**
      * An action to be performed by the front-end to complete the authentication flow.
      */
-    action: 'proceed' | 'affirm' | 'fallback';
+    action: 'proceed' | 'crossAuth' | 'fallback';
+    assertionOptions: PublicKeyCredentialRequestOptions;
     /**
      * List of cross authentication methods in the order of preference
      */
-    affirmMethods: Array<'otp' | 'otp:sms' | 'otp:email'>;
-    assertionOptions: PublicKeyCredentialRequestOptions;
+    crossAuthMethods: Array<'otp' | 'otp:sms' | 'otp:email'>;
     /**
      * The list contains available fallback methods in the order of preference. The
      * list is dynamic and shall not be cached. The default fallback mechanism is

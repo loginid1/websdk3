@@ -1,10 +1,11 @@
 import Code from './code'
 import AbortControllerManager from '../../abort-controller'
-import { defaultDeviceInfo } from '../../browser'
+import { DeviceStore } from '../lib/store'
 import { USER_NO_OP_ERROR } from '../lib/errors'
+import { defaultDeviceInfo } from '../../browser'
+import { bufferToBase64Url, parseJwt } from '../../utils'
 import { confirmTransactionOptions, passkeyOptions } from '../lib/defaults'
 import { createPasskeyCredential, getPasskeyCredential } from '../lib/webauthn'
-import { bufferToBase64Url, parseJwt } from '../../utils'
 import type {
   AuthenticateWithPasskeysOptions,
   ConfirmTransactionOptions,
@@ -80,7 +81,8 @@ class Passkeys extends Code {
    * @returns {Promise<any>} Result of the registration operation.
    */
   async registerWithPasskey(username: string, options: RegisterWithPasskeyOptions = {}): Promise<PasskeyResult> {
-    const deviceInfo = defaultDeviceInfo()
+    const appId = this.config.getAppId()
+    const deviceInfo = defaultDeviceInfo(DeviceStore.getDeviceId(appId))
     const opts = passkeyOptions(username, options)
 
     options.token = this.session.getToken(options)
@@ -94,7 +96,7 @@ class Passkeys extends Code {
 
     const regInitRequestBody: RegInitRequestBody = {
       app: {
-        id: this.config.getAppId(),
+        id: appId,
       },
       deviceInfo: deviceInfo,
       user: {
@@ -119,6 +121,7 @@ class Passkeys extends Code {
       .regRegComplete({ requestBody: regCompleteRequestBody })
 
     this.session.setJwtCookie(result.jwtAccess)
+    DeviceStore.persistDeviceId(appId, result.deviceID)
 
     return result
   }
@@ -161,12 +164,13 @@ class Passkeys extends Code {
    * @returns {Promise<any>} Result of the authentication operation.
    */
   async authenticateWithPasskey(username = '', options: AuthenticateWithPasskeysOptions = {}): Promise<PasskeyResult> {
-    const deviceInfo = defaultDeviceInfo()
+    const appId = this.config.getAppId()
+    const deviceInfo = defaultDeviceInfo(DeviceStore.getDeviceId(appId))
     const opts = passkeyOptions(username, options)
   
     const authInitRequestBody: AuthInitRequestBody = {
       app: {
-        id: this.config.getAppId(),
+        id: appId,
       },
       deviceInfo: deviceInfo,
       user: {
@@ -178,6 +182,11 @@ class Passkeys extends Code {
     const authInitResponseBody = await this.service
       .auth
       .authAuthInit({ requestBody: authInitRequestBody })
+
+    // temporary fix. add fallback after
+    if (!authInitResponseBody?.assertionOptions) {
+      throw new Error('Passkey authentication is not supported for this user.')
+    }
 
     const authCompleteRequestBody = await this.getNavigatorCredential(authInitResponseBody, options)
 
@@ -288,7 +297,7 @@ class Passkeys extends Code {
 
     const authInitResponseBody: AuthInit = {
       action: 'proceed',
-      affirmMethods: [],
+      crossAuthMethods: [],
       fallbackMethods: [],
       assertionOptions: assertionOptions,
       session: session,
