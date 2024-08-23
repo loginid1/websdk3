@@ -6,7 +6,7 @@ export type GrantCreateRequestBody = {
     /**
      * List of requested grants
      */
-    grants: Array<'passkey:read' | 'passkey:write' | 'profile:read' | 'profile:write' | 'self:write'>;
+    grants: Array<'passkey:read' | 'passkey:write' | 'profile:read' | 'profile:write' | 'reg:write' | 'auth:write'>;
     /**
      * User identifier
      */

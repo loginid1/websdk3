@@ -1,10 +1,12 @@
 import Code from './code'
 import AbortControllerManager from '../../abort-controller'
+import { DeviceStore } from '../lib/store'
 import { defaultDeviceInfo } from '../../browser'
-import { USER_NO_OP_ERROR } from '../lib/errors'
+import { convertFallbackMethodsToObj } from '../lib/utils'
+import { bufferToBase64Url, parseJwt } from '../../utils'
+import { NO_LOGIN_OPTIONS_ERROR, USER_NO_OP_ERROR } from '../lib/errors'
 import { confirmTransactionOptions, passkeyOptions } from '../lib/defaults'
 import { createPasskeyCredential, getPasskeyCredential } from '../lib/webauthn'
-import { bufferToBase64Url, parseJwt } from '../../utils'
 import type {
   AuthenticateWithPasskeysOptions,
   ConfirmTransactionOptions,
@@ -80,7 +82,8 @@ class Passkeys extends Code {
    * @returns {Promise<any>} Result of the registration operation.
    */
   async registerWithPasskey(username: string, options: RegisterWithPasskeyOptions = {}): Promise<PasskeyResult> {
-    const deviceInfo = defaultDeviceInfo()
+    const appId = this.config.getAppId()
+    const deviceInfo = defaultDeviceInfo(DeviceStore.getDeviceId(appId))
     const opts = passkeyOptions(username, options)
 
     options.token = this.session.getToken(options)
@@ -94,7 +97,7 @@ class Passkeys extends Code {
 
     const regInitRequestBody: RegInitRequestBody = {
       app: {
-        id: this.config.getAppId(),
+        id: appId,
       },
       deviceInfo: deviceInfo,
       user: {
@@ -119,6 +122,7 @@ class Passkeys extends Code {
       .regRegComplete({ requestBody: regCompleteRequestBody })
 
     this.session.setJwtCookie(result.jwtAccess)
+    DeviceStore.persistDeviceId(appId, result.deviceID)
 
     return result
   }
@@ -161,12 +165,13 @@ class Passkeys extends Code {
    * @returns {Promise<any>} Result of the authentication operation.
    */
   async authenticateWithPasskey(username = '', options: AuthenticateWithPasskeysOptions = {}): Promise<PasskeyResult> {
-    const deviceInfo = defaultDeviceInfo()
+    const appId = this.config.getAppId()
+    const deviceInfo = defaultDeviceInfo(DeviceStore.getDeviceId(appId))
     const opts = passkeyOptions(username, options)
   
     const authInitRequestBody: AuthInitRequestBody = {
       app: {
-        id: this.config.getAppId(),
+        id: appId,
       },
       deviceInfo: deviceInfo,
       user: {
@@ -179,15 +184,38 @@ class Passkeys extends Code {
       .auth
       .authAuthInit({ requestBody: authInitRequestBody })
 
-    const authCompleteRequestBody = await this.getNavigatorCredential(authInitResponseBody, options)
+    switch (authInitResponseBody.action) {
+    case 'proceed': {
+      const authCompleteRequestBody = await this.getNavigatorCredential(authInitResponseBody, options)
 
-    const result = await this.service
-      .auth
-      .authAuthComplete({ requestBody: authCompleteRequestBody })
+      const result = await this.service
+        .auth
+        .authAuthComplete({ requestBody: authCompleteRequestBody })
 
-    this.session.setJwtCookie(result.jwtAccess)
+      this.session.setJwtCookie(result.jwtAccess)
 
-    return result
+      if (opts?.callbacks?.onSuccess) {
+        await opts.callbacks.onSuccess(result)
+      }
+
+      return result
+    }
+
+    case 'crossAuth':
+    case 'fallback': {
+      if (opts?.callbacks?.onFallback) {
+        await opts.callbacks.onFallback(username, { 
+          fallbackOptions: convertFallbackMethodsToObj(authInitResponseBody),
+        })
+        return { jwtAccess: '' }
+      }
+
+      throw NO_LOGIN_OPTIONS_ERROR
+    }
+
+    default:
+      throw NO_LOGIN_OPTIONS_ERROR
+    }
   }
 
   /**
@@ -288,7 +316,7 @@ class Passkeys extends Code {
 
     const authInitResponseBody: AuthInit = {
       action: 'proceed',
-      affirmMethods: [],
+      crossAuthMethods: [],
       fallbackMethods: [],
       assertionOptions: assertionOptions,
       session: session,

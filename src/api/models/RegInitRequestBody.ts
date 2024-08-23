@@ -4,10 +4,12 @@
 /* eslint-disable */
 import type { Application } from './Application';
 import type { DeviceInfo } from './DeviceInfo';
+import type { PasskeyOptions } from './PasskeyOptions';
 import type { User } from './User';
 export type RegInitRequestBody = {
     app: Application;
     deviceInfo: DeviceInfo;
+    passkeyOptions?: PasskeyOptions;
     /**
      * An opaque object containing user data. It is used in place of "user" attribute
      * for creating passkeys for pre-authorized users ("user" attribute is ignored if

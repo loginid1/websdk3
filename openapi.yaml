@@ -6,6 +6,32 @@ info:
 servers:
     - url: https://api.loginid.io/fido2/v2
 paths:
+    /fido2/v2/.well-known/jwks.json:
+        get:
+            tags:
+                - .well-known
+            summary: JWKS for auth token validation
+            operationId: .well-known#jwks
+            responses:
+                "200":
+                    description: OK response.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/WellKnownJwks'
+                            example:
+                                keys:
+                                    - Fuga earum quis asperiores natus provident.
+                                    - Rerum ut vel totam.
+                "500":
+                    description: 'InternalServerError: Internal Server Error response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
     /fido2/v2/auth/complete:
         post:
             tags:
@@ -110,10 +136,6 @@ paths:
                                 $ref: '#/components/schemas/AuthInit'
                             example:
                                 action: proceed
-                                affirmMethods:
-                                    - otp
-                                    - otp:sms
-                                    - otp:email
                                 assertionOptions:
                                     allowCredentials:
                                         - id: oAjxAhjnoQXLmRRAczwPg2E/S2zVS+DKlO6WNvgH9ys=
@@ -128,7 +150,11 @@ paths:
                                         appid: https://loalhost:8443
                                     rpId: https://localhost:8443/
                                     timeout: 5000
-                                    userVerification: preferred
+                                    userVerification: discouraged
+                                crossAuthMethods:
+                                    - otp
+                                    - otp:sms
+                                    - otp:email
                                 fallbackMethods:
                                     - ciam
                                 passkeyType: device
@@ -217,7 +243,7 @@ paths:
                                 msgCode: serious_error
             security:
                 - jwt_header_Authorization:
-                    - self:write
+                    - auth:write
     /fido2/v2/auth/otp/email:
         post:
             tags:
@@ -388,6 +414,7 @@ paths:
                             grants:
                                 - passkey:read
                                 - passkey:write
+                                - reg:write
                             username: testUser
             responses:
                 "200":
@@ -488,14 +515,17 @@ paths:
                                 $ref: '#/components/schemas/PasskeyCollection'
                             example:
                                 - createdAt: 2023-06-15 13:29:41 EDT
+                                  credentialSynced: false
                                   device: iPhone SE (2nd Gen)
                                   id: eb385800-d35e-4108-9b49-48010731cd37
                                   name: My Phone
                                 - createdAt: 2023-06-15 13:29:41 EDT
+                                  credentialSynced: true
                                   device: MacBook Pro (Google Chrome)
                                   id: 1b385800-d35e-4108-9b49-48010731cd37
                                   name: My Laptop
                                 - createdAt: 2023-06-15 13:29:41 EDT
+                                  credentialSynced: false
                                   device: MacBook Pro
                                   id: ab385800-d35e-4108-9b49-48010731cd37
                                   name: My Tablet
@@ -1027,9 +1057,8 @@ paths:
                                 publicKey: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
                                 publicKeyAlgorithm: -8
                                 transports:
-                                    - internal
-                                    - nfc
-                                    - smart-card
+                                    - hybrid
+                                    - ble
                                     - hybrid
                             session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
             responses:
@@ -1104,6 +1133,8 @@ paths:
                                 osVersion: 14.2.1
                                 screenHeight: 1080
                                 screenWidth: 1920
+                            passkeyOptions:
+                                conditionalCreate: false
                             session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
                             user:
                                 displayName: System Administrator
@@ -1119,7 +1150,7 @@ paths:
                             example:
                                 action: proceed
                                 registrationRequestOptions:
-                                    attestation: direct
+                                    attestation: none
                                     authenticatorSelection:
                                         authenticatorAttachment: platform
                                         requireResidentKey: true
@@ -1188,7 +1219,7 @@ paths:
                                 msgCode: serious_error
             security:
                 - jwt_header_Authorization:
-                    - passkey:write
+                    - reg:write
     /fido2/v2/tx/complete:
         post:
             tags:
@@ -1217,6 +1248,7 @@ paths:
                             example:
                                 authCred:
                                     createdAt: 2023-06-15 13:29:41 EDT
+                                    credentialSynced: true
                                     device: iPhone SE
                                     id: eb385800-d35e-4108-9b49-48010731cd37
                                     name: My Phone
@@ -1292,7 +1324,7 @@ paths:
                                         appid: https://loalhost:8443
                                     rpId: https://localhost:8443/
                                     timeout: 5000
-                                    userVerification: preferred
+                                    userVerification: discouraged
                                 session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
                                 txId: 2a363a42-a397-4af0-b089-0935fc223017
                 "400":
@@ -1425,9 +1457,11 @@ components:
                     example: proceed
                     enum:
                         - proceed
-                        - affirm
+                        - crossAuth
                         - fallback
-                affirmMethods:
+                assertionOptions:
+                    $ref: '#/components/schemas/PublicKeyCredentialRequestOptions'
+                crossAuthMethods:
                     type: array
                     items:
                         type: string
@@ -1441,8 +1475,6 @@ components:
                         - otp
                         - otp:sms
                         - otp:email
-                assertionOptions:
-                    $ref: '#/components/schemas/PublicKeyCredentialRequestOptions'
                 fallbackMethods:
                     type: array
                     items:
@@ -1470,10 +1502,6 @@ components:
                     example: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
             example:
                 action: proceed
-                affirmMethods:
-                    - otp
-                    - otp:sms
-                    - otp:email
                 assertionOptions:
                     allowCredentials:
                         - id: oAjxAhjnoQXLmRRAczwPg2E/S2zVS+DKlO6WNvgH9ys=
@@ -1488,7 +1516,11 @@ components:
                         appid: https://loalhost:8443
                     rpId: https://localhost:8443/
                     timeout: 5000
-                    userVerification: preferred
+                    userVerification: discouraged
+                crossAuthMethods:
+                    - otp
+                    - otp:sms
+                    - otp:email
                 fallbackMethods:
                     - ciam
                 passkeyType: device
@@ -1497,7 +1529,7 @@ components:
                 - session
                 - assertionOptions
                 - action
-                - affirmMethods
+                - crossAuthMethods
                 - fallbackMethods
         AuthInitRequestBody:
             type: object
@@ -1573,7 +1605,7 @@ components:
                 authenticatorAttachment:
                     type: string
                     description: Authenticator attachment modality
-                    example: platform
+                    example: cross-platform
                     enum:
                         - platform
                         - cross-platform
@@ -1585,7 +1617,7 @@ components:
                 residentKey:
                     type: string
                     description: Resident key requirement
-                    example: required
+                    example: preferred
                     enum:
                         - discouraged
                         - preferred
@@ -1593,7 +1625,7 @@ components:
                 userVerification:
                     type: string
                     description: Resident key requirement
-                    example: required
+                    example: discouraged
                     enum:
                         - required
                         - preferred
@@ -1659,7 +1691,7 @@ components:
                     type: array
                     items:
                         type: string
-                        example: smart-card
+                        example: nfc
                         enum:
                             - usb
                             - nfc
@@ -1672,10 +1704,10 @@ components:
                         These values are the transports that the authenticator is believed to support,
                         or an empty sequence if the information is unavailable.
                     example:
-                        - usb
-                        - usb
+                        - cable
                         - hybrid
-                        - ble
+                        - internal
+                        - hybrid
             example:
                 attestationObject: 5lvuZBkX1w7/0+XKcldttzA7vTwilEq3qnnXSq/a0...
                 authenticatorData: ix523n3XniH01jM4CIuOn1z0Jw6QbRATXYOsCUyQN...
@@ -1684,8 +1716,9 @@ components:
                 publicKey: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
                 publicKeyAlgorithm: -8
                 transports:
-                    - usb
-                    - ble
+                    - cable
+                    - cable
+                    - smart-card
             required:
                 - clientDataJSON
                 - attestationObject
@@ -1696,6 +1729,7 @@ components:
                 clientName:
                     type: string
                     description: Client name
+                    default: ""
                     example: Chrome
                 clientType:
                     type: string
@@ -1708,6 +1742,7 @@ components:
                 clientVersion:
                     type: string
                     description: Client version
+                    default: ""
                     example: 120.0.0.0
                 deviceId:
                     type: string
@@ -1716,23 +1751,28 @@ components:
                 osArch:
                     type: string
                     description: OS architecture
+                    default: ""
                     example: aarch64
                 osName:
                     type: string
                     description: OS name
+                    default: ""
                     example: iPhone
                 osVersion:
                     type: string
                     description: OS version
+                    default: ""
                     example: 14.2.1
                 screenHeight:
                     type: integer
                     description: Screen height in pixels
+                    default: 0
                     example: 1080
                     format: int64
                 screenWidth:
                     type: integer
                     description: Screen width in pixels
+                    default: 0
                     example: 1920
                     format: int64
             description: |-
@@ -1749,6 +1789,15 @@ components:
                 osVersion: 14.2.1
                 screenHeight: 1080
                 screenWidth: 1920
+            required:
+                - osName
+                - osVersion
+                - osArch
+                - clientType
+                - clientName
+                - clientVersion
+                - screenWidth
+                - screenHeight
         GrantCreateRequestBody:
             type: object
             properties:
@@ -1756,17 +1805,19 @@ components:
                     type: array
                     items:
                         type: string
-                        example: profile:read
+                        example: auth:write
                         enum:
                             - passkey:read
                             - passkey:write
                             - profile:read
                             - profile:write
-                            - self:write
+                            - reg:write
+                            - auth:write
                     description: List of requested grants
                     example:
                         - passkey:read
                         - passkey:write
+                        - reg:write
                 username:
                     type: string
                     description: User identifier
@@ -1775,6 +1826,7 @@ components:
                 grants:
                     - passkey:read
                     - passkey:write
+                    - reg:write
                 username: testUser
             required:
                 - grants
@@ -1813,6 +1865,11 @@ components:
                     description: Timestamp in RFC3339 format.
                     example: 2023-06-15 13:29:41 EDT
                     format: date-time
+                credentialSynced:
+                    type: boolean
+                    description: Credential available on multiple devices
+                    default: false
+                    example: false
                 device:
                     type: string
                     description: Device type
@@ -1827,6 +1884,7 @@ components:
                     example: My Phone
             example:
                 createdAt: 2023-06-15 13:29:41 EDT
+                credentialSynced: true
                 device: iPhone SE
                 id: eb385800-d35e-4108-9b49-48010731cd37
                 name: My Phone
@@ -1841,17 +1899,32 @@ components:
                 $ref: '#/components/schemas/Passkey'
             example:
                 - createdAt: 2023-06-15 13:29:41 EDT
+                  credentialSynced: false
                   device: iPhone SE (2nd Gen)
                   id: eb385800-d35e-4108-9b49-48010731cd37
                   name: My Phone
                 - createdAt: 2023-06-15 13:29:41 EDT
+                  credentialSynced: true
                   device: MacBook Pro (Google Chrome)
                   id: 1b385800-d35e-4108-9b49-48010731cd37
                   name: My Laptop
                 - createdAt: 2023-06-15 13:29:41 EDT
+                  credentialSynced: false
                   device: MacBook Pro
                   id: ab385800-d35e-4108-9b49-48010731cd37
                   name: My Tablet
+        PasskeyOptions:
+            type: object
+            properties:
+                conditionalCreate:
+                    type: boolean
+                    description: Flag to allow conditional creation
+                    default: false
+                    example: true
+            example:
+                conditionalCreate: false
+            required:
+                - conditionalCreate
         PasskeyRenameRequestBody:
             type: object
             properties:
@@ -1879,7 +1952,7 @@ components:
                     example: false
             example:
                 email: luke.skywalker@tatuin.com
-                requestVerification: true
+                requestVerification: false
             required:
                 - email
         ProfilePhoneUpdateRequestBody:
@@ -1938,7 +2011,7 @@ components:
                     type: array
                     items:
                         type: string
-                        example: usb
+                        example: internal
                         enum:
                             - usb
                             - nfc
@@ -1948,10 +2021,8 @@ components:
                             - cable
                             - smart-card
                     example:
-                        - ble
-                        - nfc
-                        - ble
                         - hybrid
+                        - internal
                 type:
                     type: string
                     example: public-key
@@ -1960,10 +2031,8 @@ components:
             example:
                 id: AyQBkTLAPWaLl6HtE3Oh6ovqkspSidX8DA9fYQB6DX4=
                 transports:
-                    - internal
-                    - smart-card
-                    - ble
-                    - hybrid
+                    - cable
+                    - cable
                 type: public-key
             required:
                 - type
@@ -1974,7 +2043,7 @@ components:
                 attestation:
                     type: string
                     description: A preference for attestation conveyance.
-                    example: indirect
+                    example: none
                     enum:
                         - none
                         - indirect
@@ -2013,7 +2082,7 @@ components:
                         appid: https://loalhost:8443
                     additionalProperties:
                         type: string
-                        example: Aut quod delectus aperiam.
+                        example: Aut consequatur a quidem perspiciatis et minus.
                 pubKeyCredParams:
                     type: array
                     items:
@@ -2041,7 +2110,7 @@ components:
                 user:
                     $ref: '#/components/schemas/PublicKeyCredentialUserEntity'
             example:
-                attestation: none
+                attestation: direct
                 authenticatorSelection:
                     authenticatorAttachment: platform
                     requireResidentKey: true
@@ -2085,7 +2154,7 @@ components:
                         A cryptographic signature algorithm with which the newly generated credential
                         will be used, and thus also the type of asymmetric key pair to be generated,
                         e.g., RSA or Elliptic Curve.
-                    example: -36
+                    example: -35
                     enum:
                         - -7
                         - -35
@@ -2139,7 +2208,7 @@ components:
                         appid: https://loalhost:8443
                     additionalProperties:
                         type: string
-                        example: Quos explicabo excepturi.
+                        example: Incidunt libero aliquid dolores id dignissimos.
                 rpId:
                     type: string
                     description: |-
@@ -2163,7 +2232,7 @@ components:
                         client platforms MUST ignore unknown values, treating an unknown value as if
                         the member does not exist. Eligible authenticators are filtered to only those
                         capable of satisfying this requirement.
-                    example: preferred
+                    example: discouraged
                     enum:
                         - required
                         - preferred
@@ -2242,9 +2311,8 @@ components:
                     publicKey: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
                     publicKeyAlgorithm: -8
                     transports:
-                        - internal
-                        - nfc
-                        - smart-card
+                        - hybrid
+                        - ble
                         - hybrid
                 session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
             required:
@@ -2271,7 +2339,7 @@ components:
             example:
                 action: proceed
                 registrationRequestOptions:
-                    attestation: direct
+                    attestation: none
                     authenticatorSelection:
                         authenticatorAttachment: platform
                         requireResidentKey: true
@@ -2313,6 +2381,8 @@ components:
                     $ref: '#/components/schemas/Application'
                 deviceInfo:
                     $ref: '#/components/schemas/DeviceInfo'
+                passkeyOptions:
+                    $ref: '#/components/schemas/PasskeyOptions'
                 session:
                     type: string
                     description: |-
@@ -2338,6 +2408,8 @@ components:
                     osVersion: 14.2.1
                     screenHeight: 1080
                     screenWidth: 1920
+                passkeyOptions:
+                    conditionalCreate: false
                 session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
                 user:
                     displayName: System Administrator
@@ -2389,6 +2461,7 @@ components:
             example:
                 authCred:
                     createdAt: 2023-06-15 13:29:41 EDT
+                    credentialSynced: true
                     device: iPhone SE
                     id: eb385800-d35e-4108-9b49-48010731cd37
                     name: My Phone
@@ -2474,7 +2547,7 @@ components:
                         appid: https://loalhost:8443
                     rpId: https://localhost:8443/
                     timeout: 5000
-                    userVerification: preferred
+                    userVerification: discouraged
                 session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
                 txId: 2a363a42-a397-4af0-b089-0935fc223017
             required:
@@ -2573,6 +2646,25 @@ components:
                 version: 1.2.3
             required:
                 - version
+        WellKnownJwks:
+            type: object
+            properties:
+                keys:
+                    type: array
+                    items:
+                        type: string
+                        example: Temporibus aut est ut optio perferendis mollitia.
+                    example:
+                        - Est molestias et optio in repudiandae omnis.
+                        - Placeat suscipit aut dolores cupiditate iure.
+                        - Nesciunt aut quos dolores et tempore exercitationem.
+                        - Autem maxime distinctio.
+            example:
+                keys:
+                    - Iusto iusto.
+                    - Facere fuga et dolor ipsum.
+                    - Et esse.
+                    - Unde natus necessitatibus quis sunt voluptatum.
     securitySchemes:
         apiKey_header_Authorization:
             type: apiKey
@@ -2595,5 +2687,7 @@ tags:
       description: FIDO2 registration flow
     - name: tx
       description: FIDO2 transaction confirmation flow
+    - name: .well-known
+      description: FIDO2 well-known endpoints
     - name: version
       description: Get Version
