@@ -1,9 +1,10 @@
 import Code from './code'
 import AbortControllerManager from '../../abort-controller'
 import { DeviceStore } from '../lib/store'
-import { USER_NO_OP_ERROR } from '../lib/errors'
 import { defaultDeviceInfo } from '../../browser'
+import { convertFallbackMethodsToObj } from '../lib/utils'
 import { bufferToBase64Url, parseJwt } from '../../utils'
+import { NO_LOGIN_OPTIONS_ERROR, USER_NO_OP_ERROR } from '../lib/errors'
 import { confirmTransactionOptions, passkeyOptions } from '../lib/defaults'
 import { createPasskeyCredential, getPasskeyCredential } from '../lib/webauthn'
 import type {
@@ -183,20 +184,38 @@ class Passkeys extends Code {
       .auth
       .authAuthInit({ requestBody: authInitRequestBody })
 
-    // temporary fix. add fallback after
-    if (!authInitResponseBody?.assertionOptions) {
-      throw new Error('Passkey authentication is not supported for this user.')
+    switch (authInitResponseBody.action) {
+    case 'proceed': {
+      const authCompleteRequestBody = await this.getNavigatorCredential(authInitResponseBody, options)
+
+      const result = await this.service
+        .auth
+        .authAuthComplete({ requestBody: authCompleteRequestBody })
+
+      this.session.setJwtCookie(result.jwtAccess)
+
+      if (opts?.callbacks?.onSuccess) {
+        await opts.callbacks.onSuccess(result)
+      }
+
+      return result
     }
 
-    const authCompleteRequestBody = await this.getNavigatorCredential(authInitResponseBody, options)
+    case 'crossAuth':
+    case 'fallback': {
+      if (opts?.callbacks?.onFallback) {
+        await opts.callbacks.onFallback(username, { 
+          fallbackOptions: convertFallbackMethodsToObj(authInitResponseBody),
+        })
+        return { jwtAccess: '' }
+      }
 
-    const result = await this.service
-      .auth
-      .authAuthComplete({ requestBody: authCompleteRequestBody })
+      throw NO_LOGIN_OPTIONS_ERROR
+    }
 
-    this.session.setJwtCookie(result.jwtAccess)
-
-    return result
+    default:
+      throw NO_LOGIN_OPTIONS_ERROR
+    }
   }
 
   /**

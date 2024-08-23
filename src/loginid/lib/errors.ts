@@ -1,4 +1,5 @@
 import PasskeyError from '../../errors/passkey'
+import LoginIDError from '../../errors/loginid'
 
 /**
  * Identifies the error that occurred during passkey creation.
@@ -138,10 +139,5 @@ export const identifyGetError = (
   return error
 }
 
-/**
- * Error indicating that a user operation was attempted without the user being logged in.
- * This error is thrown when an action requires authentication but the user is not authenticated.
- * @constant
- * @type {Error}
- */
-export const USER_NO_OP_ERROR = new Error('User needs to be logged in to perform this operation.')
+export const USER_NO_OP_ERROR = new LoginIDError('User needs to be logged in to perform this operation.')
+export const NO_LOGIN_OPTIONS_ERROR = new LoginIDError('No login options available.')
