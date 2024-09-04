@@ -12,6 +12,7 @@ import { ProfileService } from './services/ProfileService';
 import { RegService } from './services/RegService';
 import { TxService } from './services/TxService';
 import { VersionService } from './services/VersionService';
+import { WellKnownService } from './services/WellKnownService';
 type HttpRequestConstructor = new (config: OpenAPIConfig) => BaseHttpRequest;
 export class LoginIDService {
     public readonly auth: AuthService;
@@ -21,6 +22,7 @@ export class LoginIDService {
     public readonly reg: RegService;
     public readonly tx: TxService;
     public readonly version: VersionService;
+    public readonly wellKnown: WellKnownService;
     public readonly request: BaseHttpRequest;
     constructor(config?: Partial<OpenAPIConfig>, HttpRequest: HttpRequestConstructor = FetchHttpRequest) {
         this.request = new HttpRequest({
@@ -41,6 +43,7 @@ export class LoginIDService {
         this.reg = new RegService(this.request);
         this.tx = new TxService(this.request);
         this.version = new VersionService(this.request);
+        this.wellKnown = new WellKnownService(this.request);
     }
 }
 

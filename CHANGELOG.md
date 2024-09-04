@@ -1,3 +1,10 @@
+## [1.9.0-next.1](https://gitlab.com/loginid/software/sdks/websdk3/compare/v1.8.0...v1.9.0-next.1) (2024-08-23)
+
+### Features
+
+* **deviceid:** added device ID store ([21ef72b](https://gitlab.com/loginid/software/sdks/websdk3/commit/21ef72bedfb0ee322f49a28a8298cb60796e7d90))
+* **rule engine:** added init rule engine ([10f25e1](https://gitlab.com/loginid/software/sdks/websdk3/commit/10f25e1c18859e581ce0019ea9f72cd152f26c9c))
+
 ## [1.8.0](https://gitlab.com/loginid/software/sdks/websdk3/compare/v1.7.0...v1.8.0) (2024-07-18)
 
 ### Features

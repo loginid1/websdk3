@@ -1,5 +1,5 @@
-import {UAParser} from 'ua-parser-js'
-import {DeviceInfo} from './api/'
+import { DeviceInfo } from './api/'
+import { UAParser } from 'ua-parser-js'
 
 /**
  * Retrieves default device information based on the user agent for LoginID service (gen3).
@@ -7,11 +7,21 @@ import {DeviceInfo} from './api/'
  * such as browser name, version, operating system, and architecture.
  * It constructs a deviceInfoRequestBody object containing this information and returns it.
  */
-const defaultDeviceInfo = (): DeviceInfo => {
+const defaultDeviceInfo = (deviceId?: string): DeviceInfo => {
   const device: DeviceInfo = {
     clientType: 'browser',
     screenWidth: window.screen.width,
     screenHeight: window.screen.height,
+    // Service will try and fill in the missing fields
+    clientName: '',
+    clientVersion: '',
+    osName: '',
+    osVersion: '',
+    osArch: '',
+  }
+
+  if (deviceId) {
+    device.deviceId = deviceId
   }
 
   return device

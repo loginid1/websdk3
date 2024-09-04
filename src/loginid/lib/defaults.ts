@@ -19,6 +19,7 @@ export const passkeyOptions = (username: string, options: PasskeyOptions): Compl
     token: options.token || '',
     usernameType: options.usernameType || 'email',
     displayName: options.displayName || username,
+    callbacks: options.callbacks || {},
   }
 }
 
