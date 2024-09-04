@@ -76,8 +76,10 @@ export interface SendCodeOptions {
 }
 
 export interface PasskeyResult {
+  isAuthenticated: boolean
   jwtAccess: string
   deviceID?: string
+  fallbackOptions?: CrossAuthMethodsResult
 }
 
 export interface LoginIDUser {

@@ -117,9 +117,14 @@ class Passkeys extends Code {
 
     const regCompleteRequestBody = await this.createNavigatorCredential(regInitResponseBody)
 
-    const result = await this.service
+    const regCompleteResponse = await this.service
       .reg
       .regRegComplete({ requestBody: regCompleteRequestBody })
+
+    const result: PasskeyResult = {
+      ...regCompleteResponse,
+      isAuthenticated: true,
+    }
 
     this.session.setJwtCookie(result.jwtAccess)
     DeviceStore.persistDeviceId(appId, result.deviceID)
@@ -188,9 +193,14 @@ class Passkeys extends Code {
     case 'proceed': {
       const authCompleteRequestBody = await this.getNavigatorCredential(authInitResponseBody, options)
 
-      const result = await this.service
+      const authCompleteResponse = await this.service
         .auth
         .authAuthComplete({ requestBody: authCompleteRequestBody })
+
+      const result: PasskeyResult = {
+        ...authCompleteResponse,
+        isAuthenticated: true,
+      }
 
       this.session.setJwtCookie(result.jwtAccess)
 
@@ -204,10 +214,13 @@ class Passkeys extends Code {
     case 'crossAuth':
     case 'fallback': {
       if (opts?.callbacks?.onFallback) {
+        const fallbackOptions = convertFallbackMethodsToObj(authInitResponseBody)
+
         await opts.callbacks.onFallback(username, { 
-          fallbackOptions: convertFallbackMethodsToObj(authInitResponseBody),
+          fallbackOptions: fallbackOptions,
         })
-        return { jwtAccess: '' }
+
+        return { jwtAccess: '', isAuthenticated: false, fallbackOptions: fallbackOptions }
       }
 
       throw NO_LOGIN_OPTIONS_ERROR

@@ -40,10 +40,15 @@ class Code extends LoginIDBase {
       },
     }
   
-    const result = await this.service
+    const response = await this.service
       .auth.authAuthCodeVerify({
         requestBody: request
       })
+
+    const result: PasskeyResult = {
+      ...response,
+      isAuthenticated: true,
+    }
 
     // Renew abort controller since authentication is complete
     AbortControllerManager.renewWebAuthnAbortController()
