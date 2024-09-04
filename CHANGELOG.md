@@ -1,3 +1,18 @@
+## [1.9.0](https://gitlab.com/loginid/software/sdks/websdk3/compare/v1.8.0...v1.9.0) (2024-09-04)
+
+### Features
+
+* **deviceid:** added device ID store ([21ef72b](https://gitlab.com/loginid/software/sdks/websdk3/commit/21ef72bedfb0ee322f49a28a8298cb60796e7d90))
+* **rule engine:** added init rule engine ([10f25e1](https://gitlab.com/loginid/software/sdks/websdk3/commit/10f25e1c18859e581ce0019ea9f72cd152f26c9c))
+
+### Bug Fixes
+
+* **response options:** added forgotten fallback options to authentication response ([e594a71](https://gitlab.com/loginid/software/sdks/websdk3/commit/e594a713a219d65a3f09d827787b623588d87206))
+
+### Miscellaneous Chores
+
+* **release:** 1.9.0-next.1 [skip ci] ([f4b428c](https://gitlab.com/loginid/software/sdks/websdk3/commit/f4b428cae6e632ccfc8823593a986481788c5557))
+
 ## [1.9.0-next.1](https://gitlab.com/loginid/software/sdks/websdk3/compare/v1.8.0...v1.9.0-next.1) (2024-08-23)
 
 ### Features
