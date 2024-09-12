@@ -1,7 +1,6 @@
 // Copyright (C) LoginID
 import LoginIDConfigValidator from './validators'
-import { USER_NO_OP_ERROR } from './errors'
-import { LoginIDConfig, LoginIDUser, PasskeyOptions } from '../types'
+import { LoginIDConfig, PasskeyOptions, SessionInfo } from '../types'
 import { 
   deleteCookie,
   getCookie,
@@ -17,6 +16,7 @@ class SessionManager {
 
   /**
    * Initializes a new instance of SessionManager with the provided configuration.
+   * 
    * @param {LoginIDConfig} config Configuration object for LoginID.
    */
   constructor(config: LoginIDConfig) {
@@ -25,12 +25,13 @@ class SessionManager {
 
   /**
    * Retrieves the authentication token from the provided options or from cookies if not available in options.
+   * 
    * @param {PasskeyOptions} options Options containing the token.
    * @returns {string} The authentication token.
    */
   public getToken(options: PasskeyOptions): string {
-    if (options.token) {
-      return options.token
+    if (options.authzToken) {
+      return options.authzToken
     } else {
       const token = this.getJwtCookie()
       if (token) {
@@ -42,16 +43,17 @@ class SessionManager {
   }
 
   /**
-   * Retrieves the currently authenticated user's information. 
-   * @returns {LoginIDUser} The currently authenticated user's information, including username and id.
-   * @throws {Error} If the user is not logged in, throws USER_NO_OP_ERROR. 
+   * Retrieves the currently authenticated user's session information.
+   * 
+   * @returns {LoginIDUser | null} The currently authenticated user's information, including username and id. 
+   * It will return null if user is not authenticated
    */
-  public getUser(): LoginIDUser {
+  public getSessionInfo(): SessionInfo | null {
     if (!this.isLoggedIn()) {
-      throw USER_NO_OP_ERROR
+      return null
     }
     const data = parseJwt(this.getJwtCookie() || '{}')
-    const user: LoginIDUser = {
+    const user: SessionInfo = {
       username: data.username,
       id: data.sub
     }
@@ -59,6 +61,7 @@ class SessionManager {
   }
 
   /**
+   * Returns the dynamic Cookie name holding the authorization token for the given application.
    * 
    * @returns {string} The name of the cookie
    */
@@ -68,6 +71,7 @@ class SessionManager {
 
   /**
    * Set jwt token to local Cookie
+   * 
    * @param {string} jwt Configuration object for LoginID API, including the base URL.
    */
   public setJwtCookie(jwt: string) {
@@ -79,6 +83,7 @@ class SessionManager {
 
   /**
    * Retrieves the JWT access token.
+   * 
    * @returns {string | undefined} The JWT access token.
    */
   public getJwtCookie(): string | undefined {
@@ -86,7 +91,8 @@ class SessionManager {
   }
   
   /**
-   * checks if the user is logged in.
+   * Checks if the user is logged in.
+   * 
    * @returns {boolean}
    */
   public isLoggedIn(): boolean {
@@ -94,10 +100,11 @@ class SessionManager {
   }
   
   /**
-   * deletes the jwt cookie.
+   * Deletes the jwt cookie.
+   * 
    * @returns {boolean}
    */
-  public signout() {
+  public logout() {
     deleteCookie(this.getJwtCookieName())
   }
 }
