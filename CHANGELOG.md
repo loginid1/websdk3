@@ -1,3 +1,9 @@
+## [3.0.1](https://gitlab.com/loginid/software/sdks/websdk3/compare/v3.0.0...v3.0.1) (2024-09-12)
+
+### Bug Fixes
+
+* **navigator methods:** unexpose the navigator methods ([4dad7dc](https://gitlab.com/loginid/software/sdks/websdk3/commit/4dad7dcb66333b38fc624281dd5d515ba61f996e))
+
 ## [3.0.0](https://gitlab.com/loginid/software/sdks/websdk3/compare/v2.0.0...v3.0.0) (2024-09-12)
 
 ### ⚠ BREAKING CHANGES
