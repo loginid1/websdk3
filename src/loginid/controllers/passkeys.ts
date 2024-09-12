@@ -51,7 +51,7 @@ class Passkeys extends OTP {
    * @param {RegInit} regInitResponseBody The response body from registration initialization.
    * @returns {Promise<RegRegCompleteRequestBody>} Completion request body for registration.
    */
-  async createNavigatorCredential(regInitResponseBody: RegInit) {
+  private async createNavigatorCredential(regInitResponseBody: RegInit) {
     const { registrationRequestOptions, session } = regInitResponseBody
 
     AbortControllerManager.renewWebAuthnAbortController()
@@ -184,7 +184,7 @@ class Passkeys extends OTP {
    * @param {AuthenticateWithPasskeysOptions} options Additional options for authentication.
    * @returns {Promise<AuthAuthCompleteRequestBody>} Completion request body for authentication.
    */
-  async getNavigatorCredential(authInitResponseBody: AuthInit, options: AuthenticateWithPasskeysOptions = {}) {
+  private async getNavigatorCredential(authInitResponseBody: AuthInit, options: AuthenticateWithPasskeysOptions = {}) {
     const { assertionOptions, session } = authInitResponseBody
 
     if (!options.abortSignal) {
