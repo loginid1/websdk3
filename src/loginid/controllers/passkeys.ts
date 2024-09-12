@@ -1,23 +1,24 @@
-import Code from './code'
+import OTP from './otp'
 import AbortControllerManager from '../../abort-controller'
 import { DeviceStore } from '../lib/store'
 import { defaultDeviceInfo } from '../../browser'
 import { convertFallbackMethodsToObj } from '../lib/utils'
 import { bufferToBase64Url, parseJwt } from '../../utils'
-import { NO_LOGIN_OPTIONS_ERROR, USER_NO_OP_ERROR } from '../lib/errors'
+import { NO_LOGIN_OPTIONS_ERROR } from '../lib/errors'
 import { confirmTransactionOptions, passkeyOptions } from '../lib/defaults'
 import { createPasskeyCredential, getPasskeyCredential } from '../lib/webauthn'
 import type {
+  AuthenticateWithPasskeyAutofillOptions,
   AuthenticateWithPasskeysOptions,
+  AuthResult,
   ConfirmTransactionOptions,
+  CreatePasskeyOptions,
   LoginIDConfig,
-  PasskeyOptions,
-  PasskeyResult,
-  RegisterWithPasskeyOptions,
+  Otp,
+  RequestOtpOptions,
   Transports
 } from '../types'
 import {
-  AuthCode,
   AuthCompleteRequestBody,
   AuthInit,
   AuthInitRequestBody,
@@ -30,19 +31,23 @@ import {
 } from '../../api'
 
 /**
- * Extends LoginIDBase to support creation, registration, and authentication of passkeys.
+ * Extends LoginIDBase to support creation and authentication of passkeys.
  */
-class Passkeys extends Code {
+class Passkeys extends OTP {
   /**
    * Initializes a new Passkeys instance with the provided configuration.
+   * 
    * @param {LoginIDConfig} config Configuration object for LoginID.
+   * 
    */
   constructor(config: LoginIDConfig) {
     super(config)
   }
 
   /**
-   * Creates a navigator credential using WebAuthn.
+   * A helper function that creates a public-key credential using WebAuthn API. It is designed to be used with LoginID's
+   * passkey creation flow. The function takes a registration initialization response and returns a registration completion request body.
+   * 
    * @param {RegInit} regInitResponseBody The response body from registration initialization.
    * @returns {Promise<RegRegCompleteRequestBody>} Completion request body for registration.
    */
@@ -76,22 +81,62 @@ class Passkeys extends Code {
   }
 
   /**
-   * Registers a user with a passkey.
+   * This method helps to create a passkey. The only required parameter is the username, but additional attributes can be provided in the options parameter.
+   * Note: While the authorization token is optional, it must always be used in a production environment. You can skip it during development by adjusting 
+   * the app configuration in the LoginID dashboard.
+   * 
+   * A short-lived authorization token is returned, allowing access to protected resources for the given user such as listing, renaming or deleting passkeys.
+   * 
    * @param {string} username Username to register.
-   * @param {RegisterWithPasskeysOptions} options Additional registration options.
-   * @returns {Promise<any>} Result of the registration operation.
+   * @param {string} authzToken Authorization token for passkey creation.
+   * @param {CreatePasskeyOptions} options Additional passkey creation options.
+   * @returns {Promise<AuthResult>} Result of the passkey creation operation.
+   * @example
+   * ```javascript
+   * import { LoginIDWebSDK } from "@loginid/websdk3";
+   *
+   * // Obtain credentials from LoginID
+   * const BASE_URL = process.env.BASE_URL;
+   *
+   * // Initialize the SDK with your configuration
+   * const config = {
+   *   baseUrl: BASE_URL,
+   * };
+   *
+   * // Use the SDK components for signup and signin
+   * const lid = new LoginIDWebSDK(config);
+   *
+   * // Button click handler
+   * async function handleSignupButtonClick() {
+   *   const username = "billy@loginid.io";
+   *
+   *   try {
+   *     // Sign up with a passkey
+   *     const signupResult = await lid.createPasskey(username);
+   *     // Handle the signup result
+   *     console.log("Signup Result:", signupResult);
+   *   } catch (error) {
+   *     // Handle errors
+   *     console.error("Error during signup:", error);
+   *   }
+   * }
+   *
+   * // Attach the click handler to a button
+   * const signinButton = document.getElementById("signinButton");
+   * signinButton.addEventListener("click", handleSigninButtonClick);
+   * ```
    */
-  async registerWithPasskey(username: string, options: RegisterWithPasskeyOptions = {}): Promise<PasskeyResult> {
+  async createPasskey(username: string, authzToken: string = '', options: CreatePasskeyOptions = {}): Promise<AuthResult> {
     const appId = this.config.getAppId()
     const deviceInfo = defaultDeviceInfo(DeviceStore.getDeviceId(appId))
-    const opts = passkeyOptions(username, options)
+    const opts = passkeyOptions(username, authzToken, options)
 
-    options.token = this.session.getToken(options)
-    if (options.token) {
+    opts.authzToken = this.session.getToken(opts)
+    if (opts.authzToken) {
       // guard against username mismatch
-      const parsedToken = parseJwt(options.token)
+      const parsedToken = parseJwt(opts.authzToken)
       if (parsedToken.username !== username) {
-        options.token = ''
+        opts.authzToken = ''
       }
     }
 
@@ -105,14 +150,13 @@ class Passkeys extends Code {
         usernameType: opts.usernameType,
         displayName: opts.displayName,
       },
-      ...options.session && { session: options.session },
     }
 
     const regInitResponseBody = await this.service
       .reg
       .regRegInit({ 
         requestBody: regInitRequestBody,
-        ...options.token && { authorization: options.token },
+        ...opts.authzToken && { authorization: opts.authzToken },
       })
 
     const regCompleteRequestBody = await this.createNavigatorCredential(regInitResponseBody)
@@ -121,19 +165,21 @@ class Passkeys extends Code {
       .reg
       .regRegComplete({ requestBody: regCompleteRequestBody })
 
-    const result: PasskeyResult = {
-      ...regCompleteResponse,
+    const result: AuthResult = {
+      authzToken: regCompleteResponse.jwtAccess,
       isAuthenticated: true,
     }
 
-    this.session.setJwtCookie(result.jwtAccess)
-    DeviceStore.persistDeviceId(appId, result.deviceID)
+    this.session.setJwtCookie(regCompleteResponse.jwtAccess)
+    DeviceStore.persistDeviceId(appId, regCompleteResponse.deviceID)
 
     return result
   }
 
   /**
-   * Retrieves a navigator credential for authentication.
+   * A helper function that attempts public-key credential authentication using WebAuthn API. It is designed to be used with LoginID's
+   * passkey authentication flow. The function takes an authentication initialization response and returns an authentication completion request body.
+   * 
    * @param {AuthInit} authInitResponseBody The response body from authentication initialization.
    * @param {AuthenticateWithPasskeysOptions} options Additional options for authentication.
    * @returns {Promise<AuthAuthCompleteRequestBody>} Completion request body for authentication.
@@ -164,15 +210,52 @@ class Passkeys extends Code {
   }
 
   /**
-   * Authenticates a user with a passkey.
-   * @param {string} username Username to authenticate.
+   * This method authenticates a user with a passkey and may trigger additional browser dialogs to guide the user through the process.
+   * 
+   * A short-lived authorization token is returned, allowing access to protected resources for the given user such as listing, renaming or deleting passkeys.
+   * 
+   * @param {string} username Username to authenticate. When empty, usernameless passkey authentication is performed.
    * @param {AuthenticateWithPasskeysOptions} options Additional authentication options.
-   * @returns {Promise<any>} Result of the authentication operation.
+   * @returns {Promise<AuthResult>} Result of the passkey authentication operation.
+   * @example
+   * ```javascript
+   * import { LoginIDWebSDK } from "@loginid/websdk3";
+   * 
+   * // Obtain credentials from LoginID
+   * const BASE_URL = process.env.BASE_URL;
+   * 
+   * // Initialize the SDK with your configuration
+   * const config = {
+   *   baseUrl: BASE_URL,
+   * };
+   * 
+   * // Use the SDK components for signup and signin
+   * const lid = new LoginIDWebSDK(config);
+   * 
+   * // Button click handler
+   * async function handleSignupButtonClick() {
+   *   const username = "billy@loginid.io";
+   * 
+   *   try {
+   *     // Sign in with a passkey
+   *     const signinResult = await lid.authenticateWithPasskey(username);
+   *     // Handle the signin result
+   *     console.log("Signin Result:", signinResult);
+   *   } catch (error) {
+   *     // Handle errors
+   *     console.error("Error during signin:", error);
+   *   }
+   * }
+   * 
+   * // Attach the click handler to a button
+   * const signinButton = document.getElementById("signinButton");
+   * signinButton.addEventListener("click", handleSigninButtonClick);
+   * ```
    */
-  async authenticateWithPasskey(username = '', options: AuthenticateWithPasskeysOptions = {}): Promise<PasskeyResult> {
+  async authenticateWithPasskey(username = '', options: AuthenticateWithPasskeysOptions = {}): Promise<AuthResult> {
     const appId = this.config.getAppId()
     const deviceInfo = defaultDeviceInfo(DeviceStore.getDeviceId(appId))
-    const opts = passkeyOptions(username, options)
+    const opts = passkeyOptions(username, '', options)
   
     const authInitRequestBody: AuthInitRequestBody = {
       app: {
@@ -191,18 +274,19 @@ class Passkeys extends Code {
 
     switch (authInitResponseBody.action) {
     case 'proceed': {
+      // We can send original options here because WebAuthn options currently don't need to be defaulted
       const authCompleteRequestBody = await this.getNavigatorCredential(authInitResponseBody, options)
 
       const authCompleteResponse = await this.service
         .auth
         .authAuthComplete({ requestBody: authCompleteRequestBody })
 
-      const result: PasskeyResult = {
-        ...authCompleteResponse,
+      const result: AuthResult = {
+        authzToken: authCompleteResponse.jwtAccess,
         isAuthenticated: true,
       }
 
-      this.session.setJwtCookie(result.jwtAccess)
+      this.session.setJwtCookie(result.authzToken)
 
       if (opts?.callbacks?.onSuccess) {
         await opts.callbacks.onSuccess(result)
@@ -220,7 +304,7 @@ class Passkeys extends Code {
           fallbackOptions: fallbackOptions,
         })
 
-        return { jwtAccess: '', isAuthenticated: false, fallbackOptions: fallbackOptions }
+        return { authzToken: '', isAuthenticated: false, fallbackOptions: fallbackOptions }
       }
 
       throw NO_LOGIN_OPTIONS_ERROR
@@ -232,87 +316,173 @@ class Passkeys extends Code {
   }
 
   /**
-   * Authenticates a user with conditional UI (passkey autofill).
-   * @param {AuthenticateWithPasskeysOptions} options Additional authentication options.
-   * @returns {Promise<any>} Result of the authentication operation.
+   * Authenticates a user by utilizing the browser's passkey autofill capabilities.
+   * 
+   * A short-lived authorization token is returned, allowing access to protected resources for the given user such as listing, renaming or deleting passkeys.
+   * 
+   * @param {AuthenticateWithPasskeyAutofillOptions} options Additional authentication options.
+   * @returns {Promise<AuthResult>} Result of the passkey authentication operation.
+   * @example
+   * * import { isConditionalUIAvailable, LoginIDWebSDK } from "@loginid/websdk3";
+   * 
+   * // Obtain credentials from LoginID
+   * const BASE_URL = process.env.BASE_URL;
+   * 
+   * // Initialize the SDK with your configuration
+   * const config = {
+   *   baseUrl: BASE_URL,
+   * };
+   * 
+   * // Use the SDK components for signup and signin
+   * const lid = new LoginIDWebSDK(config);
+   * 
+   * window.addEventListener("load", async (event) => {
+   *   try {
+   *     const result = await isConditionalUIAvailable();
+   *     if (!result) {
+   *       // If conditional UI is not supported then continue without it or handle what to do
+   *       // next here.
+   *       return;
+   *     }
+   * 
+   *     const result = await lid.authenticateWithPasskeyAutofill(options);
+   *     console.log("Authentication Result:", result);
+   *   } catch (error) {
+   *     // Handle errors
+   *     console.error("Error during authentication:", error);
+   *   }
+   * });
    */
-  async enablePasskeyAutofill(options: AuthenticateWithPasskeysOptions = {}): Promise<PasskeyResult> {
+  async authenticateWithPasskeyAutofill(options: AuthenticateWithPasskeyAutofillOptions = {}): Promise<AuthResult> {
     options.autoFill = true
     return await this.authenticateWithPasskey('', options)
   }
 
   /**
-   * Generates a code with passkey.
-   * @param {string} username Username to authenticate.
-   * @param {AuthenticateWithPasskeysOptions} options Additional authentication options.
-   * @returns {Promise<AuthCode>} Code and expiry.
+   * This method returns a one-time OTP to be displayed on the current device. The user must be authenticated on this device. 
+   * The OTP is meant for cross-authentication, where the user reads the OTP from the screen and enters it on the target device.
+   * 
+   * @param {string} username The username used for passkey authentication and OTP request.
+   * @param {RequestOtpOptions} options Additional request OTP options.
+   * @returns {Promise<Otp>} Result of the request OTP operation returning an OTP and expiry time.
+   * @example
+   * ```javascript
+   * import { LoginIDWebSDK } from "@loginid/websdk3";
+   * 
+   * // Obtain credentials from LoginID
+   * const BASE_URL = process.env.BASE_URL;
+   * 
+   * // Initialize the SDK with your configuration
+   * const config = {
+   *   baseUrl: BASE_URL,
+   * };
+   * 
+   * // Use the SDK components for signup and signin
+   * const lid = new LoginIDWebSDK(config);
+   * 
+   * // Button click handler
+   * async function handleRequestOTPButtonClick() {
+   *   const username = "billy@loginid.io";
+   * 
+   *   try {
+   *     // Request OTP with passkey
+   *     const result = await lid.requestOtp(username);
+   *     const otp = result.code;
+   *     console.log("The OTP is: ", otp);
+   *   } catch (error) {
+   *     // Handle errors
+   *     console.error("Error during authentication:", error);
+   *   }
+   * }
+   * 
+   * // Attach the click handler to a button
+   * const requestOTPButton = document.getElementById("requestOTPButton");
+   * requestOTPButton.addEventListener("click", handleRequestOTPButtonClick);
+   * ```
    */
-  async generateCodeWithPasskey(username: string, options: AuthenticateWithPasskeysOptions = {}): Promise<AuthCode> {
-    options.token = this.session.getToken(options)
+  async requestOtp(username: string, options: RequestOtpOptions = {}): Promise<Otp> {
+    options.authzToken = this.session.getToken(options)
     // if no token is found, perform authentication
-    if (!options.token) {
+    if (!options.authzToken) {
       const result = await this.authenticateWithPasskey(username, options)
       // get token after authentication
-      options.token = result.jwtAccess
+      options.authzToken = result.authzToken
     }
 
-    const code: AuthCode = await this.service
+    const result: Otp = await this.service
       .auth
       .authAuthCodeRequest({
-        authorization: options.token,
+        authorization: options.authzToken,
       })
   
-    return code
-  }
-
-  /**
-   * Add passkey
-   * @param username Username to authenticate.
-   * @param options Additional authentication options.
-   * @returns {Promise<PasskeyResult>} Result of the add passkey operation.
-   */
-  async addPasskey(username: string, options: PasskeyOptions = {}): Promise<PasskeyResult> {
-    const token = this.session.getToken(options)
-    if (!token) {
-      throw USER_NO_OP_ERROR
-    }
-    options.token = token
-
-    const result = await this.registerWithPasskey(username, options)
-
     return result
   }
 
   /**
-   * Add passkey with code
-   * @param username Username to authenticate.
-   * @param code Code to authenticate.
-   * @param options Additional authentication options.
-   * @returns @returns {Promise<PasskeyResult>} Result of the add passkey with code operation.
-   */
-  async addPasskeyWithCode(username: string, code: string, options: PasskeyOptions = {}): Promise<PasskeyResult> {
-    await this.authenticateWithCode(username, code, options)
-
-    const result = await this.registerWithPasskey(username, options)
-
-    return result
-  }
-
-  /**
-   * Confirms a transaction using a passkey.
-   * 
-   * This method initiates a transaction confirmation process by generating a transaction-specific challenge 
+   * This method initiates a non-repudiation signature process by generating a transaction-specific challenge 
    * and then expects the client to provide an assertion response using a passkey. 
+   * 
    * This method is useful for confirming actions such as payments 
    * or changes to sensitive account information, ensuring that the transaction is being authorized 
    * by the rightful owner of the passkey.
    * 
+   * For a more detailed guide click [here](https://docs.loginid.io/scenarios/transaction-confirmation).
+   * 
    * @param {string} username The username of the user confirming the transaction.
    * @param {string} txPayload The transaction-specific payload, which could include details 
    * such as the transaction amount, recipient, and other metadata necessary for the transaction.
-   * @param {ConfirmTransactionOptions} [options={}] Optional parameters for transaction confirmation.
-   * @returns {Promise<any>} A promise that resolves with the result of the transaction confirmation operation. 
+   * @param {ConfirmTransactionOptions} options Optional parameters for transaction confirmation.
+   * @returns {Promise<TxComplete>} A promise that resolves with the result of the transaction confirmation operation. 
    * The result includes details about the transaction's details and includes a new JWT access token.
+   * @example
+   * ```javascript
+   * import { LoginIDWebSDK } from "@loginid/websdk3";
+   * 
+   * const config = {
+   *   baseUrl: BASE_URL,
+   * };
+   * 
+   * const lid = new LoginIDWebSDK(config);
+   * 
+   * const username = "jane@securelogin.com";
+   * const txPayload = JSON.stringify({
+   *   amount: 100,
+   *   recipient: "bob@securepay.com",
+   * });
+   * // Unique transaction nonce
+   * const nonce = "f846bb01-492e-422b-944a-44b04adc441e";
+   * 
+   * async function handleTransactionConfirmation() {
+   *   try {
+   *     // Confirm the transaction
+   *     const confirmationResult = await lid.confirmTransaction(
+   *       username,
+   *       txPayload,
+   *       nonce
+   *     );
+   *     // Handle the transaction confirmation result
+   *     console.log("Transaction Confirmation Result:", confirmationResult);
+   * 
+   *     // Check nonce
+   *     const { nonce: resultNonce } = confirmationResult;
+   *     if (nonce !== resultNonce) {
+   *       throw new Error("Nonce mismatch");
+   *     }
+   *   } catch (error) {
+   *     // Handle errors
+   *     console.error("Error during transaction confirmation:", error);
+   *   }
+   * }
+   * 
+   * // Attach the click handler to a button for transaction confirmation
+   * const confirmTransactionButton = document.getElementById(
+   *   "confirmTransactionButton"
+   * );
+   * confirmTransactionButton.addEventListener(
+   *   "click",
+   *   handleTransactionConfirmation
+   * );
+   * ```
    */
   async confirmTransaction(username: string, txPayload: string, options: ConfirmTransactionOptions = {}): Promise<TxComplete> {
     const opts = confirmTransactionOptions(username, options)
