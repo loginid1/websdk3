@@ -1,3 +1,13 @@
+## [3.0.0](https://gitlab.com/loginid/software/sdks/websdk3/compare/v2.0.0...v3.0.0) (2024-09-12)
+
+### ⚠ BREAKING CHANGES
+
+* **method signatures:** Since method names are being updated, this is a breaking change.
+
+### Features
+
+* **method signatures:** renamed and updated methods and params ([9178bea](https://gitlab.com/loginid/software/sdks/websdk3/commit/9178beaf994fe0f9e9d5a505ac13f6f2cd3b5359))
+
 ## [1.9.0](https://gitlab.com/loginid/software/sdks/websdk3/compare/v1.8.0...v1.9.0) (2024-09-04)
 
 ### Features
