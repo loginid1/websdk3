@@ -23,7 +23,7 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsc --noEmit & tsup ./src/index.ts --no-config  --sourcemap --format esm,cjs --dts --minify",
+    "build": "tsc --noEmit & tsup ./src/index.ts --no-config  --sourcemap --globalName=LoginID --format esm,cjs,iife --dts --minify",
     "build:watch": "tsc --noEmit & tsup ./src/index.ts --watch --no-config --format esm,cjs --dts --minify",
     "commit:pre": "npm run lint && npm run format",
     "delete-maps": "npm run delete-map-files && npm run delete-references-to-map-files",
