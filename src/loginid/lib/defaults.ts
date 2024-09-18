@@ -2,6 +2,7 @@
 import { createUUID } from '../../utils'
 import { 
   AllOptions,
+  AuthResult,
   Complete,
   ConfirmTransactionOptions,
 } from '../types'
@@ -37,5 +38,21 @@ export const confirmTransactionOptions = (username: string, options: ConfirmTran
     ...passkeyOptions(username, '', options),
     txType: options.txType || 'raw',
     nonce: options.nonce || createUUID(),
+  }
+}
+
+/**
+ * Constructs an `AuthResult` object using the provided JWT access token and authentication status.
+ * 
+ * @param {string} jwtAccess A short-lived authorization token allowing access to protected resources.
+ * @param {boolean} [isAuthenticated=true] Indicates if the user is authenticated. Defaults to **`true`**.
+ * @param {boolean} [isFallback=false] Indicates if the authentication attempt is a fallback method. Defaults to **`false`**.
+ * @returns {AuthResult} The authentication result including token, authentication status, and fallback indication.
+ */
+export const toAuthResult = (jwtAccess: string, isAuthenticated = true, isFallback = false): AuthResult => {
+  return {
+    token: jwtAccess,
+    isAuthenticated: isAuthenticated,
+    isFallback: isFallback,
   }
 }

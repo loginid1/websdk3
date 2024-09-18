@@ -2,11 +2,11 @@ import OTP from './otp'
 import AbortControllerManager from '../../abort-controller'
 import { DeviceStore } from '../lib/store'
 import { defaultDeviceInfo } from '../../browser'
-import { convertFallbackMethodsToObj } from '../lib/utils'
+import { mergeFallbackOptions } from '../lib/utils'
 import { bufferToBase64Url, parseJwt } from '../../utils'
 import { NO_LOGIN_OPTIONS_ERROR } from '../lib/errors'
-import { confirmTransactionOptions, passkeyOptions } from '../lib/defaults'
 import { createPasskeyCredential, getPasskeyCredential } from '../lib/webauthn'
+import { confirmTransactionOptions, passkeyOptions, toAuthResult } from '../lib/defaults'
 import type {
   AuthenticateWithPasskeyAutofillOptions,
   AuthenticateWithPasskeysOptions,
@@ -165,10 +165,7 @@ class Passkeys extends OTP {
       .reg
       .regRegComplete({ requestBody: regCompleteRequestBody })
 
-    const result: AuthResult = {
-      authzToken: regCompleteResponse.jwtAccess,
-      isAuthenticated: true,
-    }
+    const result: AuthResult = toAuthResult(regCompleteResponse.jwtAccess)
 
     this.session.setJwtCookie(regCompleteResponse.jwtAccess)
     DeviceStore.persistDeviceId(appId, regCompleteResponse.deviceID)
@@ -281,12 +278,9 @@ class Passkeys extends OTP {
         .auth
         .authAuthComplete({ requestBody: authCompleteRequestBody })
 
-      const result: AuthResult = {
-        authzToken: authCompleteResponse.jwtAccess,
-        isAuthenticated: true,
-      }
+      const result = toAuthResult(authCompleteResponse.jwtAccess)
 
-      this.session.setJwtCookie(result.authzToken)
+      this.session.setJwtCookie(result.token)
 
       if (opts?.callbacks?.onSuccess) {
         await opts.callbacks.onSuccess(result)
@@ -298,13 +292,11 @@ class Passkeys extends OTP {
     case 'crossAuth':
     case 'fallback': {
       if (opts?.callbacks?.onFallback) {
-        const fallbackOptions = convertFallbackMethodsToObj(authInitResponseBody)
+        const fallbackOptions = mergeFallbackOptions(authInitResponseBody)
 
-        await opts.callbacks.onFallback(username, { 
-          fallbackOptions: fallbackOptions,
-        })
+        await opts.callbacks.onFallback(username, fallbackOptions)
 
-        return { authzToken: '', isAuthenticated: false, fallbackOptions: fallbackOptions }
+        return toAuthResult('', false, true)
       }
 
       throw NO_LOGIN_OPTIONS_ERROR
@@ -406,7 +398,7 @@ class Passkeys extends OTP {
     if (!options.authzToken) {
       const result = await this.authenticateWithPasskey(username, options)
       // get token after authentication
-      options.authzToken = result.authzToken
+      options.authzToken = result.token
     }
 
     const result: Otp = await this.service

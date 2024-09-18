@@ -1,7 +1,6 @@
 import {
   ApiError,
   AuthCode,
-  AuthInit,
   CreationResult,
   DeviceInfo,
   User,
@@ -17,16 +16,8 @@ export type Transports = CreationResult['transports']
 
 export type Message = 'email' | 'sms'
 
-export type FallbackMethods = AuthInit['fallbackMethods'] | AuthInit['crossAuthMethods']
-export type CrossAuthMethodsResult = {
-  [K in FallbackMethods[number]]: boolean;
-};
-
-export interface FallbackMethodsResult {
-  fallbackOptions: CrossAuthMethodsResult
-}
-
-export type FallbackCallback = (username: string, options: FallbackMethodsResult) => Promise<void>
+export type FallbackOptions = string[]
+export type FallbackCallback = (username: string, options: FallbackOptions) => Promise<void>
 export type SuccessCallback = (result: AuthResult) => Promise<void>
 
 export interface Callbacks {
@@ -182,7 +173,7 @@ export interface AuthResult {
   /**
    * A short-lived authorization token is returned, allowing access to protected resources for the given user such as listing, renaming or deleting passkeys.
    */
-  authzToken: string
+  token: string
 
   /**
    * An identifier for the device used in the authentication process. This property helps determine if supported authentications can be proceeded,
@@ -191,11 +182,16 @@ export interface AuthResult {
   deviceID?: string
 
   /**
+   * If **`true`**, the authentication process should resort to a fallback method as specified in **`fallbackOptions`**.
+   */
+  isFallback: boolean
+
+  /**
    * This property will be returned if the LoginID indicates that the user is unlikely to proceed with passkey authentication.
    * In this case, instead of prompting for passkey authentication, available cross-authentication options are listed as an alternative,
    * providing suggested authentications to use instead.
    */
-  fallbackOptions?: CrossAuthMethodsResult
+  fallbackOptions?: FallbackOptions
 }
 
 /**
