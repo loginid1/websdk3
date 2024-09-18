@@ -1,3 +1,9 @@
+## [3.0.2](https://gitlab.com/loginid/software/sdks/websdk3/compare/v3.0.1...v3.0.2) (2024-09-18)
+
+### Bug Fixes
+
+* **AuthResult:** reverted back to token response ([b471c5f](https://gitlab.com/loginid/software/sdks/websdk3/commit/b471c5f16b9d6bea724da76def6ad8581db724ea))
+
 ## [3.0.1](https://gitlab.com/loginid/software/sdks/websdk3/compare/v3.0.0...v3.0.1) (2024-09-12)
 
 ### Bug Fixes
