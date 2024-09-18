@@ -1,7 +1,7 @@
 // Copyright (C) LoginID
 import LoginIDBase from '../base'
 import AbortControllerManager from '../../abort-controller'
-import { passkeyOptions } from '../lib/defaults'
+import { passkeyOptions, toAuthResult } from '../lib/defaults'
 import { AuthCodeRequestSMSRequestBody, AuthCodeVerifyRequestBody } from '../../api'
 import {
   AuthResult,
@@ -88,15 +88,12 @@ class OTP extends LoginIDBase {
         requestBody: request
       })
 
-    const result: AuthResult = {
-      authzToken: response.jwtAccess,
-      isAuthenticated: true,
-    }
+    const result = toAuthResult(response.jwtAccess)
 
     // Renew abort controller since authentication is complete
     AbortControllerManager.renewWebAuthnAbortController()
 
-    this.session.setJwtCookie(result.authzToken)
+    this.session.setJwtCookie(result.token)
 
     return result
   }
