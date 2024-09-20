@@ -139,6 +139,5 @@ export const identifyGetError = (
   return error
 }
 
-
 export const USER_NO_OP_ERROR = new LoginIDError('User needs to be logged in to perform this operation.')
 export const NO_LOGIN_OPTIONS_ERROR = new LoginIDError('No login options available.')
