@@ -1,3 +1,14 @@
+## [3.1.0-next.1](https://gitlab.com/loginid/software/sdks/websdk3/compare/v3.0.1...v3.1.0-next.1) (2024-09-20)
+
+### Features
+
+* **autofill:** improved autofill API ([5f50060](https://gitlab.com/loginid/software/sdks/websdk3/commit/5f5006095e36515953786cbc1a5f8986fdd0b41d))
+
+### Bug Fixes
+
+* **AuthResult:** reverted back to token response ([b471c5f](https://gitlab.com/loginid/software/sdks/websdk3/commit/b471c5f16b9d6bea724da76def6ad8581db724ea))
+* **Passkey Types:** reexport passkey types ([f4b6ae0](https://gitlab.com/loginid/software/sdks/websdk3/commit/f4b6ae09718991c0e21aa5cbcb7933ca02e75766))
+
 ## [3.0.1](https://gitlab.com/loginid/software/sdks/websdk3/compare/v3.0.0...v3.0.1) (2024-09-12)
 
 ### Bug Fixes
