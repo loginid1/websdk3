@@ -1,3 +1,9 @@
+## [3.0.3](https://gitlab.com/loginid/software/sdks/websdk3/compare/v3.0.2...v3.0.3) (2024-09-20)
+
+### Bug Fixes
+
+* **readme:** update README link for doc ref ([8a54507](https://gitlab.com/loginid/software/sdks/websdk3/commit/8a54507dd0e51f4abcb53a9e2f25f3ad4ba49ea9))
+
 ## [3.0.2](https://gitlab.com/loginid/software/sdks/websdk3/compare/v3.0.1...v3.0.2) (2024-09-18)
 
 ### Bug Fixes
