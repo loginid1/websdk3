@@ -19,13 +19,15 @@ npm install @loginid/websdk3
 
 ## How to Use
 
-- visit our [API Reference documentation](https://docs.loginid.io/Client-SDKs/Web/web) for package implementation.
+- visit our [API Reference documentation](https://docs.loginid.io/sdks/web/web) for package implementation.
 
-## Contact and Support
+## Contact and support
 
-- **Email**: [support@loginid.io](mailto:support@loginid.io)
-- **Community Chat**: [Join our Slack](https://loginidiocommunity.slack.com)
-- **Documentation**: [Read our full documentation](https://docs.loginid.io)
+- **email**: [support@loginid.io](mailto:support@loginid.io)
+- **documentation**: [read our full documentation](https://docs.loginid.io)
+- **forum**: https://forum.loginid.dev
+- **bug reporting**: https://loginid.dev
+- **dashboard**: https://dashboard.loginid.io
 
 ## License
 

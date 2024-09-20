@@ -1,6 +1,6 @@
 {
   "name": "@loginid/websdk3",
-  "version": "1.9.0-next.1",
+  "version": "3.0.1",
   "description": "",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -23,7 +23,7 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsc --noEmit & tsup ./src/index.ts --no-config  --sourcemap --format esm,cjs --dts --minify",
+    "build": "tsc --noEmit & tsup ./src/index.ts --no-config  --sourcemap --globalName=LoginID --format esm,cjs,iife --dts --minify",
     "build:watch": "tsc --noEmit & tsup ./src/index.ts --watch --no-config --format esm,cjs --dts --minify",
     "commit:pre": "npm run lint && npm run format",
     "delete-maps": "npm run delete-map-files && npm run delete-references-to-map-files",
@@ -60,6 +60,10 @@
     "ts-jest": "^29.1.2",
     "ts-node": "^10.9.2",
     "tsup": "^8.0.1",
+    "typedoc": "^0.26.7",
+    "typedoc-plugin-markdown": "^4.2.7",
+    "typedoc-plugin-missing-exports": "^3.0.0",
+    "typedoc-plugin-rename-defaults": "^0.7.1",
     "typescript": "^5.3.3"
   },
   "keywords": [

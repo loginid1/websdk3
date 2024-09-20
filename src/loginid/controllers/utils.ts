@@ -7,6 +7,7 @@ import { LoginIDConfig, VerifyConfigResult } from '../types'
 class Utils extends LoginIDBase{
   /**
    * Initializes a new Utils instance with the provided configuration.
+   * 
    * @param {LoginIDConfig} config Configuration object for LoginID.
    */
   constructor(config: LoginIDConfig) {
@@ -14,8 +15,40 @@ class Utils extends LoginIDBase{
   }
 
   /**
-   * Verifies the configuration settings of the application.
+   * Validates the application's configuration settings and provides a suggested correction if any issues are detected.
+   * 
    * @returns {Promise<VerifyConfigResult>} The result of the verification process.
+   * @example
+   * ```javascript
+   * import { LoginIDWebSDK } from "@loginid/websdk3";
+   * 
+   * // Obtain credentials from LoginID
+   * const BASE_URL = process.env.BASE_URL;
+   * 
+   * // Initialize the SDK with your configuration
+   * const config = {
+   *   baseUrl: BASE_URL,
+   * };
+   * 
+   * const lid = new LoginIDWebSDK(config);
+   * 
+   * async function checkConfig() {
+   *   const result = await lid.verifyConfigSettings();
+   *   
+   *   if (result.isValid) {
+   *     console.log('Configuration is valid');
+   *   } else {
+   *     console.error(`Error: ${result.message} (Code: ${result.code})`);
+   *     console.info(`Solution: ${result.solution}`);
+   *   }
+   * }
+   * 
+   * checkConfig();
+   * 
+   * // Attach the click handler to a button
+   * const checkConfigButton = document.getElementById("button");
+   * checkConfigButton.addEventListener("click", checkConfig);
+   * ```
    */
   public async verifyConfigSettings(): Promise<VerifyConfigResult> {
     const result: VerifyConfigResult = {
@@ -33,7 +66,7 @@ class Utils extends LoginIDBase{
     }
 
     try {
-      const opts = passkeyOptions('', {})
+      const opts = passkeyOptions('', '', {})
       const requestBody: AuthInitRequestBody = {
         app: {
           id: this.config.getAppId(),
@@ -64,28 +97,73 @@ class Utils extends LoginIDBase{
   }
 
   /**
-   * Retrieves the currently authenticated user's information.
-   * @returns {LoginIDUser} The currently authenticated user's information, including username and id.
-   * @throws {Error} If the user is not logged in, throws USER_NO_OP_ERROR.
+   * Check whether the user of the current browser session is authenticated and returns user info. 
+   * This info is retrieved locally and no requests to backend are made.
+   * 
+   * @returns {SessionInfo | null} The currently authenticated user's information, including username and id.
+   * @example
+   * ```javascript
+   * import { LoginIDWebSDK } from "@loginid/websdk3";
+   * 
+   * // Obtain credentials from LoginID
+   * const BASE_URL = process.env.BASE_URL;
+   * 
+   * // Initialize the SDK with your configuration
+   * const config = {
+   *   baseUrl: BASE_URL,
+   * };
+   * 
+   * // Use the SDK components for signup and signin
+   * const lid = new LoginIDWebSDK(config);
+   * const username = "billy@loginid.io";
+   * 
+   * try {
+   *   // Retrieve session information
+   *   await lid.authenticateWithPasskey(username);
+   *   const sessionInfo = lid.getSessionInfo();
+   *   console.log("Session Information:", sessionInfo);
+   * } catch (error) {
+   *   console.error("Error retrieving session information:", error);
+   * }
+   * ```
    */
-  public getUser() {
-    return this.session.getUser()
+  public getSessionInfo() {
+    return this.session.getSessionInfo()
   }
 
   /**
-   * checks if the user is logged in.
+   * Clears current user session. This method is executed locally and it just deletes authorization token from local Cookies.
+   * 
    * @returns {boolean}
+   * @example
+   * ```javascript
+   * import { LoginIDWebSDK } from "@loginid/websdk3";
+   * 
+   * // Obtain credentials from LoginID
+   * const BASE_URL = process.env.BASE_URL;
+   * 
+   * // Initialize the SDK with your configuration
+   * const config = {
+   *   baseUrl: BASE_URL,
+   * };
+   * 
+   * // Use the SDK components for signup and signin
+   * const lid = new LoginIDWebSDK(config);
+   * 
+   * try {
+   *   // Retrieve user information
+   *   await lid.authenticateWithPasskey(username);
+   *   lid.logout();
+   *   const info = lid.getSessionInfo();
+   *   // false
+   *   console.log("Is user signed in?", info !== null);
+   * } catch (error) {
+   *   console.error("Error:", error);
+   * }
+   * ```
    */
-  public isLoggedIn() {
-    return this.session.isLoggedIn()
-  }
-
-  /**
-   * deletes the jwt cookie.
-   * @returns {boolean}
-   */
-  public signout() {
-    this.session.signout()
+  public logout() {
+    this.session.logout()
   }
 }
 

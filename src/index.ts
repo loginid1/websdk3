@@ -4,9 +4,15 @@ import PasskeyError from './errors/passkey'
 import {WebAuthnHelper} from './webauthn/webauthn-helper'
 import {createPasskeyCredential, getPasskeyCredential} from './loginid/lib/webauthn'
 import type {DoesDeviceSupportPasskeysResponse} from './browser'
-import {doesDeviceSupportPasskeys, isConditionalUIAvailable, isPlatformAuthenticatorAvailable} from './browser'
+import {
+  canCreatePasskey,
+  doesDeviceSupportPasskeys,
+  isConditionalUIAvailable,
+  isPlatformAuthenticatorAvailable
+} from './browser'
 
 export {
+  canCreatePasskey,
   createPasskeyCredential,
   doesDeviceSupportPasskeys,
   getPasskeyCredential,
