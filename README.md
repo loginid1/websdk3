@@ -19,7 +19,7 @@ npm install @loginid/websdk3
 
 ## How to Use
 
-- visit our [API Reference documentation](https://docs.loginid.io/sdks/web/web) for package implementation.
+- visit our [API Reference documentation](https://docs.loginid.io/web/classes/LoginIDWebSDK/) for package implementation.
 
 ## Contact and support
 
