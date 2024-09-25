@@ -105,7 +105,7 @@ export interface AuthenticateWithPasskeysOptions extends PasskeyOptions {
    * This should be used with the **`options.autoFill`** option to trigger the cancellation of the passkey conditional UI. 
    * Pass this if additional passkeys API calls may be anticipated on the current context page.
    */
-  abortSignal?: AbortSignal
+  abortController?: AbortController
 }
 
 /**

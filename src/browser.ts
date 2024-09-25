@@ -147,10 +147,25 @@ async function doesDeviceSupportPasskeys(): Promise<DoesDeviceSupportPasskeysRes
   return response
 }
 
+/**
+ * Determines whether a passkey can be created on the current device.
+ * 
+ * @returns {Promise<boolean>} A promise that resolves to a boolean indicating whether a passkey can be created.
+ * - `true`: The device supports passkeys and a platform authenticator is available.
+ * - `false`: Either the device does not support passkeys or a platform authenticator is not available.
+ */
+async function canCreatePasskey(): Promise<boolean> {
+  const platformAuthenticatorAvailable = await isPlatformAuthenticatorAvailable()
+  const deviceSupportResponse = await doesDeviceSupportPasskeys()
+  return platformAuthenticatorAvailable && deviceSupportResponse.deviceSupported
+}
+
+
 export type {
   DoesDeviceSupportPasskeysResponse,
 }
 export {
+  canCreatePasskey,
   defaultDeviceInfo,
   doesDeviceSupportPasskeys,
   isConditionalUIAvailable,

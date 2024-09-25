@@ -11,15 +11,15 @@ export type DeviceInfo = {
     /**
      * Client name
      */
-    clientName: string;
+    clientName?: string;
     /**
      * Client type.
      */
-    clientType: 'browser' | 'other';
+    clientType?: 'browser' | 'other';
     /**
      * Client version
      */
-    clientVersion: string;
+    clientVersion?: string;
     /**
      * An unique device identifier
      */
@@ -27,22 +27,22 @@ export type DeviceInfo = {
     /**
      * OS architecture
      */
-    osArch: string;
+    osArch?: string;
     /**
      * OS name
      */
-    osName: string;
+    osName?: string;
     /**
      * OS version
      */
-    osVersion: string;
+    osVersion?: string;
     /**
      * Screen height in pixels
      */
-    screenHeight: number;
+    screenHeight?: number;
     /**
      * Screen width in pixels
      */
-    screenWidth: number;
+    screenWidth?: number;
 };
 

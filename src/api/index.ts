@@ -41,6 +41,7 @@ export type { PublicKeyCredentialUserEntity } from './models/PublicKeyCredential
 export type { RegCompleteRequestBody } from './models/RegCompleteRequestBody';
 export type { RegInit } from './models/RegInit';
 export type { RegInitRequestBody } from './models/RegInitRequestBody';
+export type { ResultKey } from './models/ResultKey';
 export type { TokenVerifyRequestBody } from './models/TokenVerifyRequestBody';
 export type { TxComplete } from './models/TxComplete';
 export type { TxCompleteRequestBody } from './models/TxCompleteRequestBody';

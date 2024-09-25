@@ -21,8 +21,42 @@ paths:
                                 $ref: '#/components/schemas/WellKnownJwks'
                             example:
                                 keys:
-                                    - Fuga earum quis asperiores natus provident.
-                                    - Rerum ut vel totam.
+                                    - alg: ES256
+                                      crv: P-256
+                                      key_ops:
+                                        - verify
+                                      kid: unique-key-id
+                                      kty: EC
+                                      use: sig
+                                      x: -a4DlQ0kMffMB1wZJSjNAA1YTVB0dXrTUGszywNy-e4
+                                      "y": y5gcJVgSq7B5hr7vN1rbNaGQ3mqMN7soz5Ua1SqzWGw
+                                    - alg: ES256
+                                      crv: P-256
+                                      key_ops:
+                                        - verify
+                                      kid: unique-key-id
+                                      kty: EC
+                                      use: sig
+                                      x: -a4DlQ0kMffMB1wZJSjNAA1YTVB0dXrTUGszywNy-e4
+                                      "y": y5gcJVgSq7B5hr7vN1rbNaGQ3mqMN7soz5Ua1SqzWGw
+                                    - alg: ES256
+                                      crv: P-256
+                                      key_ops:
+                                        - verify
+                                      kid: unique-key-id
+                                      kty: EC
+                                      use: sig
+                                      x: -a4DlQ0kMffMB1wZJSjNAA1YTVB0dXrTUGszywNy-e4
+                                      "y": y5gcJVgSq7B5hr7vN1rbNaGQ3mqMN7soz5Ua1SqzWGw
+                "404":
+                    description: 'NotFound: Not Found response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
                 "500":
                     description: 'InternalServerError: Internal Server Error response.'
                     content:
@@ -772,7 +806,7 @@ paths:
                             $ref: '#/components/schemas/ProfileEmailUpdateRequestBody'
                         example:
                             email: luke.skywalker@tatuin.com
-                            requestVerification: false
+                            requestVerification: true
             responses:
                 "204":
                     description: No Content response.
@@ -1058,8 +1092,8 @@ paths:
                                 publicKeyAlgorithm: -8
                                 transports:
                                     - hybrid
-                                    - ble
-                                    - hybrid
+                                    - cable
+                                    - internal
                             session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
             responses:
                 "200":
@@ -1150,7 +1184,7 @@ paths:
                             example:
                                 action: proceed
                                 registrationRequestOptions:
-                                    attestation: none
+                                    attestation: direct
                                     authenticatorSelection:
                                         authenticatorAttachment: platform
                                         requireResidentKey: true
@@ -1253,11 +1287,7 @@ paths:
                                     id: eb385800-d35e-4108-9b49-48010731cd37
                                     name: My Phone
                                 credentialId: 2a363a42-a397-4af0-b089-0935fc223017
-                                jwtAccess: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-                                lNonce: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
-                                nonce: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
-                                txHash: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
-                                txId: 2a363a42-a397-4af0-b089-0935fc223017
+                                token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
                 "400":
                     description: 'BadRequest: Bad Request response.'
                     content:
@@ -1329,6 +1359,15 @@ paths:
                                 txId: 2a363a42-a397-4af0-b089-0935fc223017
                 "400":
                     description: 'BadRequest: Bad Request response.'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BadRequestError'
+                            example:
+                                msg: A serious error
+                                msgCode: serious_error
+                "404":
+                    description: 'NotFound: Not Found response.'
                     content:
                         application/json:
                             schema:
@@ -1465,7 +1504,7 @@ components:
                     type: array
                     items:
                         type: string
-                        example: otp:sms
+                        example: otp:email
                         enum:
                             - otp
                             - otp:sms
@@ -1605,7 +1644,7 @@ components:
                 authenticatorAttachment:
                     type: string
                     description: Authenticator attachment modality
-                    example: cross-platform
+                    example: platform
                     enum:
                         - platform
                         - cross-platform
@@ -1617,7 +1656,7 @@ components:
                 residentKey:
                     type: string
                     description: Resident key requirement
-                    example: preferred
+                    example: required
                     enum:
                         - discouraged
                         - preferred
@@ -1625,7 +1664,7 @@ components:
                 userVerification:
                     type: string
                     description: Resident key requirement
-                    example: discouraged
+                    example: preferred
                     enum:
                         - required
                         - preferred
@@ -1633,7 +1672,7 @@ components:
             example:
                 authenticatorAttachment: platform
                 requireResidentKey: true
-                residentKey: required
+                residentKey: discouraged
                 userVerification: discouraged
         BadRequestError:
             type: object
@@ -1704,9 +1743,8 @@ components:
                         These values are the transports that the authenticator is believed to support,
                         or an empty sequence if the information is unavailable.
                     example:
-                        - cable
-                        - hybrid
-                        - internal
+                        - ble
+                        - ble
                         - hybrid
             example:
                 attestationObject: 5lvuZBkX1w7/0+XKcldttzA7vTwilEq3qnnXSq/a0...
@@ -1716,9 +1754,8 @@ components:
                 publicKey: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
                 publicKeyAlgorithm: -8
                 transports:
+                    - nfc
                     - cable
-                    - cable
-                    - smart-card
             required:
                 - clientDataJSON
                 - attestationObject
@@ -1789,15 +1826,6 @@ components:
                 osVersion: 14.2.1
                 screenHeight: 1080
                 screenWidth: 1920
-            required:
-                - osName
-                - osVersion
-                - osArch
-                - clientType
-                - clientName
-                - clientVersion
-                - screenWidth
-                - screenHeight
         GrantCreateRequestBody:
             type: object
             properties:
@@ -1805,7 +1833,7 @@ components:
                     type: array
                     items:
                         type: string
-                        example: auth:write
+                        example: profile:read
                         enum:
                             - passkey:read
                             - passkey:write
@@ -1869,7 +1897,7 @@ components:
                     type: boolean
                     description: Credential available on multiple devices
                     default: false
-                    example: false
+                    example: true
                 device:
                     type: string
                     description: Device type
@@ -1920,7 +1948,7 @@ components:
                     type: boolean
                     description: Flag to allow conditional creation
                     default: false
-                    example: true
+                    example: false
             example:
                 conditionalCreate: false
             required:
@@ -1949,7 +1977,7 @@ components:
                         Whether to update the email address immediately or send an authorization code
                         to verify.
                     default: true
-                    example: false
+                    example: true
             example:
                 email: luke.skywalker@tatuin.com
                 requestVerification: false
@@ -2011,7 +2039,7 @@ components:
                     type: array
                     items:
                         type: string
-                        example: internal
+                        example: usb
                         enum:
                             - usb
                             - nfc
@@ -2021,8 +2049,8 @@ components:
                             - cable
                             - smart-card
                     example:
-                        - hybrid
-                        - internal
+                        - cable
+                        - smart-card
                 type:
                     type: string
                     example: public-key
@@ -2031,8 +2059,8 @@ components:
             example:
                 id: AyQBkTLAPWaLl6HtE3Oh6ovqkspSidX8DA9fYQB6DX4=
                 transports:
-                    - cable
-                    - cable
+                    - usb
+                    - smart-card
                 type: public-key
             required:
                 - type
@@ -2043,7 +2071,7 @@ components:
                 attestation:
                     type: string
                     description: A preference for attestation conveyance.
-                    example: none
+                    example: direct
                     enum:
                         - none
                         - indirect
@@ -2082,7 +2110,7 @@ components:
                         appid: https://loalhost:8443
                     additionalProperties:
                         type: string
-                        example: Aut consequatur a quidem perspiciatis et minus.
+                        example: Quia ex reiciendis error illum.
                 pubKeyCredParams:
                     type: array
                     items:
@@ -2110,7 +2138,7 @@ components:
                 user:
                     $ref: '#/components/schemas/PublicKeyCredentialUserEntity'
             example:
-                attestation: direct
+                attestation: indirect
                 authenticatorSelection:
                     authenticatorAttachment: platform
                     requireResidentKey: true
@@ -2154,7 +2182,7 @@ components:
                         A cryptographic signature algorithm with which the newly generated credential
                         will be used, and thus also the type of asymmetric key pair to be generated,
                         e.g., RSA or Elliptic Curve.
-                    example: -35
+                    example: -7
                     enum:
                         - -7
                         - -35
@@ -2169,7 +2197,7 @@ components:
                         - public-key
             description: Additional parameters when creating a new credential.
             example:
-                alg: -7
+                alg: -35
                 type: public-key
         PublicKeyCredentialRequestOptions:
             type: object
@@ -2208,7 +2236,7 @@ components:
                         appid: https://loalhost:8443
                     additionalProperties:
                         type: string
-                        example: Incidunt libero aliquid dolores id dignissimos.
+                        example: Quod delectus aperiam eligendi.
                 rpId:
                     type: string
                     description: |-
@@ -2251,7 +2279,7 @@ components:
                     appid: https://loalhost:8443
                 rpId: https://localhost:8443/
                 timeout: 5000
-                userVerification: discouraged
+                userVerification: required
             required:
                 - challenge
         PublicKeyCredentialRpEntity:
@@ -2312,8 +2340,8 @@ components:
                     publicKeyAlgorithm: -8
                     transports:
                         - hybrid
-                        - ble
-                        - hybrid
+                        - cable
+                        - internal
                 session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
             required:
                 - session
@@ -2339,7 +2367,7 @@ components:
             example:
                 action: proceed
                 registrationRequestOptions:
-                    attestation: none
+                    attestation: direct
                     authenticatorSelection:
                         authenticatorAttachment: platform
                         requireResidentKey: true
@@ -2418,6 +2446,62 @@ components:
             required:
                 - app
                 - deviceInfo
+        ResultKey:
+            type: object
+            properties:
+                alg:
+                    type: string
+                    description: Algorithm used
+                    example: ES256
+                crv:
+                    type: string
+                    description: Curve used
+                    example: P-256
+                key_ops:
+                    type: array
+                    items:
+                        type: string
+                        example: Enim corrupti rem consequatur sapiente dolorum ut.
+                    description: Key operations
+                    example:
+                        - verify
+                kid:
+                    type: string
+                    description: Key Identifier
+                    example: unique-key-id
+                kty:
+                    type: string
+                    description: Key Type
+                    example: EC
+                use:
+                    type: string
+                    description: Intended use of the key
+                    example: sig
+                x:
+                    type: string
+                    description: X coordinate of the elliptic curve public key
+                    example: -a4DlQ0kMffMB1wZJSjNAA1YTVB0dXrTUGszywNy-e4
+                "y":
+                    type: string
+                    description: Y coordinate of the elliptic curve public key
+                    example: y5gcJVgSq7B5hr7vN1rbNaGQ3mqMN7soz5Ua1SqzWGw
+            description: JWK
+            example:
+                alg: ES256
+                crv: P-256
+                key_ops:
+                    - verify
+                kid: unique-key-id
+                kty: EC
+                use: sig
+                x: -a4DlQ0kMffMB1wZJSjNAA1YTVB0dXrTUGszywNy-e4
+                "y": y5gcJVgSq7B5hr7vN1rbNaGQ3mqMN7soz5Ua1SqzWGw
+            required:
+                - kty
+                - use
+                - key_ops
+                - alg
+                - kid
         TokenVerifyRequestBody:
             type: object
             properties:
@@ -2438,26 +2522,10 @@ components:
                     type: string
                     description: Internal passkey identifier
                     example: 2a363a42-a397-4af0-b089-0935fc223017
-                jwtAccess:
+                token:
                     type: string
-                    description: JWT access token
+                    description: Authorization token
                     example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-                lNonce:
-                    type: string
-                    description: Random string generated by LoginID.
-                    example: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
-                nonce:
-                    type: string
-                    description: Random string.
-                    example: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
-                txHash:
-                    type: string
-                    description: Computed hash value of the transaction.
-                    example: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
-                txId:
-                    type: string
-                    description: Internal transaction identifier
-                    example: 2a363a42-a397-4af0-b089-0935fc223017
             example:
                 authCred:
                     createdAt: 2023-06-15 13:29:41 EDT
@@ -2466,18 +2534,10 @@ components:
                     id: eb385800-d35e-4108-9b49-48010731cd37
                     name: My Phone
                 credentialId: 2a363a42-a397-4af0-b089-0935fc223017
-                jwtAccess: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-                lNonce: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
-                nonce: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
-                txHash: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
-                txId: 2a363a42-a397-4af0-b089-0935fc223017
+                token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
             required:
-                - txId
                 - credentialId
-                - txHash
-                - nonce
-                - lNonce
-                - jwtAccess
+                - token
         TxCompleteRequestBody:
             type: object
             properties:
@@ -2652,19 +2712,55 @@ components:
                 keys:
                     type: array
                     items:
-                        type: string
-                        example: Temporibus aut est ut optio perferendis mollitia.
+                        $ref: '#/components/schemas/ResultKey'
                     example:
-                        - Est molestias et optio in repudiandae omnis.
-                        - Placeat suscipit aut dolores cupiditate iure.
-                        - Nesciunt aut quos dolores et tempore exercitationem.
-                        - Autem maxime distinctio.
+                        - alg: ES256
+                          crv: P-256
+                          key_ops:
+                            - verify
+                          kid: unique-key-id
+                          kty: EC
+                          use: sig
+                          x: -a4DlQ0kMffMB1wZJSjNAA1YTVB0dXrTUGszywNy-e4
+                          "y": y5gcJVgSq7B5hr7vN1rbNaGQ3mqMN7soz5Ua1SqzWGw
+                        - alg: ES256
+                          crv: P-256
+                          key_ops:
+                            - verify
+                          kid: unique-key-id
+                          kty: EC
+                          use: sig
+                          x: -a4DlQ0kMffMB1wZJSjNAA1YTVB0dXrTUGszywNy-e4
+                          "y": y5gcJVgSq7B5hr7vN1rbNaGQ3mqMN7soz5Ua1SqzWGw
+                        - alg: ES256
+                          crv: P-256
+                          key_ops:
+                            - verify
+                          kid: unique-key-id
+                          kty: EC
+                          use: sig
+                          x: -a4DlQ0kMffMB1wZJSjNAA1YTVB0dXrTUGszywNy-e4
+                          "y": y5gcJVgSq7B5hr7vN1rbNaGQ3mqMN7soz5Ua1SqzWGw
             example:
                 keys:
-                    - Iusto iusto.
-                    - Facere fuga et dolor ipsum.
-                    - Et esse.
-                    - Unde natus necessitatibus quis sunt voluptatum.
+                    - alg: ES256
+                      crv: P-256
+                      key_ops:
+                        - verify
+                      kid: unique-key-id
+                      kty: EC
+                      use: sig
+                      x: -a4DlQ0kMffMB1wZJSjNAA1YTVB0dXrTUGszywNy-e4
+                      "y": y5gcJVgSq7B5hr7vN1rbNaGQ3mqMN7soz5Ua1SqzWGw
+                    - alg: ES256
+                      crv: P-256
+                      key_ops:
+                        - verify
+                      kid: unique-key-id
+                      kty: EC
+                      use: sig
+                      x: -a4DlQ0kMffMB1wZJSjNAA1YTVB0dXrTUGszywNy-e4
+                      "y": y5gcJVgSq7B5hr7vN1rbNaGQ3mqMN7soz5Ua1SqzWGw
     securitySchemes:
         apiKey_header_Authorization:
             type: apiKey

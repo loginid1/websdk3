@@ -2,7 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { ResultKey } from './ResultKey';
 export type WellKnownJwks = {
-    keys?: Array<string>;
+    keys?: Array<ResultKey>;
 };
 
