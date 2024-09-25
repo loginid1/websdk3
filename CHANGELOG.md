@@ -1,3 +1,11 @@
+## [3.0.4](https://gitlab.com/loginid/software/sdks/websdk3/compare/v3.0.3...v3.0.4) (2024-09-25)
+
+### Bug Fixes
+
+* **autofill:** improved autofill API ([83e926c](https://gitlab.com/loginid/software/sdks/websdk3/commit/83e926c018c0465745b494ec8dcfedc9434a576e))
+* **Passkey Types:** reexport passkey types ([bfcbc75](https://gitlab.com/loginid/software/sdks/websdk3/commit/bfcbc751029618f07c1e25b7386294f9f3bd2eb4))
+* **tx-conf-jwt:** fix for tx-conf breaking ([227d149](https://gitlab.com/loginid/software/sdks/websdk3/commit/227d14943bb1c79ece5c7c69bfcb8e949f785697))
+
 ## [3.0.3](https://gitlab.com/loginid/software/sdks/websdk3/compare/v3.0.2...v3.0.3) (2024-09-20)
 
 ### Bug Fixes
