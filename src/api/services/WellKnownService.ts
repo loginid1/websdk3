@@ -17,6 +17,7 @@ export class WellKnownService {
             method: 'GET',
             url: '/fido2/v2/.well-known/jwks.json',
             errors: {
+                404: `NotFound: Not Found response.`,
                 500: `InternalServerError: Internal Server Error response.`,
             },
         });

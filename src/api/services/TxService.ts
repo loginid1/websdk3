@@ -49,6 +49,7 @@ export class TxService {
             mediaType: 'application/json',
             errors: {
                 400: `BadRequest: Bad Request response.`,
+                404: `NotFound: Not Found response.`,
                 500: `InternalServerError: Internal Server Error response.`,
             },
         });

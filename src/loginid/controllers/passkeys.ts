@@ -3,8 +3,8 @@ import AbortControllerManager from '../../abort-controller'
 import { DeviceStore } from '../lib/store'
 import { defaultDeviceInfo } from '../../browser'
 import { mergeFallbackOptions } from '../lib/utils'
-import { bufferToBase64Url, parseJwt } from '../../utils'
 import { NO_LOGIN_OPTIONS_ERROR } from '../lib/errors'
+import { bufferToBase64Url, parseJwt } from '../../utils'
 import { createPasskeyCredential, getPasskeyCredential } from '../lib/webauthn'
 import { confirmTransactionOptions, passkeyOptions, toAuthResult } from '../lib/defaults'
 import type {
@@ -184,9 +184,11 @@ class Passkeys extends OTP {
   private async getNavigatorCredential(authInitResponseBody: AuthInit, options: AuthenticateWithPasskeysOptions = {}) {
     const { assertionOptions, session } = authInitResponseBody
 
-    if (!options.abortSignal) {
+    if (!options.abortController) {
       AbortControllerManager.renewWebAuthnAbortController()
-      options.abortSignal = AbortControllerManager.abortController.signal
+      options.abortController = AbortControllerManager.abortController
+    } else {
+      AbortControllerManager.assignWebAuthnAbortController(options.abortController)
     }
 
     const credential = await getPasskeyCredential(assertionOptions, options)
@@ -337,7 +339,7 @@ class Passkeys extends OTP {
    *       return;
    *     }
    * 
-   *     const result = await lid.authenticateWithPasskeyAutofill(options);
+   *     const result = await lid.authenticateWithPasskeyAutofill();
    *     console.log("Authentication Result:", result);
    *   } catch (error) {
    *     // Handle errors
@@ -510,8 +512,6 @@ class Passkeys extends OTP {
     const result = await this.service
       .tx
       .txTxComplete({ requestBody: txCompleteRequestBody })
-
-    this.session.setJwtCookie(result.jwtAccess)
 
     return result
   }
