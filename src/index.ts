@@ -21,9 +21,10 @@ export {
   AbortError,
   LoginIDWebSDK,
   PasskeyError,
-  WebAuthnHelper
+  WebAuthnHelper,
 }
 export type {DoesDeviceSupportPasskeysResponse}
+export type {Passkey, PasskeyCollection} from './api'
 
 export * as LoginIDAPI from './api'
 export * from './loginid/types'
