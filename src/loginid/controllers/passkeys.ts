@@ -513,8 +513,6 @@ class Passkeys extends OTP {
       .tx
       .txTxComplete({ requestBody: txCompleteRequestBody })
 
-    this.session.setJwtCookie(result.jwtAccess)
-
     return result
   }
 }
