@@ -61,8 +61,10 @@ export interface PasskeyOptions {
    */
   callbacks?: Callbacks
 
-  // Disable usernameType as we do not want to support this completely yet.
-  //usernameType?: UsernameType
+  /**
+  * The type of username validation to be used. Defaults to **`other`**.
+  */
+  usernameType?: UsernameType
   // disable hints for now
   //hints?: string[]
 }
@@ -142,8 +144,10 @@ export interface ConfirmTransactionOptions extends PasskeyOptions {
  * Request and send OTP options.
  */
 export interface RequestAndSendOtpOptions {
-  // Disable usernameType as we do not want to support this completely yet.
-  //usernameType?: UsernameType
+  /**
+  * The type of username validation to be used. Defaults to **`other`**.
+  */
+  usernameType?: UsernameType
 }
 
 /**
