@@ -1,3 +1,10 @@
+## [3.0.5](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/v3.0.4...v3.0.5) (2024-10-01)
+
+### Bug Fixes
+
+* **authenticateWithPasskey:** fixed case where if callback is not supplied error would be thrown ([d70faa9](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/d70faa96fa54d48685272115513200ad9a04592c))
+* **usernameType:** username type defaults to 'other' now ([020be21](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/020be214694400d0c941361faf0d858d4de495f2))
+
 ## [3.0.4](https://gitlab.com/loginid/software/sdks/websdk3/compare/v3.0.3...v3.0.4) (2024-09-25)
 
 ### Bug Fixes
