@@ -8,6 +8,9 @@ export type PubKeyCredentialDescriptor = {
      */
     id: string;
     transports?: Array<'usb' | 'nfc' | 'ble' | 'internal' | 'hybrid' | 'cable' | 'smart-card'>;
+    /**
+     * The valid credential types.
+     */
     type: 'public-key';
 };
 

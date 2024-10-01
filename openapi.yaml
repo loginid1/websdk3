@@ -53,7 +53,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/NotFoundError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -62,7 +62,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/InternalServerError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -110,7 +110,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/NotFoundError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -119,7 +119,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/InternalServerError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -207,7 +207,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/NotFoundError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -216,7 +216,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/InternalServerError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -244,7 +244,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/UnauthorizedError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -253,7 +253,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/ForbiddenError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -262,7 +262,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/NotFoundError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -271,7 +271,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/InternalServerError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -315,7 +315,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/NotFoundError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -324,7 +324,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/InternalServerError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -365,7 +365,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/NotFoundError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -374,7 +374,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/InternalServerError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -419,7 +419,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/NotFoundError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -428,7 +428,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/InternalServerError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -473,7 +473,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/UnauthorizedError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -482,7 +482,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/InternalServerError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -519,7 +519,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/UnauthorizedError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -528,7 +528,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/InternalServerError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -568,7 +568,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/UnauthorizedError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -577,7 +577,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/ForbiddenError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -586,7 +586,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/NotFoundError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -595,7 +595,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/InternalServerError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -635,7 +635,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/UnauthorizedError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -644,7 +644,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/ForbiddenError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -653,7 +653,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/NotFoundError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -662,7 +662,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/InternalServerError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -709,7 +709,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/UnauthorizedError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -718,7 +718,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/ForbiddenError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -727,7 +727,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/NotFoundError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -736,7 +736,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/InternalServerError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -767,7 +767,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/NotFoundError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -776,7 +776,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/InternalServerError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -824,7 +824,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/UnauthorizedError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -833,7 +833,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/NotFoundError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -842,7 +842,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/InternalServerError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -881,7 +881,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/UnauthorizedError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -890,7 +890,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/NotFoundError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -899,7 +899,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/InternalServerError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -947,7 +947,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/UnauthorizedError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -956,7 +956,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/NotFoundError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -965,7 +965,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/InternalServerError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -1003,7 +1003,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/UnauthorizedError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -1012,7 +1012,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/NotFoundError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -1021,7 +1021,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/InternalServerError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -1057,7 +1057,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/NotFoundError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -1066,7 +1066,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/InternalServerError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -1119,7 +1119,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/ForbiddenError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -1128,7 +1128,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/InternalServerError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -1229,7 +1229,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/UnauthorizedError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -1238,7 +1238,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/ForbiddenError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -1247,7 +1247,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/InternalServerError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -1302,7 +1302,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/ForbiddenError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -1311,7 +1311,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/InternalServerError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -1371,7 +1371,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/NotFoundError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -1380,7 +1380,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/BadRequestError'
+                                $ref: '#/components/schemas/InternalServerError'
                             example:
                                 msg: A serious error
                                 msgCode: serious_error
@@ -1396,7 +1396,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/Version'
+                                $ref: '#/components/schemas/Version3'
                             example:
                                 hash: cd243db4
                                 version: 1.2.3
@@ -1431,6 +1431,7 @@ components:
                     type: string
                     description: Expiration time of the code
                     example: "2021-01-01T00:00:00Z"
+            description: Code generation result
             example:
                 code: "123456"
                 expiresAt: "2021-01-01T00:00:00Z"
@@ -1504,7 +1505,7 @@ components:
                     type: array
                     items:
                         type: string
-                        example: otp:email
+                        example: otp:sms
                         enum:
                             - otp
                             - otp:sms
@@ -1539,6 +1540,7 @@ components:
                     type: string
                     description: An opaque object containing session data.
                     example: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
+            description: FIDO2 authentication response
             example:
                 action: proceed
                 assertionOptions:
@@ -1555,7 +1557,7 @@ components:
                         appid: https://loalhost:8443
                     rpId: https://localhost:8443/
                     timeout: 5000
-                    userVerification: discouraged
+                    userVerification: Praesentium veniam sit.
                 crossAuthMethods:
                     - otp
                     - otp:sms
@@ -1603,8 +1605,10 @@ components:
             properties:
                 authenticatorData:
                     type: string
-                    description: This attribute contains the authenticator data returned by the authenticator.
-                    example: ix523n3XniH01jM4CIuOn1z0Jw6QbRATXYOsCUyQN...
+                    description: |-
+                        A base64 encoded authenticator data structure encodes contextual bindings
+                        made by the authenticator.
+                    example: Quia ex reiciendis error illum.
                 clientDataJSON:
                     type: string
                     description: |-
@@ -1644,7 +1648,7 @@ components:
                 authenticatorAttachment:
                     type: string
                     description: Authenticator attachment modality
-                    example: platform
+                    example: cross-platform
                     enum:
                         - platform
                         - cross-platform
@@ -1652,7 +1656,7 @@ components:
                     type: boolean
                     description: Resident key requirement
                     default: false
-                    example: false
+                    example: true
                 residentKey:
                     type: string
                     description: Resident key requirement
@@ -1663,8 +1667,8 @@ components:
                         - required
                 userVerification:
                     type: string
-                    description: Resident key requirement
-                    example: preferred
+                    description: User verification requirement
+                    example: required
                     enum:
                         - required
                         - preferred
@@ -1673,7 +1677,7 @@ components:
                 authenticatorAttachment: platform
                 requireResidentKey: true
                 residentKey: discouraged
-                userVerification: discouraged
+                userVerification: Praesentium veniam sit.
         BadRequestError:
             type: object
             properties:
@@ -1689,6 +1693,23 @@ components:
             required:
                 - msg
                 - msgCode
+        CodeResult:
+            type: object
+            properties:
+                code:
+                    type: string
+                    description: Generated code
+                    example: Corrupti rem consequatur sapiente dolorum ut consequatur.
+                expiresAt:
+                    type: string
+                    description: Expiration time of the code
+                    example: Quo fugit amet laudantium qui.
+            example:
+                code: Quae quia.
+                expiresAt: Facilis quidem quod ab doloribus et explicabo.
+            required:
+                - code
+                - expiresAt
         CreationResult:
             type: object
             properties:
@@ -1700,8 +1721,10 @@ components:
                     example: 5lvuZBkX1w7/0+XKcldttzA7vTwilEq3qnnXSq/a0...
                 authenticatorData:
                     type: string
-                    description: This attribute contains the authenticator data contained within attestationObject.
-                    example: ix523n3XniH01jM4CIuOn1z0Jw6QbRATXYOsCUyQN...
+                    description: |-
+                        A base64 encoded authenticator data structure encodes contextual bindings
+                        made by the authenticator.
+                    example: Voluptate beatae perspiciatis quia error non minus.
                 clientDataJSON:
                     type: string
                     description: |-
@@ -1730,7 +1753,11 @@ components:
                     type: array
                     items:
                         type: string
-                        example: nfc
+                        description: |-
+                            This enumeration defines hints as to how clients might communicate with a
+                            particular authenticator in order to obtain an assertion for a specific
+                            credential.
+                        example: internal
                         enum:
                             - usb
                             - nfc
@@ -1743,9 +1770,8 @@ components:
                         These values are the transports that the authenticator is believed to support,
                         or an empty sequence if the information is unavailable.
                     example:
-                        - ble
-                        - ble
-                        - hybrid
+                        - internal
+                        - internal
             example:
                 attestationObject: 5lvuZBkX1w7/0+XKcldttzA7vTwilEq3qnnXSq/a0...
                 authenticatorData: ix523n3XniH01jM4CIuOn1z0Jw6QbRATXYOsCUyQN...
@@ -1754,8 +1780,10 @@ components:
                 publicKey: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
                 publicKeyAlgorithm: -8
                 transports:
-                    - nfc
-                    - cable
+                    - internal
+                    - internal
+                    - internal
+                    - internal
             required:
                 - clientDataJSON
                 - attestationObject
@@ -1826,6 +1854,21 @@ components:
                 osVersion: 14.2.1
                 screenHeight: 1080
                 screenWidth: 1920
+        ForbiddenError:
+            type: object
+            properties:
+                msg:
+                    type: string
+                    example: A serious error
+                msgCode:
+                    type: string
+                    example: serious_error
+            example:
+                msg: A serious error
+                msgCode: serious_error
+            required:
+                - msg
+                - msgCode
         GrantCreateRequestBody:
             type: object
             properties:
@@ -1833,7 +1876,7 @@ components:
                     type: array
                     items:
                         type: string
-                        example: profile:read
+                        example: reg:write
                         enum:
                             - passkey:read
                             - passkey:write
@@ -1869,6 +1912,21 @@ components:
                 token: oWIsYWQl6RB0cFC9jM8Hy85TmqAMyc0QqSXMsh0Fo9U=
             required:
                 - token
+        InternalServerError:
+            type: object
+            properties:
+                msg:
+                    type: string
+                    example: A serious error
+                msgCode:
+                    type: string
+                    example: serious_error
+            example:
+                msg: A serious error
+                msgCode: serious_error
+            required:
+                - msg
+                - msgCode
         JWT:
             type: object
             properties:
@@ -1885,6 +1943,21 @@ components:
                 jwtAccess: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
             required:
                 - jwtAccess
+        NotFoundError:
+            type: object
+            properties:
+                msg:
+                    type: string
+                    example: A serious error
+                msgCode:
+                    type: string
+                    example: serious_error
+            example:
+                msg: A serious error
+                msgCode: serious_error
+            required:
+                - msg
+                - msgCode
         Passkey:
             type: object
             properties:
@@ -1912,7 +1985,7 @@ components:
                     example: My Phone
             example:
                 createdAt: 2023-06-15 13:29:41 EDT
-                credentialSynced: true
+                credentialSynced: false
                 device: iPhone SE
                 id: eb385800-d35e-4108-9b49-48010731cd37
                 name: My Phone
@@ -1948,7 +2021,7 @@ components:
                     type: boolean
                     description: Flag to allow conditional creation
                     default: false
-                    example: false
+                    example: true
             example:
                 conditionalCreate: false
             required:
@@ -1977,10 +2050,10 @@ components:
                         Whether to update the email address immediately or send an authorization code
                         to verify.
                     default: true
-                    example: true
+                    example: false
             example:
                 email: luke.skywalker@tatuin.com
-                requestVerification: false
+                requestVerification: true
             required:
                 - email
         ProfilePhoneUpdateRequestBody:
@@ -2039,7 +2112,11 @@ components:
                     type: array
                     items:
                         type: string
-                        example: usb
+                        description: |-
+                            This enumeration defines hints as to how clients might communicate with a
+                            particular authenticator in order to obtain an assertion for a specific
+                            credential.
+                        example: internal
                         enum:
                             - usb
                             - nfc
@@ -2049,29 +2126,72 @@ components:
                             - cable
                             - smart-card
                     example:
-                        - cable
-                        - smart-card
+                        - internal
+                        - internal
+                        - internal
+                        - internal
                 type:
                     type: string
+                    description: The valid credential types.
                     example: public-key
                     enum:
                         - public-key
             example:
                 id: AyQBkTLAPWaLl6HtE3Oh6ovqkspSidX8DA9fYQB6DX4=
                 transports:
-                    - usb
-                    - smart-card
-                type: public-key
+                    - internal
+                    - internal
+                type: Quo ad.
             required:
                 - type
+                - id
+        PublicKeyCredential:
+            type: object
+            properties:
+                id:
+                    type: string
+                    description: |-
+                        This base64 encoded byte array contains the credential ID
+                        of the public key credential the caller is referring to.
+                    example: RIiL8/kVzPwGRig3gVvlAGzWqNLb2kG56XSH7u1tXR4=
+                transport:
+                    type: string
+                    description: |-
+                        This enumeration defines hints as to how clients might communicate with a
+                        particular authenticator in order to obtain an assertion for a specific
+                        credential.
+                    example: internal
+                    enum:
+                        - usb
+                        - nfc
+                        - ble
+                        - internal
+                        - hybrid
+                        - cable
+                        - smart-card
+                type:
+                    type: string
+                    description: |-
+                        The type of the public key credential the caller is referring to.
+                        The value SHOULD be a member of PublicKeyCredentialType but client
+                        platforms MUST ignore any PublicKeyCredentialDescriptor with an unknown
+                        type.
+                    default: public-key
+                    example: public-key
+                    enum:
+                        - public-key
+            example:
+                id: RIiL8/kVzPwGRig3gVvlAGzWqNLb2kG56XSH7u1tXR4=
+                transport: internal
+                type: public-key
+            required:
                 - id
         PublicKeyCredentialCreationOptions:
             type: object
             properties:
                 attestation:
                     type: string
-                    description: A preference for attestation conveyance.
-                    example: direct
+                    example: indirect
                     enum:
                         - none
                         - indirect
@@ -2108,9 +2228,7 @@ components:
                     description: Additional parameters requesting processing by the client and authenticator.
                     example:
                         appid: https://loalhost:8443
-                    additionalProperties:
-                        type: string
-                        example: Quia ex reiciendis error illum.
+                    additionalProperties: true
                 pubKeyCredParams:
                     type: array
                     items:
@@ -2138,7 +2256,7 @@ components:
                 user:
                     $ref: '#/components/schemas/PublicKeyCredentialUserEntity'
             example:
-                attestation: indirect
+                attestation: Et quas harum odit ea.
                 authenticatorSelection:
                     authenticatorAttachment: platform
                     requireResidentKey: true
@@ -2182,7 +2300,7 @@ components:
                         A cryptographic signature algorithm with which the newly generated credential
                         will be used, and thus also the type of asymmetric key pair to be generated,
                         e.g., RSA or Elliptic Curve.
-                    example: -7
+                    example: -257
                     enum:
                         - -7
                         - -35
@@ -2192,13 +2310,14 @@ components:
                     format: int64
                 type:
                     type: string
+                    description: The valid credential types.
                     example: public-key
                     enum:
                         - public-key
             description: Additional parameters when creating a new credential.
             example:
-                alg: -35
-                type: public-key
+                alg: -257
+                type: Quo ad.
         PublicKeyCredentialRequestOptions:
             type: object
             properties:
@@ -2234,9 +2353,7 @@ components:
                         user, then the prompt string might be included as an extension.
                     example:
                         appid: https://loalhost:8443
-                    additionalProperties:
-                        type: string
-                        example: Quod delectus aperiam eligendi.
+                    additionalProperties: true
                 rpId:
                     type: string
                     description: |-
@@ -2254,13 +2371,8 @@ components:
                     format: int64
                 userVerification:
                     type: string
-                    description: |-
-                        The Relying Party's requirements regarding user verification for the get()
-                        operation. The value SHOULD be a member of UserVerificationRequirement but
-                        client platforms MUST ignore unknown values, treating an unknown value as if
-                        the member does not exist. Eligible authenticators are filtered to only those
-                        capable of satisfying this requirement.
-                    example: discouraged
+                    description: User verification requirement
+                    example: preferred
                     enum:
                         - required
                         - preferred
@@ -2279,7 +2391,7 @@ components:
                     appid: https://loalhost:8443
                 rpId: https://localhost:8443/
                 timeout: 5000
-                userVerification: required
+                userVerification: Praesentium veniam sit.
             required:
                 - challenge
         PublicKeyCredentialRpEntity:
@@ -2364,10 +2476,11 @@ components:
                     type: string
                     description: An opaque object containing session data.
                     example: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
+            description: FIDO2 registration response
             example:
                 action: proceed
                 registrationRequestOptions:
-                    attestation: direct
+                    attestation: Et quas harum odit ea.
                     authenticatorSelection:
                         authenticatorAttachment: platform
                         requireResidentKey: true
@@ -2461,7 +2574,7 @@ components:
                     type: array
                     items:
                         type: string
-                        example: Enim corrupti rem consequatur sapiente dolorum ut.
+                        example: Aliquam laudantium exercitationem magni itaque.
                     description: Key operations
                     example:
                         - verify
@@ -2526,6 +2639,7 @@ components:
                     type: string
                     description: Authorization token
                     example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+            description: Transaction Confirmation Complete response
             example:
                 authCred:
                     createdAt: 2023-06-15 13:29:41 EDT
@@ -2592,6 +2706,7 @@ components:
                     type: string
                     description: Internal transaction identifier
                     example: 2a363a42-a397-4af0-b089-0935fc223017
+            description: Transaction Confirmation Init response
             example:
                 assertionOptions:
                     allowCredentials:
@@ -2607,7 +2722,7 @@ components:
                         appid: https://loalhost:8443
                     rpId: https://localhost:8443/
                     timeout: 5000
-                    userVerification: discouraged
+                    userVerification: Praesentium veniam sit.
                 session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
                 txId: 2a363a42-a397-4af0-b089-0935fc223017
             required:
@@ -2643,6 +2758,21 @@ components:
                 - txPayload
                 - txType
                 - nonce
+        UnauthorizedError:
+            type: object
+            properties:
+                msg:
+                    type: string
+                    example: A serious error
+                msgCode:
+                    type: string
+                    example: serious_error
+            example:
+                msg: A serious error
+                msgCode: serious_error
+            required:
+                - msg
+                - msgCode
         User:
             type: object
             properties:
@@ -2657,11 +2787,12 @@ components:
                 usernameType:
                     type: string
                     description: Username type
-                    default: email
+                    default: other
                     example: email
                     enum:
                         - email
                         - phone
+                        - other
             example:
                 displayName: System Administrator
                 username: admin@example.com
@@ -2679,18 +2810,51 @@ components:
                 usernameType:
                     type: string
                     description: Username type
-                    default: email
+                    default: other
                     example: email
                     enum:
                         - email
                         - phone
+                        - other
             example:
                 username: admin@example.com
                 usernameType: email
             required:
                 - username
-                - usernameType
         Version:
+            type: object
+            properties:
+                hash:
+                    type: string
+                    description: Version hash
+                    example: cd243db4
+                version:
+                    type: string
+                    description: Software version
+                    example: 1.2.3
+            example:
+                hash: cd243db4
+                version: 1.2.3
+            required:
+                - version
+        Version2:
+            type: object
+            properties:
+                hash:
+                    type: string
+                    description: Version hash
+                    example: cd243db4
+                version:
+                    type: string
+                    description: Software version
+                    example: 1.2.3
+            description: Version
+            example:
+                hash: cd243db4
+                version: 1.2.3
+            required:
+                - version
+        Version3:
             type: object
             properties:
                 hash:
@@ -2714,15 +2878,6 @@ components:
                     items:
                         $ref: '#/components/schemas/ResultKey'
                     example:
-                        - alg: ES256
-                          crv: P-256
-                          key_ops:
-                            - verify
-                          kid: unique-key-id
-                          kty: EC
-                          use: sig
-                          x: -a4DlQ0kMffMB1wZJSjNAA1YTVB0dXrTUGszywNy-e4
-                          "y": y5gcJVgSq7B5hr7vN1rbNaGQ3mqMN7soz5Ua1SqzWGw
                         - alg: ES256
                           crv: P-256
                           key_ops:

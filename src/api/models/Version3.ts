@@ -2,14 +2,14 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type UserLogin = {
+export type Version3 = {
     /**
-     * Username
+     * Version hash
      */
-    username: string;
+    hash?: string;
     /**
-     * Username type
+     * Software version
      */
-    usernameType?: 'email' | 'phone' | 'other';
+    version: string;
 };
 

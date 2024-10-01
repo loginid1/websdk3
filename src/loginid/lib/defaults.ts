@@ -20,7 +20,7 @@ export const passkeyOptions = (username: string, authzToken: string, options: Al
     ...options,
     authzToken: authzToken || options.authzToken || '',
     // NOTE: we will always be defaulting to email for now
-    usernameType: options.usernameType || 'email',
+    usernameType: options.usernameType || 'other',
     displayName: options.displayName || username,
     callbacks: options.callbacks || {},
   }

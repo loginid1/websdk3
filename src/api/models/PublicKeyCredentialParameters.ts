@@ -12,6 +12,9 @@ export type PublicKeyCredentialParameters = {
      * e.g., RSA or Elliptic Curve.
      */
     alg?: -7 | -35 | -36 | -257 | -8;
+    /**
+     * The valid credential types.
+     */
     type?: 'public-key';
 };
 

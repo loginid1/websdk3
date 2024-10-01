@@ -9,7 +9,8 @@ export type CreationResult = {
      */
     attestationObject: string;
     /**
-     * This attribute contains the authenticator data contained within attestationObject.
+     * A base64 encoded authenticator data structure encodes contextual bindings
+     * made by the authenticator.
      */
     authenticatorData?: string;
     /**

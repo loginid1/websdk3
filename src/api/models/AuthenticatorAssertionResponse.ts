@@ -4,7 +4,8 @@
 /* eslint-disable */
 export type AuthenticatorAssertionResponse = {
     /**
-     * This attribute contains the authenticator data returned by the authenticator.
+     * A base64 encoded authenticator data structure encodes contextual bindings
+     * made by the authenticator.
      */
     authenticatorData: string;
     /**

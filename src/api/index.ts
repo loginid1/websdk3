@@ -20,11 +20,15 @@ export type { AuthenticatorSelectionCriteria } from './models/AuthenticatorSelec
 export type { AuthInit } from './models/AuthInit';
 export type { AuthInitRequestBody } from './models/AuthInitRequestBody';
 export type { BadRequestError } from './models/BadRequestError';
+export type { CodeResult } from './models/CodeResult';
 export type { CreationResult } from './models/CreationResult';
 export type { DeviceInfo } from './models/DeviceInfo';
+export type { ForbiddenError } from './models/ForbiddenError';
 export type { GrantCreateRequestBody } from './models/GrantCreateRequestBody';
 export type { GrantCreateResponseBody } from './models/GrantCreateResponseBody';
+export type { InternalServerError } from './models/InternalServerError';
 export type { JWT } from './models/JWT';
+export type { NotFoundError } from './models/NotFoundError';
 export type { Passkey } from './models/Passkey';
 export type { PasskeyCollection } from './models/PasskeyCollection';
 export type { PasskeyOptions } from './models/PasskeyOptions';
@@ -33,6 +37,7 @@ export type { ProfileEmailUpdateRequestBody } from './models/ProfileEmailUpdateR
 export type { ProfilePhoneUpdateRequestBody } from './models/ProfilePhoneUpdateRequestBody';
 export type { ProfilePhoneVerifyRequestBody } from './models/ProfilePhoneVerifyRequestBody';
 export type { PubKeyCredentialDescriptor } from './models/PubKeyCredentialDescriptor';
+export type { PublicKeyCredential } from './models/PublicKeyCredential';
 export type { PublicKeyCredentialCreationOptions } from './models/PublicKeyCredentialCreationOptions';
 export type { PublicKeyCredentialParameters } from './models/PublicKeyCredentialParameters';
 export type { PublicKeyCredentialRequestOptions } from './models/PublicKeyCredentialRequestOptions';
@@ -47,9 +52,12 @@ export type { TxComplete } from './models/TxComplete';
 export type { TxCompleteRequestBody } from './models/TxCompleteRequestBody';
 export type { TxInit } from './models/TxInit';
 export type { TxInitRequestBody } from './models/TxInitRequestBody';
+export type { UnauthorizedError } from './models/UnauthorizedError';
 export type { User } from './models/User';
 export type { UserLogin } from './models/UserLogin';
 export type { Version } from './models/Version';
+export type { Version2 } from './models/Version2';
+export type { Version3 } from './models/Version3';
 export type { WellKnownJwks } from './models/WellKnownJwks';
 
 export { AuthService } from './services/AuthService';

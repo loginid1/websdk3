@@ -3,6 +3,9 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { PublicKeyCredentialCreationOptions } from './PublicKeyCredentialCreationOptions';
+/**
+ * FIDO2 registration response
+ */
 export type RegInit = {
     /**
      * An action to be performed by the front-end to complete the registration flow.

@@ -2,14 +2,14 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type UserLogin = {
+export type CodeResult = {
     /**
-     * Username
+     * Generated code
      */
-    username: string;
+    code: string;
     /**
-     * Username type
+     * Expiration time of the code
      */
-    usernameType?: 'email' | 'phone' | 'other';
+    expiresAt: string;
 };
 

@@ -8,9 +8,6 @@ import type { PublicKeyCredentialParameters } from './PublicKeyCredentialParamet
 import type { PublicKeyCredentialRpEntity } from './PublicKeyCredentialRpEntity';
 import type { PublicKeyCredentialUserEntity } from './PublicKeyCredentialUserEntity';
 export type PublicKeyCredentialCreationOptions = {
-    /**
-     * A preference for attestation conveyance.
-     */
     attestation?: 'none' | 'indirect' | 'direct' | 'enterprise';
     authenticatorSelection?: AuthenticatorSelectionCriteria;
     /**
@@ -29,7 +26,7 @@ export type PublicKeyCredentialCreationOptions = {
     /**
      * Additional parameters requesting processing by the client and authenticator.
      */
-    extensions?: Record<string, string>;
+    extensions?: Record<string, any>;
     /**
      * This member contains information about the desired properties of the credential
      * to be created. The sequence is ordered from most preferred to least preferred.

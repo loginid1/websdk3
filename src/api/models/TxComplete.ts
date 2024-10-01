@@ -3,6 +3,9 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { Passkey } from './Passkey';
+/**
+ * Transaction Confirmation Complete response
+ */
 export type TxComplete = {
     authCred?: Passkey;
     /**

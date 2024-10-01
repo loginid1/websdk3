@@ -22,7 +22,7 @@ export type PublicKeyCredentialRequestOptions = {
      * authenticator. For example, if transaction confirmation is sought from the
      * user, then the prompt string might be included as an extension.
      */
-    extensions?: Record<string, string>;
+    extensions?: Record<string, any>;
     /**
      * The relying party identifier claimed by the caller. If omitted, its value will
      * be the CredentialsContainer object’s relevant settings object's origin's
@@ -36,11 +36,7 @@ export type PublicKeyCredentialRequestOptions = {
      */
     timeout?: number;
     /**
-     * The Relying Party's requirements regarding user verification for the get()
-     * operation. The value SHOULD be a member of UserVerificationRequirement but
-     * client platforms MUST ignore unknown values, treating an unknown value as if
-     * the member does not exist. Eligible authenticators are filtered to only those
-     * capable of satisfying this requirement.
+     * User verification requirement
      */
     userVerification?: 'required' | 'preferred' | 'discouraged';
 };
