@@ -3,6 +3,9 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { PublicKeyCredentialRequestOptions } from './PublicKeyCredentialRequestOptions';
+/**
+ * FIDO2 authentication response
+ */
 export type AuthInit = {
     /**
      * An action to be performed by the front-end to complete the authentication flow.

@@ -3,6 +3,9 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { PublicKeyCredentialRequestOptions } from './PublicKeyCredentialRequestOptions';
+/**
+ * Transaction Confirmation Init response
+ */
 export type TxInit = {
     assertionOptions: PublicKeyCredentialRequestOptions;
     /**

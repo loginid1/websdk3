@@ -2,6 +2,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+/**
+ * Code generation result
+ */
 export type AuthCode = {
     /**
      * Generated code

@@ -14,6 +14,6 @@ export type User = {
     /**
      * Username type
      */
-    usernameType: 'email' | 'phone';
+    usernameType: 'email' | 'phone' | 'other';
 };
 

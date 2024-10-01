@@ -16,7 +16,7 @@ export type AuthenticatorSelectionCriteria = {
      */
     residentKey?: 'discouraged' | 'preferred' | 'required';
     /**
-     * Resident key requirement
+     * User verification requirement
      */
     userVerification?: 'required' | 'preferred' | 'discouraged';
 };

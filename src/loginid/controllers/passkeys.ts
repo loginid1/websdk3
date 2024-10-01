@@ -297,11 +297,9 @@ class Passkeys extends OTP {
         const fallbackOptions = mergeFallbackOptions(authInitResponseBody)
 
         await opts.callbacks.onFallback(username, fallbackOptions)
-
-        return toAuthResult('', false, true)
       }
 
-      throw NO_LOGIN_OPTIONS_ERROR
+      return toAuthResult('', false, true)
     }
 
     default:
