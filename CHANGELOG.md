@@ -1,3 +1,9 @@
+## [3.0.6](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/v3.0.5...v3.0.6) (2024-10-04)
+
+### Miscellaneous Chores
+
+* **README:** fix broken link to reference doc ([6ec8e4e](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/6ec8e4eb464124d28682a03e28adaaab032764db))
+
 ## [3.0.5](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/v3.0.4...v3.0.5) (2024-10-01)
 
 ### Bug Fixes
