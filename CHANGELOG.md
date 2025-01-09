@@ -1,3 +1,9 @@
+## [3.0.7](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/v3.0.6...v3.0.7) (2025-01-09)
+
+### Bug Fixes
+
+* **regex for getAppId:** base url doesn't have to be UUID anymore ([4d0da6e](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/4d0da6e9c93a89a702ec0d4f440b8ae3dd5e50de))
+
 ## [3.0.6](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/v3.0.5...v3.0.6) (2024-10-04)
 
 ### Miscellaneous Chores
