@@ -14,7 +14,7 @@ import type { BaseHttpRequest } from '../core/BaseHttpRequest';
 export class AuthService {
     constructor(public readonly httpRequest: BaseHttpRequest) {}
     /**
-     * Complete WebAuthn registration
+     * Complete WebAuthn authentication
      * @returns JWT OK response.
      * @throws ApiError
      */
@@ -36,7 +36,7 @@ export class AuthService {
         });
     }
     /**
-     * Start WebAuthn registration flow
+     * Start WebAuthn authentication flow
      * @returns AuthInit OK response.
      * @throws ApiError
      */

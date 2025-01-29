@@ -25,6 +25,10 @@ export type DeviceInfo = {
      */
     deviceId?: string;
     /**
+     * Last use timestamp in rfc3339 format
+     */
+    lastUsedAt?: string;
+    /**
      * OS architecture
      */
     osArch?: string;
@@ -44,5 +48,9 @@ export type DeviceInfo = {
      * Screen width in pixels
      */
     screenWidth?: number;
+    /**
+     * A trust identifier
+     */
+    trustId?: string;
 };
 

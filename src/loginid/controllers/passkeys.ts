@@ -128,7 +128,8 @@ class Passkeys extends OTP {
    */
   async createPasskey(username: string, authzToken: string = '', options: CreatePasskeyOptions = {}): Promise<AuthResult> {
     const appId = this.config.getAppId()
-    const deviceInfo = defaultDeviceInfo(DeviceStore.getDeviceId(appId))
+    const deviceId = DeviceStore.getDeviceId(appId)
+    const deviceInfo = defaultDeviceInfo(deviceId)
     const opts = passkeyOptions(username, authzToken, options)
 
     opts.authzToken = this.session.getToken(opts)
@@ -168,7 +169,7 @@ class Passkeys extends OTP {
     const result: AuthResult = toAuthResult(regCompleteResponse.jwtAccess)
 
     this.session.setJwtCookie(regCompleteResponse.jwtAccess)
-    DeviceStore.persistDeviceId(appId, regCompleteResponse.deviceID)
+    DeviceStore.persistDeviceId(appId, deviceId || regCompleteResponse.deviceId)
 
     return result
   }
