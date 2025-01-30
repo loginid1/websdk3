@@ -51,12 +51,11 @@ chrome-test:
     project: loginid/software/testing-tools/auto-directweb
     strategy: depend
 
-
 release:
   stage: release
   rules:
-    #- if: '$CI_COMMIT_BRANCH == "next"'
-      #when: always
+    - if: '$CI_COMMIT_BRANCH == "next"'
+      when: manual
     - if: '$CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH'
       when: never
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
