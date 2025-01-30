@@ -4,7 +4,6 @@
 module.exports = {
   branches: [
     'main',
-    { name: 'next', channel: 'next', prerelease: true },
   ],
   plugins: [
     [
