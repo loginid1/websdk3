@@ -1,3 +1,9 @@
+## [3.0.8-next.1](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/v3.0.7...v3.0.8-next.1) (2025-01-30)
+
+### Bug Fixes
+
+* **deviceId:** update responseID to responseId to match server response ([eba3fda](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/eba3fda1105735d01daca548512ae8cb92b493fa))
+
 ## [3.0.7](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/v3.0.6...v3.0.7) (2025-01-09)
 
 ### Bug Fixes
