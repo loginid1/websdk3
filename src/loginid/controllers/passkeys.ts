@@ -22,6 +22,7 @@ import {
   AuthCompleteRequestBody,
   AuthInit,
   AuthInitRequestBody,
+  JWT,
   RegCompleteRequestBody,
   RegInit,
   RegInitRequestBody,
@@ -166,7 +167,7 @@ class Passkeys extends OTP {
       .reg
       .regRegComplete({ requestBody: regCompleteRequestBody })
 
-    const result: AuthResult = toAuthResult(regCompleteResponse.jwtAccess)
+    const result: AuthResult = toAuthResult(regCompleteResponse)
 
     this.session.setJwtCookie(regCompleteResponse.jwtAccess)
     DeviceStore.persistDeviceId(appId, deviceId || regCompleteResponse.deviceId)
@@ -281,7 +282,7 @@ class Passkeys extends OTP {
         .auth
         .authAuthComplete({ requestBody: authCompleteRequestBody })
 
-      const result = toAuthResult(authCompleteResponse.jwtAccess)
+      const result = toAuthResult(authCompleteResponse)
 
       this.session.setJwtCookie(result.token)
 
@@ -300,7 +301,8 @@ class Passkeys extends OTP {
         await opts.callbacks.onFallback(username, fallbackOptions)
       }
 
-      return toAuthResult('', false, true)
+      const emptyResponse: JWT = { userId: '', jwtAccess: '' }
+      return toAuthResult(emptyResponse, false, true)
     }
 
     default:
