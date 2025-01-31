@@ -180,6 +180,16 @@ export interface AuthResult {
   token: string
 
   /**
+   * The unique identifier of the authenticated user.
+   */
+  userId: string
+
+  /**
+   * The identifier for the passkey used in authentication, if applicable.
+   */
+  passkeyId?: string
+
+  /**
    * An identifier for the device used in the authentication process. This property helps determine if supported authentications can be proceeded,
    * allowing future authentications to identify the device correctly.
    */
