@@ -74,9 +74,6 @@
     "webauthn",
     "passwordless"
   ],
-  "dependencies": {
-    "ua-parser-js": "^1.0.37"
-  },
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
