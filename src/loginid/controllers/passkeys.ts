@@ -286,6 +286,8 @@ class Passkeys extends OTP {
 
       this.session.setJwtCookie(result.token)
 
+      DeviceStore.persistDeviceId(appId, authCompleteResponse.deviceId)
+
       if (opts?.callbacks?.onSuccess) {
         await opts.callbacks.onSuccess(result)
       }
