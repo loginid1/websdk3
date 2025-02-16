@@ -150,6 +150,7 @@ const applyMixins = (derivedCtor: any, constructors: any[]) => {
 
 /**
  * Parse JWT to decode and access its variables
+ *
  * @param {string} token The jwt token that will be parsed
  * @returns 
  */
@@ -169,6 +170,7 @@ const parseJwt = (token: string) => {
 
 /**
  * Used to access a specific cookie
+ *
  * @param {string} name The name of the targetted cookie
  * @returns 
  */
@@ -182,25 +184,101 @@ const getCookie = (name: string): string | undefined => {
 
 /**
  * Used to set a cookie on the browser
+ *
  * @param {string} cookie The full cookie string
  */
 const setCookie = (cookie: string) => {
   document.cookie = cookie
 }
 
+/**
+ * Used to delete a cookie on the browser
+ *
+ * @param {string} name The name of the targetted cookie
+ */
 const deleteCookie = (name: string) => {
   document.cookie = `${name}=; expires=${new Date()}`
+}
+
+/**
+ * Generates a random string of the specified length containing only 
+ * uppercase letters (A-Z) and numbers (0-9).
+ * 
+ * @param length - The length of the generated string. Defaults to 25.
+ * @returns A randomly generated string of uppercase letters and numbers.
+ */
+const generateRandomId = (length: number = 25) => {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+  let result = ''
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length))
+  }
+  return result
+}
+
+/**
+ * Returns a new non-exportable key pair for signing and verifying using ES256 (ECDSA P-256).
+ * @returns {Promise<CryptoKeyPair>}
+ */
+const generateES256KeyPair = async (): Promise<CryptoKeyPair> => {
+  return await window.crypto.subtle.generateKey(
+    {
+      name: 'ECDSA',
+      namedCurve: 'P-256',
+    },
+    false,
+    ['sign']
+  )
+}
+
+/**
+ * Exports a public key from a CryptoKeyPair in JWK (JSON Web Key) format.
+ * @param {CryptoKeyPair} keyPair - The cryptographic key pair.
+ * @returns {Promise<JsonWebKey>} The exported public key in JWK format.
+ */
+const exportPublicKeyJwk = async (keyPair: CryptoKeyPair): Promise<JsonWebKey> => {
+  return await window.crypto.subtle.exportKey('jwk', keyPair.publicKey)
+}
+
+/**
+ * Signs a given data string using an ES256 private key.
+ * @param {CryptoKey} privateKey - The private key used for signing.
+ * @param {string} data - The data to be signed.
+ * @returns {Promise<string>} The base64url-encoded signature.
+ */
+const signWithES256PrivateKey = async (
+  privateKey: CryptoKey,
+  data: string
+): Promise<string> => {
+  const encoder = new TextEncoder()
+  const tokenData = encoder.encode(data)
+
+  const buffer = await window.crypto.subtle.sign(
+    {
+      name: 'ECDSA',
+      hash: { name: 'SHA-256' },
+    },
+    privateKey,
+    tokenData
+  )
+
+  return bufferToBase64Url(buffer)
 }
 
 export {
   a2b,
   applyMixins,
   b2a,
+  base64EncodeUrl,
   bufferToBase64Url,
   base64UrlToBuffer,
   createUUID,
   deleteCookie,
+  exportPublicKeyJwk,
+  generateES256KeyPair,
+  generateRandomId,
   getCookie,
   parseJwt,
   setCookie,
+  signWithES256PrivateKey,
 }

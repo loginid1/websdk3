@@ -1,10 +1,10 @@
 import OTP from './otp'
-import AbortControllerManager from '../../abort-controller'
-import { DeviceStore } from '../lib/store'
 import { defaultDeviceInfo } from '../../browser'
 import { mergeFallbackOptions } from '../lib/utils'
 import { NO_LOGIN_OPTIONS_ERROR } from '../lib/errors'
+import { DeviceStore } from '../lib/store/device-store'
 import { bufferToBase64Url, parseJwt } from '../../utils'
+import AbortControllerManager from '../../abort-controller'
 import { createPasskeyCredential, getPasskeyCredential } from '../lib/webauthn'
 import { confirmTransactionOptions, passkeyOptions, toAuthResult } from '../lib/defaults'
 import type {

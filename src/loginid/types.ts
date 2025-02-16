@@ -249,4 +249,55 @@ export interface VerifyConfigResult {
   code?: string;
 }
 
+/**
+ * Represents the claims included in a TrustID token.
+ */
+export interface TrustIDClaims {
+  /**
+   * Subject identifier for the token owner. This is the ID
+   * of the token.
+   */
+  sub: string;
+
+  /**
+   * Username associated with the token owner.
+   */
+  username: string;
+
+  /**
+   * Challenge string used for authentication.
+   */
+  chal: string;
+
+  /**
+   * Audience for which the token is intended. This is the app ID.
+   */
+  aud: string;
+
+  /**
+   * JSON Web Key (JWK) used for cryptographic operations. This is the public key.
+   */
+  jwk?: string;
+}
+
+/**
+ * Represents a stored Trust ID record in the trust store database.
+ */
+export interface TrustIDRecord {
+  /**
+   * Unique identifier for the Trust ID, derived from the TrustID token.
+   */
+  id: string;
+
+  /**
+   * Username associated with the Trust ID.
+   */
+  username: string;
+
+  /**
+   * Cryptographic key pair used for signing and verification.
+   */
+  keyPair: CryptoKeyPair;
+}
+
 export { ApiError }
