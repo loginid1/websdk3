@@ -41,32 +41,32 @@ paths:
                 passkeyId: 482b7723-eb3e-4814-809f-05af16284fcc
                 userId: 2a363a42-a397-4af0-b089-0935fc223017
         '400':
-          description: 'BadRequest: Bad Request response.'
+          description: 'bad_request: Bad Request response.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BadRequestError'
+                $ref: '#/components/schemas/AppError'
               example:
-                msg: A serious error
-                msgCode: serious_error
+                msg: Internal error
+                msgCode: internal_error
         '404':
-          description: 'NotFound: Not Found response.'
+          description: 'forbidden: Not Found response.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/NotFoundError'
+                $ref: '#/components/schemas/AppError'
               example:
-                msg: A serious error
-                msgCode: serious_error
+                msg: Internal error
+                msgCode: internal_error
         '500':
-          description: 'InternalServerError: Internal Server Error response.'
+          description: 'internal_error: Internal Server Error response.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/InternalServerError'
+                $ref: '#/components/schemas/AppError'
               example:
-                msg: A serious error
-                msgCode: serious_error
+                msg: Internal error
+                msgCode: internal_error
   /fido2/v2/auth/init:
     post:
       tags:
@@ -107,7 +107,7 @@ paths:
                 osVersion: 14.2.1
                 screenHeight: 1080
                 screenWidth: 1920
-                trustId: d6d4a4da-a86b-4391-ab6e-5887fdb19644
+              trustInfo: Beatae tenetur earum numquam aliquam a.
               user:
                 username: admin@example.com
                 usernameType: email
@@ -144,32 +144,32 @@ paths:
                 passkeyType: device
                 session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
         '400':
-          description: 'BadRequest: Bad Request response.'
+          description: 'bad_request: Bad Request response.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BadRequestError'
+                $ref: '#/components/schemas/AppError'
               example:
-                msg: A serious error
-                msgCode: serious_error
+                msg: Internal error
+                msgCode: internal_error
         '404':
-          description: 'NotFound: Not Found response.'
+          description: 'not_found: Not Found response.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/NotFoundError'
+                $ref: '#/components/schemas/AppError'
               example:
-                msg: A serious error
-                msgCode: serious_error
+                msg: Internal error
+                msgCode: internal_error
         '500':
-          description: 'InternalServerError: Internal Server Error response.'
+          description: 'internal_error: Internal Server Error response.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/InternalServerError'
+                $ref: '#/components/schemas/AppError'
               example:
-                msg: A serious error
-                msgCode: serious_error
+                msg: Internal error
+                msgCode: internal_error
   /fido2/v2/auth/otp:
     post:
       tags:
@@ -192,41 +192,41 @@ paths:
                 code: '123456'
                 expiresAt: '2021-01-01T00:00:00Z'
         '401':
-          description: 'Unauthorized: Unauthorized response.'
+          description: 'unauthorized: Unauthorized response.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UnauthorizedError'
+                $ref: '#/components/schemas/AppError'
               example:
-                msg: A serious error
-                msgCode: serious_error
+                msg: Internal error
+                msgCode: internal_error
         '403':
-          description: 'Forbidden: Forbidden response.'
+          description: 'forbidden: Forbidden response.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ForbiddenError'
+                $ref: '#/components/schemas/AppError'
               example:
-                msg: A serious error
-                msgCode: serious_error
+                msg: Internal error
+                msgCode: internal_error
         '404':
-          description: 'NotFound: Not Found response.'
+          description: 'not_found: Not Found response.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/NotFoundError'
+                $ref: '#/components/schemas/AppError'
               example:
-                msg: A serious error
-                msgCode: serious_error
+                msg: Internal error
+                msgCode: internal_error
         '500':
-          description: 'InternalServerError: Internal Server Error response.'
+          description: 'internal_error: Internal Server Error response.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/InternalServerError'
+                $ref: '#/components/schemas/AppError'
               example:
-                msg: A serious error
-                msgCode: serious_error
+                msg: Internal error
+                msgCode: internal_error
       security:
         - jwt_header_Authorization:
             - auth:write
@@ -265,32 +265,32 @@ paths:
         '204':
           description: No Content response.
         '400':
-          description: 'BadRequest: Bad Request response.'
+          description: 'bad_request: Bad Request response.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BadRequestError'
+                $ref: '#/components/schemas/AppError'
               example:
-                msg: A serious error
-                msgCode: serious_error
+                msg: Internal error
+                msgCode: internal_error
         '404':
-          description: 'NotFound: Not Found response.'
+          description: 'not_found: Not Found response.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/NotFoundError'
+                $ref: '#/components/schemas/AppError'
               example:
-                msg: A serious error
-                msgCode: serious_error
+                msg: Internal error
+                msgCode: internal_error
         '500':
-          description: 'InternalServerError: Internal Server Error response.'
+          description: 'internal_error: Internal Server Error response.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/InternalServerError'
+                $ref: '#/components/schemas/AppError'
               example:
-                msg: A serious error
-                msgCode: serious_error
+                msg: Internal error
+                msgCode: internal_error
   /fido2/v2/auth/otp/sms:
     post:
       tags:
@@ -319,32 +319,32 @@ paths:
         '204':
           description: No Content response.
         '400':
-          description: 'BadRequest: Bad Request response.'
+          description: 'bad_request: Bad Request response.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BadRequestError'
+                $ref: '#/components/schemas/AppError'
               example:
-                msg: A serious error
-                msgCode: serious_error
+                msg: Internal error
+                msgCode: internal_error
         '404':
-          description: 'NotFound: Not Found response.'
+          description: 'not_found: Not Found response.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/NotFoundError'
+                $ref: '#/components/schemas/AppError'
               example:
-                msg: A serious error
-                msgCode: serious_error
+                msg: Internal error
+                msgCode: internal_error
         '500':
-          description: 'InternalServerError: Internal Server Error response.'
+          description: 'internal_error: Internal Server Error response.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/InternalServerError'
+                $ref: '#/components/schemas/AppError'
               example:
-                msg: A serious error
-                msgCode: serious_error
+                msg: Internal error
+                msgCode: internal_error
   /fido2/v2/auth/otp/verify:
     post:
       tags:
@@ -377,32 +377,32 @@ paths:
                 passkeyId: 482b7723-eb3e-4814-809f-05af16284fcc
                 userId: 2a363a42-a397-4af0-b089-0935fc223017
         '400':
-          description: 'BadRequest: Bad Request response.'
+          description: 'bad_request: Bad Request response.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BadRequestError'
+                $ref: '#/components/schemas/AppError'
               example:
-                msg: A serious error
-                msgCode: serious_error
+                msg: Internal error
+                msgCode: internal_error
         '404':
-          description: 'NotFound: Not Found response.'
+          description: 'not_found: Not Found response.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/NotFoundError'
+                $ref: '#/components/schemas/AppError'
               example:
-                msg: A serious error
-                msgCode: serious_error
+                msg: Internal error
+                msgCode: internal_error
         '500':
-          description: 'InternalServerError: Internal Server Error response.'
+          description: 'internal_error: Internal Server Error response.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/InternalServerError'
+                $ref: '#/components/schemas/AppError'
               example:
-                msg: A serious error
-                msgCode: serious_error
+                msg: Internal error
+                msgCode: internal_error
   /fido2/v2/passkeys:
     get:
       tags:
@@ -450,41 +450,41 @@ paths:
                   id: ab385800-d35e-4108-9b49-48010731cd37
                   name: My Tablet
         '401':
-          description: 'Unauthorized: Unauthorized response.'
+          description: 'unauthorized: Unauthorized response.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UnauthorizedError'
+                $ref: '#/components/schemas/AppError'
               example:
-                msg: A serious error
-                msgCode: serious_error
+                msg: Internal error
+                msgCode: internal_error
         '403':
-          description: 'Forbidden: Forbidden response.'
+          description: 'forbidden: Forbidden response.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ForbiddenError'
+                $ref: '#/components/schemas/AppError'
               example:
-                msg: A serious error
-                msgCode: serious_error
+                msg: Internal error
+                msgCode: internal_error
         '404':
-          description: 'NotFound: Not Found response.'
+          description: 'not_found: Not Found response.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/NotFoundError'
+                $ref: '#/components/schemas/AppError'
               example:
-                msg: A serious error
-                msgCode: serious_error
+                msg: Internal error
+                msgCode: internal_error
         '500':
-          description: 'InternalServerError: Internal Server Error response.'
+          description: 'internal_error: Internal Server Error response.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/InternalServerError'
+                $ref: '#/components/schemas/AppError'
               example:
-                msg: A serious error
-                msgCode: serious_error
+                msg: Internal error
+                msgCode: internal_error
       security:
         - jwt_header_Authorization:
             - passkey:read
@@ -521,50 +521,50 @@ paths:
         '204':
           description: No Content response.
         '400':
-          description: 'BadRequest: Bad Request response.'
+          description: 'bad_request: Bad Request response.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BadRequestError'
+                $ref: '#/components/schemas/AppError'
               example:
-                msg: A serious error
-                msgCode: serious_error
+                msg: Internal error
+                msgCode: internal_error
         '401':
-          description: 'Unauthorized: Unauthorized response.'
+          description: 'unauthorized: Unauthorized response.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UnauthorizedError'
+                $ref: '#/components/schemas/AppError'
               example:
-                msg: A serious error
-                msgCode: serious_error
+                msg: Internal error
+                msgCode: internal_error
         '403':
-          description: 'Forbidden: Forbidden response.'
+          description: 'forbidden: Forbidden response.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ForbiddenError'
+                $ref: '#/components/schemas/AppError'
               example:
-                msg: A serious error
-                msgCode: serious_error
+                msg: Internal error
+                msgCode: internal_error
         '404':
-          description: 'NotFound: Not Found response.'
+          description: 'not_found: Not Found response.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/NotFoundError'
+                $ref: '#/components/schemas/AppError'
               example:
-                msg: A serious error
-                msgCode: serious_error
+                msg: Internal error
+                msgCode: internal_error
         '500':
-          description: 'InternalServerError: Internal Server Error response.'
+          description: 'internal_error: Internal Server Error response.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/InternalServerError'
+                $ref: '#/components/schemas/AppError'
               example:
-                msg: A serious error
-                msgCode: serious_error
+                msg: Internal error
+                msgCode: internal_error
       security:
         - jwt_header_Authorization:
             - passkey:write
@@ -601,50 +601,50 @@ paths:
         '204':
           description: No Content response.
         '400':
-          description: 'BadRequest: Bad Request response.'
+          description: 'bad_request: Bad Request response.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BadRequestError'
+                $ref: '#/components/schemas/AppError'
               example:
-                msg: A serious error
-                msgCode: serious_error
+                msg: Internal error
+                msgCode: internal_error
         '401':
-          description: 'Unauthorized: Unauthorized response.'
+          description: 'unauthorized: Unauthorized response.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UnauthorizedError'
+                $ref: '#/components/schemas/AppError'
               example:
-                msg: A serious error
-                msgCode: serious_error
+                msg: Internal error
+                msgCode: internal_error
         '403':
-          description: 'Forbidden: Forbidden response.'
+          description: 'forbidden: Forbidden response.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ForbiddenError'
+                $ref: '#/components/schemas/AppError'
               example:
-                msg: A serious error
-                msgCode: serious_error
+                msg: Internal error
+                msgCode: internal_error
         '404':
-          description: 'NotFound: Not Found response.'
+          description: 'not_found: Not Found response.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/NotFoundError'
+                $ref: '#/components/schemas/AppError'
               example:
-                msg: A serious error
-                msgCode: serious_error
+                msg: Internal error
+                msgCode: internal_error
         '500':
-          description: 'InternalServerError: Internal Server Error response.'
+          description: 'internal_error: Internal Server Error response.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/InternalServerError'
+                $ref: '#/components/schemas/AppError'
               example:
-                msg: A serious error
-                msgCode: serious_error
+                msg: Internal error
+                msgCode: internal_error
       security:
         - jwt_header_Authorization:
             - passkey:write
@@ -685,50 +685,50 @@ paths:
                 id: eb385800-d35e-4108-9b49-48010731cd37
                 name: Thales
         '400':
-          description: 'BadRequest: Bad Request response.'
+          description: 'bad_request: Bad Request response.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BadRequestError'
+                $ref: '#/components/schemas/AppError'
               example:
-                msg: A serious error
-                msgCode: serious_error
+                msg: Internal error
+                msgCode: internal_error
         '401':
-          description: 'Unauthorized: Unauthorized response.'
+          description: 'unauthorized: Unauthorized response.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UnauthorizedError'
+                $ref: '#/components/schemas/AppError'
               example:
-                msg: A serious error
-                msgCode: serious_error
+                msg: Internal error
+                msgCode: internal_error
         '403':
-          description: 'Forbidden: Forbidden response.'
+          description: 'forbidden: Forbidden response.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ForbiddenError'
+                $ref: '#/components/schemas/AppError'
               example:
-                msg: A serious error
-                msgCode: serious_error
+                msg: Internal error
+                msgCode: internal_error
         '404':
-          description: 'NotFound: Not Found response.'
+          description: 'not_found: Not Found response.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/NotFoundError'
+                $ref: '#/components/schemas/AppError'
               example:
-                msg: A serious error
-                msgCode: serious_error
+                msg: Internal error
+                msgCode: internal_error
         '500':
-          description: 'InternalServerError: Internal Server Error response.'
+          description: 'internal_error: Internal Server Error response.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/InternalServerError'
+                $ref: '#/components/schemas/AppError'
               example:
-                msg: A serious error
-                msgCode: serious_error
+                msg: Internal error
+                msgCode: internal_error
       security:
         - jwt_header_Authorization:
             - passkey:read
@@ -754,8 +754,8 @@ paths:
                 publicKeyAlgorithm: -8
                 transports:
                   - usb
-                  - internal
-                  - nfc
+                  - cable
+                  - smart-card
               session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
       responses:
         '200':
@@ -770,32 +770,32 @@ paths:
                 passkeyId: 482b7723-eb3e-4814-809f-05af16284fcc
                 userId: 2a363a42-a397-4af0-b089-0935fc223017
         '400':
-          description: 'BadRequest: Bad Request response.'
+          description: 'bad_request: Bad Request response.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BadRequestError'
+                $ref: '#/components/schemas/AppError'
               example:
-                msg: A serious error
-                msgCode: serious_error
+                msg: Internal error
+                msgCode: internal_error
         '403':
-          description: 'Forbidden: Forbidden response.'
+          description: 'forbidden: Forbidden response.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ForbiddenError'
+                $ref: '#/components/schemas/AppError'
               example:
-                msg: A serious error
-                msgCode: serious_error
+                msg: Internal error
+                msgCode: internal_error
         '500':
-          description: 'InternalServerError: Internal Server Error response.'
+          description: 'internal_error: Internal Server Error response.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/InternalServerError'
+                $ref: '#/components/schemas/AppError'
               example:
-                msg: A serious error
-                msgCode: serious_error
+                msg: Internal error
+                msgCode: internal_error
   /fido2/v2/reg/init:
     post:
       tags:
@@ -842,9 +842,9 @@ paths:
                 osVersion: 14.2.1
                 screenHeight: 1080
                 screenWidth: 1920
-                trustId: d6d4a4da-a86b-4391-ab6e-5887fdb19644
               passkeyOptions:
                 conditionalCreate: false
+              trustInfo: Omnis beatae voluptate aspernatur et.
               user:
                 displayName: System Administrator
                 username: admin@example.com
@@ -859,7 +859,7 @@ paths:
               example:
                 action: proceed
                 registrationRequestOptions:
-                  attestation: none
+                  attestation: direct
                   authenticatorSelection:
                     authenticatorAttachment: platform
                     requireResidentKey: true
@@ -891,41 +891,41 @@ paths:
                     name: admin
                 session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
         '400':
-          description: 'BadRequest: Bad Request response.'
+          description: 'bad_request: Bad Request response.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BadRequestError'
+                $ref: '#/components/schemas/AppError'
               example:
-                msg: A serious error
-                msgCode: serious_error
+                msg: Internal error
+                msgCode: internal_error
         '401':
-          description: 'Unauthorized: Unauthorized response.'
+          description: 'unauthorized: Unauthorized response.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UnauthorizedError'
+                $ref: '#/components/schemas/AppError'
               example:
-                msg: A serious error
-                msgCode: serious_error
+                msg: Internal error
+                msgCode: internal_error
         '403':
-          description: 'Forbidden: Forbidden response.'
+          description: 'forbidden: Forbidden response.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ForbiddenError'
+                $ref: '#/components/schemas/AppError'
               example:
-                msg: A serious error
-                msgCode: serious_error
+                msg: Internal error
+                msgCode: internal_error
         '500':
-          description: 'InternalServerError: Internal Server Error response.'
+          description: 'internal_error: Internal Server Error response.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/InternalServerError'
+                $ref: '#/components/schemas/AppError'
               example:
-                msg: A serious error
-                msgCode: serious_error
+                msg: Internal error
+                msgCode: internal_error
       security:
         - jwt_header_Authorization:
             - reg:write
@@ -958,7 +958,7 @@ paths:
                 authCred:
                   aaguid: fbfc3007-154e-4ecc-8c0b-6e020557d7bd
                   createdAt: 2023-06-15 13:29:41 EDT
-                  credentialSynced: true
+                  credentialSynced: false
                   id: 861ee00b-b40d-493a-a10b-457a0d527b48
                   lastUsedAt: '2025-01-02T16:40:44Z'
                   lastUsedFromDevice:
@@ -975,32 +975,32 @@ paths:
                 credentialId: 2a363a42-a397-4af0-b089-0935fc223017
                 token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
         '400':
-          description: 'BadRequest: Bad Request response.'
+          description: 'bad_request: Bad Request response.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BadRequestError'
+                $ref: '#/components/schemas/AppError'
               example:
-                msg: A serious error
-                msgCode: serious_error
+                msg: Internal error
+                msgCode: internal_error
         '403':
-          description: 'Forbidden: Forbidden response.'
+          description: 'forbidden: Forbidden response.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ForbiddenError'
+                $ref: '#/components/schemas/AppError'
               example:
-                msg: A serious error
-                msgCode: serious_error
+                msg: Internal error
+                msgCode: internal_error
         '500':
-          description: 'InternalServerError: Internal Server Error response.'
+          description: 'internal_error: Internal Server Error response.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/InternalServerError'
+                $ref: '#/components/schemas/AppError'
               example:
-                msg: A serious error
-                msgCode: serious_error
+                msg: Internal error
+                msgCode: internal_error
   /fido2/v2/tx/init:
     post:
       tags:
@@ -1044,32 +1044,32 @@ paths:
                 session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
                 txId: 2a363a42-a397-4af0-b089-0935fc223017
         '400':
-          description: 'BadRequest: Bad Request response.'
+          description: 'bad_request: Bad Request response.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BadRequestError'
+                $ref: '#/components/schemas/AppError'
               example:
-                msg: A serious error
-                msgCode: serious_error
+                msg: Internal error
+                msgCode: internal_error
         '404':
-          description: 'NotFound: Not Found response.'
+          description: 'not_found: Not Found response.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/NotFoundError'
+                $ref: '#/components/schemas/AppError'
               example:
-                msg: A serious error
-                msgCode: serious_error
+                msg: Internal error
+                msgCode: internal_error
         '500':
-          description: 'InternalServerError: Internal Server Error response.'
+          description: 'internal_error: Internal Server Error response.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/InternalServerError'
+                $ref: '#/components/schemas/AppError'
               example:
-                msg: A serious error
-                msgCode: serious_error
+                msg: Internal error
+                msgCode: internal_error
 components:
   schemas:
     Aaguid:
@@ -1105,6 +1105,28 @@ components:
         - name
         - iconLight
         - iconDark
+    AppError:
+      type: object
+      properties:
+        msg:
+          type: string
+          example: Internal error
+        msgCode:
+          type: string
+          description: Message code
+          example: internal_error
+          enum:
+            - bad_request
+            - unauthorized
+            - forbidden
+            - not_found
+            - internal_error
+      example:
+        msg: Internal error
+        msgCode: internal_error
+      required:
+        - msg
+        - msgCode
     Application:
       type: object
       properties:
@@ -1274,7 +1296,7 @@ components:
             appid: https://loalhost:8443
           rpId: https://localhost:8443/
           timeout: 5000
-          userVerification: Odit rerum aliquid culpa quas sit.
+          userVerification: Aspernatur quod qui rerum totam asperiores.
         crossAuthMethods:
           - otp
           - otp:sms
@@ -1296,6 +1318,9 @@ components:
           $ref: '#/components/schemas/Application'
         deviceInfo:
           $ref: '#/components/schemas/DeviceInfo'
+        trustInfo:
+          type: string
+          example: Facilis architecto.
         user:
           $ref: '#/components/schemas/UserLogin'
       example:
@@ -1312,7 +1337,7 @@ components:
           osVersion: 14.2.1
           screenHeight: 1080
           screenWidth: 1920
-          trustId: d6d4a4da-a86b-4391-ab6e-5887fdb19644
+        trustInfo: Repellat aut quis harum cupiditate.
         user:
           username: admin@example.com
           usernameType: email
@@ -1329,7 +1354,7 @@ components:
             bindings
 
             made by the authenticator.
-          example: Et aut.
+          example: Eum animi ut dicta assumenda.
         clientDataJSON:
           type: string
           description: >-
@@ -1405,23 +1430,8 @@ components:
       example:
         authenticatorAttachment: platform
         requireResidentKey: false
-        residentKey: preferred
-        userVerification: Odit rerum aliquid culpa quas sit.
-    BadRequestError:
-      type: object
-      properties:
-        msg:
-          type: string
-          example: A serious error
-        msgCode:
-          type: string
-          example: serious_error
-      example:
-        msg: A serious error
-        msgCode: serious_error
-      required:
-        - msg
-        - msgCode
+        residentKey: required
+        userVerification: Aspernatur quod qui rerum totam asperiores.
     CreationResult:
       type: object
       properties:
@@ -1440,7 +1450,7 @@ components:
             bindings
 
             made by the authenticator.
-          example: Aut ex pariatur mollitia ut nostrum neque.
+          example: Dolores ea consequuntur eos blanditiis voluptatem.
         clientDataJSON:
           type: string
           description: >-
@@ -1574,10 +1584,6 @@ components:
           default: 0
           example: 1920
           format: int64
-        trustId:
-          type: string
-          description: A trust identifier
-          example: d6d4a4da-a86b-4391-ab6e-5887fdb19644
       description: >-
         Information about the device. All of these attributes are optional and
         should
@@ -1596,37 +1602,6 @@ components:
         osVersion: 14.2.1
         screenHeight: 1080
         screenWidth: 1920
-        trustId: d6d4a4da-a86b-4391-ab6e-5887fdb19644
-    ForbiddenError:
-      type: object
-      properties:
-        msg:
-          type: string
-          example: A serious error
-        msgCode:
-          type: string
-          example: serious_error
-      example:
-        msg: A serious error
-        msgCode: serious_error
-      required:
-        - msg
-        - msgCode
-    InternalServerError:
-      type: object
-      properties:
-        msg:
-          type: string
-          example: A serious error
-        msgCode:
-          type: string
-          example: serious_error
-      example:
-        msg: A serious error
-        msgCode: serious_error
-      required:
-        - msg
-        - msgCode
     JWT:
       type: object
       properties:
@@ -1654,21 +1629,6 @@ components:
       required:
         - jwtAccess
         - userId
-    NotFoundError:
-      type: object
-      properties:
-        msg:
-          type: string
-          example: A serious error
-        msgCode:
-          type: string
-          example: serious_error
-      example:
-        msg: A serious error
-        msgCode: serious_error
-      required:
-        - msg
-        - msgCode
     Passkey:
       type: object
       properties:
@@ -1685,7 +1645,7 @@ components:
           type: boolean
           description: Credential available on multiple devices
           default: false
-          example: false
+          example: true
         id:
           type: string
           description: Internal passkey ID that uniquely identifies a passkey
@@ -1707,7 +1667,7 @@ components:
       example:
         aaguid: fbfc3007-154e-4ecc-8c0b-6e020557d7bd
         createdAt: 2023-06-15 13:29:41 EDT
-        credentialSynced: false
+        credentialSynced: true
         id: 861ee00b-b40d-493a-a10b-457a0d527b48
         lastUsedAt: '2025-01-02T16:40:44Z'
         lastUsedFromDevice:
@@ -1817,8 +1777,6 @@ components:
           example:
             - internal
             - internal
-            - internal
-            - internal
         type:
           type: string
           description: The valid credential types.
@@ -1831,7 +1789,7 @@ components:
           - internal
           - internal
           - internal
-        type: Et tempore exercitationem et autem.
+        type: Ut ipsam enim illo.
       required:
         - type
         - id
@@ -1840,7 +1798,7 @@ components:
       properties:
         attestation:
           type: string
-          example: indirect
+          example: none
           enum:
             - none
             - indirect
@@ -1919,7 +1877,7 @@ components:
         user:
           $ref: '#/components/schemas/PublicKeyCredentialUserEntity'
       example:
-        attestation: Et quas harum odit ea.
+        attestation: Nihil dolores voluptatem sequi ipsam rerum.
         authenticatorSelection:
           authenticatorAttachment: platform
           requireResidentKey: true
@@ -1967,7 +1925,7 @@ components:
             generated,
 
             e.g., RSA or Elliptic Curve.
-          example: -8
+          example: -35
           enum:
             - -7
             - -35
@@ -1983,8 +1941,8 @@ components:
             - public-key
       description: Additional parameters when creating a new credential.
       example:
-        alg: -7
-        type: Et tempore exercitationem et autem.
+        alg: -257
+        type: Ut ipsam enim illo.
     PublicKeyCredentialRequestOptions:
       type: object
       properties:
@@ -2057,7 +2015,7 @@ components:
         userVerification:
           type: string
           description: User verification requirement
-          example: preferred
+          example: required
           enum:
             - required
             - preferred
@@ -2076,7 +2034,7 @@ components:
           appid: https://loalhost:8443
         rpId: https://localhost:8443/
         timeout: 5000
-        userVerification: Odit rerum aliquid culpa quas sit.
+        userVerification: Aspernatur quod qui rerum totam asperiores.
       required:
         - challenge
     PublicKeyCredentialRpEntity:
@@ -2141,8 +2099,8 @@ components:
           publicKeyAlgorithm: -8
           transports:
             - usb
-            - internal
-            - nfc
+            - cable
+            - smart-card
         session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
       required:
         - session
@@ -2171,7 +2129,7 @@ components:
       example:
         action: proceed
         registrationRequestOptions:
-          attestation: Et quas harum odit ea.
+          attestation: Nihil dolores voluptatem sequi ipsam rerum.
           authenticatorSelection:
             authenticatorAttachment: platform
             requireResidentKey: true
@@ -2215,6 +2173,9 @@ components:
           $ref: '#/components/schemas/DeviceInfo'
         passkeyOptions:
           $ref: '#/components/schemas/PasskeyOptions'
+        trustInfo:
+          type: string
+          example: Consequatur ea voluptas quasi consectetur.
         user:
           $ref: '#/components/schemas/User'
       example:
@@ -2231,9 +2192,9 @@ components:
           osVersion: 14.2.1
           screenHeight: 1080
           screenWidth: 1920
-          trustId: d6d4a4da-a86b-4391-ab6e-5887fdb19644
         passkeyOptions:
           conditionalCreate: false
+        trustInfo: Accusantium aperiam.
         user:
           displayName: System Administrator
           username: admin@example.com
@@ -2259,7 +2220,7 @@ components:
         authCred:
           aaguid: fbfc3007-154e-4ecc-8c0b-6e020557d7bd
           createdAt: 2023-06-15 13:29:41 EDT
-          credentialSynced: true
+          credentialSynced: false
           id: 861ee00b-b40d-493a-a10b-457a0d527b48
           lastUsedAt: '2025-01-02T16:40:44Z'
           lastUsedFromDevice:
@@ -2346,7 +2307,7 @@ components:
             appid: https://loalhost:8443
           rpId: https://localhost:8443/
           timeout: 5000
-          userVerification: Odit rerum aliquid culpa quas sit.
+          userVerification: Aspernatur quod qui rerum totam asperiores.
         session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
         txId: 2a363a42-a397-4af0-b089-0935fc223017
       required:
@@ -2382,21 +2343,6 @@ components:
         - txPayload
         - txType
         - nonce
-    UnauthorizedError:
-      type: object
-      properties:
-        msg:
-          type: string
-          example: A serious error
-        msgCode:
-          type: string
-          example: serious_error
-      example:
-        msg: A serious error
-        msgCode: serious_error
-      required:
-        - msg
-        - msgCode
     User:
       type: object
       properties:
@@ -2408,7 +2354,6 @@ components:
           type: string
           description: Username
           example: user01
-          maxLength: 128
         usernameType:
           type: string
           description: Username type
@@ -2432,7 +2377,6 @@ components:
           type: string
           description: Username
           example: user01
-          maxLength: 128
         usernameType:
           type: string
           description: Username type
@@ -2456,12 +2400,17 @@ components:
     jwt_header_Authorization:
       type: http
       scheme: bearer
+    mfaSession_header_Authorization:
+      type: apiKey
+      description: Secures endpoint by requiring a session object.
+      name: Authorization
+      in: header
 tags:
-  - name: passkeys
-    description: FIDO2 pass-key management
+  - name: tx
+    description: FIDO2 transaction confirmation flow
   - name: auth
     description: FIDO2 authentication flow
   - name: reg
     description: FIDO2 registration flow
-  - name: tx
-    description: FIDO2 transaction confirmation flow
+  - name: passkeys
+    description: FIDO2 pass-key management

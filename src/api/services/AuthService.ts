@@ -29,9 +29,9 @@ export class AuthService {
             body: requestBody,
             mediaType: 'application/json',
             errors: {
-                400: `BadRequest: Bad Request response.`,
-                404: `NotFound: Not Found response.`,
-                500: `InternalServerError: Internal Server Error response.`,
+                400: `bad_request: Bad Request response.`,
+                404: `forbidden: Not Found response.`,
+                500: `internal_error: Internal Server Error response.`,
             },
         });
     }
@@ -59,9 +59,9 @@ export class AuthService {
             body: requestBody,
             mediaType: 'application/json',
             errors: {
-                400: `BadRequest: Bad Request response.`,
-                404: `NotFound: Not Found response.`,
-                500: `InternalServerError: Internal Server Error response.`,
+                400: `bad_request: Bad Request response.`,
+                404: `not_found: Not Found response.`,
+                500: `internal_error: Internal Server Error response.`,
             },
         });
     }
@@ -87,10 +87,10 @@ export class AuthService {
                 'Authorization': authorization,
             },
             errors: {
-                401: `Unauthorized: Unauthorized response.`,
-                403: `Forbidden: Forbidden response.`,
-                404: `NotFound: Not Found response.`,
-                500: `InternalServerError: Internal Server Error response.`,
+                401: `unauthorized: Unauthorized response.`,
+                403: `forbidden: Forbidden response.`,
+                404: `not_found: Not Found response.`,
+                500: `internal_error: Internal Server Error response.`,
             },
         });
     }
@@ -113,9 +113,9 @@ export class AuthService {
             body: requestBody,
             mediaType: 'application/json',
             errors: {
-                400: `BadRequest: Bad Request response.`,
-                404: `NotFound: Not Found response.`,
-                500: `InternalServerError: Internal Server Error response.`,
+                400: `bad_request: Bad Request response.`,
+                404: `not_found: Not Found response.`,
+                500: `internal_error: Internal Server Error response.`,
             },
         });
     }
@@ -138,9 +138,9 @@ export class AuthService {
             body: requestBody,
             mediaType: 'application/json',
             errors: {
-                400: `BadRequest: Bad Request response.`,
-                404: `NotFound: Not Found response.`,
-                500: `InternalServerError: Internal Server Error response.`,
+                400: `bad_request: Bad Request response.`,
+                404: `not_found: Not Found response.`,
+                500: `internal_error: Internal Server Error response.`,
             },
         });
     }
@@ -160,9 +160,9 @@ export class AuthService {
             body: requestBody,
             mediaType: 'application/json',
             errors: {
-                400: `BadRequest: Bad Request response.`,
-                404: `NotFound: Not Found response.`,
-                500: `InternalServerError: Internal Server Error response.`,
+                400: `bad_request: Bad Request response.`,
+                404: `not_found: Not Found response.`,
+                500: `internal_error: Internal Server Error response.`,
             },
         });
     }

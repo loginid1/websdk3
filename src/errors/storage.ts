@@ -1,9 +1,18 @@
 // Copyright (C) LoginID
 
+import { StorageErrorCode } from "./types"
+
 /**
  * Error class for storage related errors.
  */
 class StorageError extends Error {
+  /**
+   * The error code.
+   * 
+   * @type {string}
+   * @memberof StorageError
+   */
+  public code?: StorageErrorCode
 
   /**
    * Initializes a new instance of StorageError with the provided message.
@@ -11,9 +20,10 @@ class StorageError extends Error {
    * @type {Error}
    * @memberof StorageError
    */
-  constructor(message: string) {
+  constructor(message: string, code?: StorageErrorCode) {
     super(message)
     this.name = 'StorageError'
+    this.code = code
   }
 }
 

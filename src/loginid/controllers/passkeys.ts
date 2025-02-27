@@ -30,6 +30,7 @@ import {
   TxCompleteRequestBody,
   TxInitRequestBody,
 } from '../../api'
+import { TrustStore } from '../lib/store/trust-store'
 
 /**
  * Extends LoginIDBase to support creation and authentication of passkeys.
@@ -131,6 +132,7 @@ class Passkeys extends OTP {
     const appId = this.config.getAppId()
     const deviceId = DeviceStore.getDeviceId(appId)
     const deviceInfo = defaultDeviceInfo(deviceId)
+    const trustStore = new TrustStore(appId)
     const opts = passkeyOptions(username, authzToken, options)
 
     opts.authzToken = this.session.getToken(opts)
@@ -142,6 +144,8 @@ class Passkeys extends OTP {
       }
     }
 
+    const trustInfo = await trustStore.setOrSignWithTrustId(username)
+
     const regInitRequestBody: RegInitRequestBody = {
       app: {
         id: appId,
@@ -152,6 +156,7 @@ class Passkeys extends OTP {
         usernameType: opts.usernameType,
         displayName: opts.displayName,
       },
+      ...trustInfo && { trustInfo: trustInfo },
     }
 
     const regInitResponseBody = await this.service
@@ -256,7 +261,12 @@ class Passkeys extends OTP {
   async authenticateWithPasskey(username = '', options: AuthenticateWithPasskeysOptions = {}): Promise<AuthResult> {
     const appId = this.config.getAppId()
     const deviceInfo = defaultDeviceInfo(DeviceStore.getDeviceId(appId))
+    const trustStore = new TrustStore(appId)
     const opts = passkeyOptions(username, '', options)
+
+    const trustInfo = await trustStore.setOrSignWithTrustId(
+      options.autoFill ? '' : username,
+    )
   
     const authInitRequestBody: AuthInitRequestBody = {
       app: {
@@ -267,6 +277,7 @@ class Passkeys extends OTP {
         username: username,
         usernameType: opts.usernameType,
       },
+      ...trustInfo && { trustInfo: trustInfo },
     }
 
     const authInitResponseBody = await this.service

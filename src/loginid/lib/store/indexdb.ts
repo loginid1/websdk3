@@ -82,16 +82,22 @@ class IndexedDBWrapper {
         request.onsuccess = () => {
           const result = request.result
           if (!result) {
-            reject(new StorageError(`No record found for ${value} in index ${indexName}.`))
+            reject(new StorageError(
+              `No record found for ${value} in index ${indexName}.`,
+              "ERROR_STORAGE_NOT_FOUND"
+            ))
           } else {
             resolve(result)
           }
         }
 
-        request.onerror = () => reject(new StorageError(`Failed to fetch record from index ${indexName}.`))
+        request.onerror = () => reject(new StorageError(
+          `Failed to fetch record from index ${indexName}.`,
+          "ERROR_STORAGE_FAILED",
+        ))
       }
 
-      open.onerror = () => reject(new StorageError('Failed to open the database.'))
+      open.onerror = () => reject(new StorageError('Failed to open the database.', "ERROR_STORAGE_FAILED_TO_OPEN"))
     })
   }
 
@@ -114,10 +120,10 @@ class IndexedDBWrapper {
         const request = store.put(record)
 
         request.onsuccess = () => resolve()
-        request.onerror = () => reject(new StorageError('Failed to save record.'))
+        request.onerror = () => reject(new StorageError('Failed to save record.', "ERROR_STORAGE_FAILED"))
       }
 
-      open.onerror = () => reject(new StorageError('Failed to open the database.'))
+      open.onerror = () => reject(new StorageError('Failed to open the database.', "ERROR_STORAGE_FAILED_TO_OPEN"))
     })
   }
 }

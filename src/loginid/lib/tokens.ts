@@ -5,28 +5,22 @@ import { b2a, base64EncodeUrl, generateRandomId, signWithES256PrivateKey } from 
  * Creates a Trust ID payload with the given parameters.
  * @param {string} appId - The app ID.
  * @param {string} username - The username for the trust ID.
- * @param {string} challenge - The challenge string.
- * @param {string} id - The unique identifier for the trust ID (optional).
- * @param {JsonWebKey} [jwk] - The JSON Web Key (optional).
+ * @param {string} [id] - The ID for the trust ID.
  * @returns {TrustIDClaims} The Trust ID payload.
  */
 const toTrustIDPayload = (
   appId: string,
   username: string,
-  challenge: string,
-  id: string,
-  jwk?: JsonWebKey,
+  id?: string,
 ): TrustIDClaims => {
   if (!id) {
     id = generateRandomId()
   }
 
   const payload: TrustIDClaims = {
-    sub: id,
+    id: id,
     username: username,
-    chal: challenge,
     aud: appId,
-    ...jwk && { jwk: JSON.stringify(jwk) },
   }
 
   return payload
@@ -35,14 +29,18 @@ const toTrustIDPayload = (
 /**
  * Signs a Trust ID token using an ES256 private key.
  * @param {TrustIDClaims} payload - The payload to sign.
+ * @param {JsonWebKey} publicKeyJwk - The public key associated with the private key.
  * @param {CryptoKey} privateKey - The private key used for signing.
  * @returns {Promise<string>} The signed JWT Trust ID.
  */
-const signWithTrustId = async (payload: TrustIDClaims, privateKey: CryptoKey): Promise<string> => {
+const signWithTrustId = async (
+  payload: TrustIDClaims,
+  publicKeyJwk: JsonWebKey,
+  privateKey: CryptoKey,
+): Promise<string> => {
   const header = {
     alg: 'ES256',
-    kid: payload.sub,
-    typ: 'JWT',
+    jwk: publicKeyJwk,
   }
 
   const encodedHeader = base64EncodeUrl(b2a(JSON.stringify(header)))

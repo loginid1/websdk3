@@ -254,10 +254,9 @@ export interface VerifyConfigResult {
  */
 export interface TrustIDClaims {
   /**
-   * Subject identifier for the token owner. This is the ID
-   * of the token.
+   * Unique identifier for the Trust ID.
    */
-  sub: string;
+  id: string;
 
   /**
    * Username associated with the token owner.
@@ -265,19 +264,9 @@ export interface TrustIDClaims {
   username: string;
 
   /**
-   * Challenge string used for authentication.
-   */
-  chal: string;
-
-  /**
    * Audience for which the token is intended. This is the app ID.
    */
   aud: string;
-
-  /**
-   * JSON Web Key (JWK) used for cryptographic operations. This is the public key.
-   */
-  jwk?: string;
 }
 
 /**
