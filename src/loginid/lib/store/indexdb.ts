@@ -24,16 +24,16 @@ class IndexedDBWrapper {
    * @type {Array<{ name: string; keyPath: string; options?: IDBIndexParameters }>} 
    * List of indexes for the object store
    */
-  private indexes: { name: string; keyPath: string; options?: IDBIndexParameters }[]
+  private indexes: { name: string; keyPath: string[]; options?: IDBIndexParameters }[]
 
   /**
    * Creates an instance of IndexedDBWrapper.
    * @param {string} dbName - The name of the database.
    * @param {number} dbVersion - The version of the database.
    * @param {string} storeKey - The key for the object store.
-   * @param {Array<{ name: string; keyPath: string; options?: IDBIndexParameters }>} [indexes=[]] - The indexes for the object store.
+   * @param {Array<{ name: string; keyPath: Array<string>; options?: IDBIndexParameters }>} [indexes=[]] - The indexes for the object store.
    */
-  constructor(dbName: string, dbVersion: number, storeKey: string, indexes: { name: string; keyPath: string; options?: IDBIndexParameters }[] = []) {
+  constructor(dbName: string, dbVersion: number, storeKey: string, indexes: { name: string; keyPath: string[]; options?: IDBIndexParameters }[] = []) {
     this.dbName = dbName
     this.dbVersion = dbVersion
     this.storeKey = storeKey
@@ -64,10 +64,10 @@ class IndexedDBWrapper {
    * @protected
    * @template T
    * @param {string} indexName - The name of the index.
-   * @param {string} value - The value to search for in the index.
+   * @param {Array<string>} value - The value to search for in the index.
    * @returns {Promise<T>} A promise that resolves to the retrieved record.
    */
-  protected async getByIndex<T>(indexName: string, value: string): Promise<T> {
+  protected async getByIndex<T>(indexName: string, value: string[]): Promise<T> {
     return new Promise<T>((resolve, reject) => {
       const open = this.openDb()
 

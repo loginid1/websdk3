@@ -5,9 +5,11 @@ import { exportPublicKeyJwk, generateES256KeyPair } from '../../../utils'
 import StorageError from '@/src/errors/storage'
 
 const dbVersion = 1
+const appIdIndex = 'app_id_idx'
 const nameIndex = 'username_idx'
 const dbName = 'loginid-trust-store'
-const trustStorageKey = (appId: string) => `LoginID_${appId}_trust-id`
+const trustStorageKey =`LoginID_trust-id`
+const appIdUsernameCompositeIndex = 'app_id_username_idx'
 
 /**
  * TrustStore extends IndexedDBWrapper to manage trust ID records.
@@ -21,7 +23,11 @@ export class TrustStore extends IndexedDBWrapper {
    * @param {string} appId - The app ID.
    */
   constructor(appId: string) {
-    super(dbName, dbVersion, trustStorageKey(appId), [{ name: nameIndex, keyPath: 'username' }])
+    super(dbName, dbVersion, trustStorageKey, [
+      { name: nameIndex, keyPath: ['username'] },
+      { name: appIdIndex, keyPath: ['appId'] },
+      { name: appIdUsernameCompositeIndex, keyPath: ['appId', 'username'] },
+    ])
     this.appId = appId
   }
 
@@ -36,7 +42,7 @@ export class TrustStore extends IndexedDBWrapper {
     const token = toTrustIDPayload(this.appId, username)
     const trustId = await signWithTrustId(token, publicKey, keyPair.privateKey)
 
-    await this.putRecord({ id: token.id, username, keyPair })
+    await this.putRecord({ id: token.id, appId: this.appId, username, keyPair })
 
     return trustId
   }
@@ -47,7 +53,7 @@ export class TrustStore extends IndexedDBWrapper {
    * @returns {Promise<string>} The signed trust ID.
    */
   public async signWithTrustId(username: string): Promise<string> {
-    const record = await this.getByIndex<TrustIDRecord>(nameIndex, username)
+    const record = await this.getByIndex<TrustIDRecord>(appIdUsernameCompositeIndex, [this.appId, username])
     const publicKey = await exportPublicKeyJwk(record.keyPair)
     const token = toTrustIDPayload(this.appId, username, record.id)
     const trustId = await signWithTrustId(token, publicKey, record.keyPair.privateKey)
@@ -69,7 +75,7 @@ export class TrustStore extends IndexedDBWrapper {
       if (error instanceof StorageError && error.code === "ERROR_STORAGE_NOT_FOUND") {
         return await this.setTrustId(username);
       }
-      console.log("Potential indexDB error: " + error)
+      console.log("IndexDB error: " + error)
       return ""
     }
   }
