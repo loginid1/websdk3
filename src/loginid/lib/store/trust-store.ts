@@ -1,8 +1,8 @@
 import IndexedDBWrapper from './indexdb'
 import { TrustIDRecord } from '../../types'
+import StorageError from '../../../errors/storage'
 import { signWithTrustId, toTrustIDPayload } from '../tokens'
 import { exportPublicKeyJwk, generateES256KeyPair } from '../../../utils'
-import StorageError from '@/src/errors/storage'
 
 const dbVersion = 1
 const appIdIndex = 'app_id_idx'
