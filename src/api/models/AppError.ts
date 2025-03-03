@@ -2,8 +2,11 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type InternalServerError = {
+export type AppError = {
     msg: string;
-    msgCode: string;
+    /**
+     * Message code
+     */
+    msgCode: 'bad_request' | 'unauthorized' | 'forbidden' | 'not_found' | 'internal_error';
 };
 

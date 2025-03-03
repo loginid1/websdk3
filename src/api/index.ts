@@ -11,6 +11,7 @@ export { OpenAPI } from './core/OpenAPI';
 export type { OpenAPIConfig } from './core/OpenAPI';
 
 export type { Aaguid } from './models/Aaguid';
+export type { AppError } from './models/AppError';
 export type { Application } from './models/Application';
 export type { AuthCode } from './models/AuthCode';
 export type { AuthCodeRequestSMSRequestBody } from './models/AuthCodeRequestSMSRequestBody';
@@ -20,13 +21,9 @@ export type { AuthenticatorAssertionResponse } from './models/AuthenticatorAsser
 export type { AuthenticatorSelectionCriteria } from './models/AuthenticatorSelectionCriteria';
 export type { AuthInit } from './models/AuthInit';
 export type { AuthInitRequestBody } from './models/AuthInitRequestBody';
-export type { BadRequestError } from './models/BadRequestError';
 export type { CreationResult } from './models/CreationResult';
 export type { DeviceInfo } from './models/DeviceInfo';
-export type { ForbiddenError } from './models/ForbiddenError';
-export type { InternalServerError } from './models/InternalServerError';
 export type { JWT } from './models/JWT';
-export type { NotFoundError } from './models/NotFoundError';
 export type { Passkey } from './models/Passkey';
 export type { PasskeyCollection } from './models/PasskeyCollection';
 export type { PasskeyOptions } from './models/PasskeyOptions';
@@ -44,7 +41,6 @@ export type { TxComplete } from './models/TxComplete';
 export type { TxCompleteRequestBody } from './models/TxCompleteRequestBody';
 export type { TxInit } from './models/TxInit';
 export type { TxInitRequestBody } from './models/TxInitRequestBody';
-export type { UnauthorizedError } from './models/UnauthorizedError';
 export type { User } from './models/User';
 export type { UserLogin } from './models/UserLogin';
 
