@@ -1,6 +1,6 @@
 // Copyright (C) LoginID
 
-import { StorageErrorCode } from "./types"
+import { StorageErrorCode } from './types'
 
 /**
  * Error class for storage related errors.
