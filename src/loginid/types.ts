@@ -3,6 +3,8 @@ import {
   AuthCode,
   CreationResult,
   DeviceInfo,
+  Mfa,
+  MfaAction,
   User,
 } from '../api'
 
@@ -13,6 +15,10 @@ export type Complete<T> = {
 export type UsernameType = User['usernameType']
 export type DeviceInfoRequestBody = DeviceInfo
 export type Transports = CreationResult['transports']
+export type MfaFlow = Mfa['flow']
+export type MfaFactor = MfaAction
+export type MfaFactorName = MfaAction['action']['name']
+export type MfaOtpFactorName = Extract<MfaFactorName, 'otp:email' | 'otp:sms'>;
 
 export type Message = 'email' | 'sms'
 
@@ -30,6 +36,100 @@ export interface AllOptions {
   usernameType?: UsernameType
   displayName?: string
   callbacks?: Callbacks
+}
+
+export interface MfaInfo {
+  username?: string
+  flow?: MfaFlow
+  next?: MfaAction[]
+  session?: string
+}
+
+/**
+ * Represents the result of a Multi-Factor Authentication (MFA) session.
+ * This interface is used to track the status of an ongoing MFA process, including
+ * remaining factors, user details, and issued authentication tokens.
+ */
+export interface MfaSessionResult {
+  /**
+   * The MFA flow type indicating whether the session is part of sign-in or sign-up.
+   * This helps differentiate between authentication scenarios.
+   */
+  flow?: MfaFlow;
+
+  /**
+   * List of MFA factors that still need to be completed for authentication.
+   * If this list is empty, the authentication process is complete.
+   */
+  remainingFactors: MfaFactor[];
+
+  /**
+   * The username associated with the authentication session.
+   * This may be undefined if not provided or applicable.
+   */
+  username?: string;
+
+  /**
+   * Indicates whether the MFA session is complete.
+   * If `true`, all required factors have been successfully validated.
+   */
+  isComplete: boolean;
+
+  /**
+   * The MFA state session.
+   * This should be obtained from a previous MFA request or initiation step.
+   */
+  session?: string;
+
+  /**
+   * A JSON Web Token (JWT) issued upon successful authentication.
+   * Used to verify user identity and grant access to protected resources.
+   */
+  idToken?: string;
+
+  /**
+   * A JSON Web Token (JWT) used for authorizing API requests.
+   * This token grants access to user-specific resources and actions.
+   */
+  accessToken?: string;
+
+  /**
+   * A token used to obtain new access and ID tokens after expiration.
+   * This helps maintain user sessions without requiring re-authentication.
+   */
+  refreshToken?: string;
+
+  /**
+   * A JSON Web Signature (JWS) that provides cryptographic proof of the payload's integrity.
+   * Ensures that the authentication data has not been tampered with.
+   */
+  payloadSignature?: string;
+}
+
+/**
+ * A set of tokens obtained upon login.
+ */
+export interface LoginIDTokenSet {
+  /**
+   * The ID token representing the authenticated session.
+   */
+  idToken: string;
+
+  /**
+   * The access token used for authorization.
+   */
+  accessToken: string;
+
+  /**
+   * The refresh token used to obtain new access tokens.
+   */
+  refreshToken: string;
+
+  /**
+   * A JSON Web Signature (JWS) that provides cryptographic proof of the payload's integrity.
+   * Ensures that the authentication data has not been tampered with.
+   */
+  payloadSignature?: string;
 }
 
 /**
@@ -248,5 +348,42 @@ export interface VerifyConfigResult {
    */
   code?: string;
 }
+
+/**
+ * Options for beginning Multi-Factor Authentication (MFA).
+ */
+export interface MfaBeginOptions {
+  /**
+   * A human-palatable name for the user account, intended only for display on your passkeys and modals.
+   */
+  displayName?: string
+
+  /**
+  * The type of username validation to be used. Defaults to **`other`**.
+  */
+  usernameType?: UsernameType
+}
+
+/**
+ * Options for performing an MFA authentication factor.
+ */
+export interface MfaPerformFactorOptions {
+  /**
+   * The MFA state session.
+   * This should be obtained from a previous MFA request or initiation step.
+   */
+  session?: string;
+
+  /**
+   * The payload required for completing the authentication factor.
+   * This typically contains user input or challenge-response data.
+   */
+  payload?: string;
+}
+
+/**
+ * Options for requesting an MFA authentication factor.
+ */
+export interface MfaRequestFactorOptions extends MfaPerformFactorOptions {}
 
 export { ApiError }

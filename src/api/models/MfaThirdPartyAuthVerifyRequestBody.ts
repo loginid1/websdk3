@@ -2,8 +2,10 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type BadRequestError = {
-    msg: string;
-    msgCode: string;
+export type MfaThirdPartyAuthVerifyRequestBody = {
+    /**
+     * Authorization token produced by mgmt API.
+     */
+    token: string;
 };
 

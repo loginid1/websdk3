@@ -10,6 +10,7 @@ export type RegInitRequestBody = {
     app: Application;
     deviceInfo: DeviceInfo;
     passkeyOptions?: PasskeyOptions;
+    trustInfo?: string;
     user?: User;
 };
 

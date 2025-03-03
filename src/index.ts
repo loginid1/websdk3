@@ -1,4 +1,5 @@
 import LoginIDWebSDK from './loginid'
+import LoginIDMfa from './loginid/mfa'
 import AbortError from './errors/abort'
 import PasskeyError from './errors/passkey'
 import {WebAuthnHelper} from './webauthn/webauthn-helper'
@@ -14,6 +15,7 @@ export {
   isConditionalUIAvailable,
   isPlatformAuthenticatorAvailable,
   AbortError,
+  LoginIDMfa,
   LoginIDWebSDK,
   PasskeyError,
   WebAuthnHelper,

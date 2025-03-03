@@ -1,11 +1,9 @@
 import OTP from './otp'
-import AbortControllerManager from '../../abort-controller'
-import { DeviceStore } from '../lib/store'
+import { parseJwt } from '../../utils'
 import { defaultDeviceInfo } from '../../browser'
 import { mergeFallbackOptions } from '../lib/utils'
 import { NO_LOGIN_OPTIONS_ERROR } from '../lib/errors'
-import { bufferToBase64Url, parseJwt } from '../../utils'
-import { createPasskeyCredential, getPasskeyCredential } from '../lib/webauthn'
+import { DeviceStore } from '../lib/store/device-store'
 import { confirmTransactionOptions, passkeyOptions, toAuthResult } from '../lib/defaults'
 import type {
   AuthenticateWithPasskeyAutofillOptions,
@@ -16,20 +14,17 @@ import type {
   LoginIDConfig,
   Otp,
   RequestOtpOptions,
-  Transports
 } from '../types'
 import {
-  AuthCompleteRequestBody,
   AuthInit,
   AuthInitRequestBody,
   JWT,
-  RegCompleteRequestBody,
-  RegInit,
   RegInitRequestBody,
   TxComplete,
   TxCompleteRequestBody,
   TxInitRequestBody,
 } from '../../api'
+import { WebAuthnHelper } from '@/src'
 
 /**
  * Extends LoginIDBase to support creation and authentication of passkeys.
@@ -43,42 +38,6 @@ class Passkeys extends OTP {
    */
   constructor(config: LoginIDConfig) {
     super(config)
-  }
-
-  /**
-   * A helper function that creates a public-key credential using WebAuthn API. It is designed to be used with LoginID's
-   * passkey creation flow. The function takes a registration initialization response and returns a registration completion request body.
-   * 
-   * @param {RegInit} regInitResponseBody The response body from registration initialization.
-   * @returns {Promise<RegRegCompleteRequestBody>} Completion request body for registration.
-   */
-  private async createNavigatorCredential(regInitResponseBody: RegInit) {
-    const { registrationRequestOptions, session } = regInitResponseBody
-
-    AbortControllerManager.renewWebAuthnAbortController()
-
-    const credential = await createPasskeyCredential(registrationRequestOptions)
-    const response = credential.response as AuthenticatorAttestationResponse
-
-    const publicKey = response.getPublicKey && response.getPublicKey()
-    const publicKeyAlg = response.getPublicKeyAlgorithm && response.getPublicKeyAlgorithm()
-    const authenticatorData = response.getAuthenticatorData && response.getAuthenticatorData()
-    const transports = response.getTransports && response.getTransports() as Transports
-
-    const regCompleteRequestBody: RegCompleteRequestBody = {
-      creationResult: {
-        attestationObject: bufferToBase64Url(response.attestationObject),
-        clientDataJSON: bufferToBase64Url(response.clientDataJSON),
-        credentialId: credential.id,
-        ...publicKey && { publicKey: bufferToBase64Url(publicKey) },
-        ...publicKeyAlg && { publicKeyAlgorithm: publicKeyAlg },
-        ...authenticatorData && { authenticatorData: bufferToBase64Url(authenticatorData) },
-        ...transports && { transports: transports },
-      },
-      session: session,
-    }
-
-    return regCompleteRequestBody
   }
 
   /**
@@ -161,7 +120,7 @@ class Passkeys extends OTP {
         ...opts.authzToken && { authorization: opts.authzToken },
       })
 
-    const regCompleteRequestBody = await this.createNavigatorCredential(regInitResponseBody)
+    const regCompleteRequestBody = await WebAuthnHelper.createNavigatorCredential(regInitResponseBody)
 
     const regCompleteResponse = await this.service
       .reg
@@ -173,41 +132,6 @@ class Passkeys extends OTP {
     DeviceStore.persistDeviceId(appId, deviceId || regCompleteResponse.deviceId)
 
     return result
-  }
-
-  /**
-   * A helper function that attempts public-key credential authentication using WebAuthn API. It is designed to be used with LoginID's
-   * passkey authentication flow. The function takes an authentication initialization response and returns an authentication completion request body.
-   * 
-   * @param {AuthInit} authInitResponseBody The response body from authentication initialization.
-   * @param {AuthenticateWithPasskeysOptions} options Additional options for authentication.
-   * @returns {Promise<AuthAuthCompleteRequestBody>} Completion request body for authentication.
-   */
-  private async getNavigatorCredential(authInitResponseBody: AuthInit, options: AuthenticateWithPasskeysOptions = {}) {
-    const { assertionOptions, session } = authInitResponseBody
-
-    if (!options.abortController) {
-      AbortControllerManager.renewWebAuthnAbortController()
-      options.abortController = AbortControllerManager.abortController
-    } else {
-      AbortControllerManager.assignWebAuthnAbortController(options.abortController)
-    }
-
-    const credential = await getPasskeyCredential(assertionOptions, options)
-    const response = credential.response as AuthenticatorAssertionResponse
-
-    const authCompleteRequestBody: AuthCompleteRequestBody = {
-      assertionResult: {
-        authenticatorData: bufferToBase64Url(response.authenticatorData),
-        clientDataJSON: bufferToBase64Url(response.clientDataJSON),
-        credentialId: credential.id,
-        signature: bufferToBase64Url(response.signature),
-        ...response.userHandle && { userHandle: bufferToBase64Url(response.userHandle) }
-      },
-      session: session,
-    }
-
-    return authCompleteRequestBody
   }
 
   /**
@@ -276,7 +200,7 @@ class Passkeys extends OTP {
     switch (authInitResponseBody.action) {
     case 'proceed': {
       // We can send original options here because WebAuthn options currently don't need to be defaulted
-      const authCompleteRequestBody = await this.getNavigatorCredential(authInitResponseBody, options)
+      const authCompleteRequestBody = await WebAuthnHelper.getNavigatorCredential(authInitResponseBody, options)
 
       const authCompleteResponse = await this.service
         .auth
@@ -502,7 +426,7 @@ class Passkeys extends OTP {
       session: session,
     } 
 
-    const {assertionResult} = await this.getNavigatorCredential(authInitResponseBody)
+    const {assertionResult} = await WebAuthnHelper.getNavigatorCredential(authInitResponseBody)
 
     const txCompleteRequestBody: TxCompleteRequestBody = {
       authenticatorData: assertionResult.authenticatorData,

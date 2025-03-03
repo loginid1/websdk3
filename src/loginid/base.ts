@@ -1,7 +1,7 @@
-import SessionManager from './lib/session'
-import LoginIDConfigValidator from './lib/validators'
 import { LoginIDService } from '../api/LoginIDService'
+import LoginIDConfigValidator from './lib/validators'
 import type { LoginIDConfig } from './types'
+import SessionManager from './lib/session'
 
 /**
  * Provides a base class for integrating with the LoginID API services.

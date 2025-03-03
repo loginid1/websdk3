@@ -48,9 +48,5 @@ export type DeviceInfo = {
      * Screen width in pixels
      */
     screenWidth?: number;
-    /**
-     * A trust identifier
-     */
-    trustId?: string;
 };
 

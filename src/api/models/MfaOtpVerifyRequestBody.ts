@@ -2,8 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type UnauthorizedError = {
-    msg: string;
-    msgCode: string;
+export type MfaOtpVerifyRequestBody = {
+    otp: string;
 };
 

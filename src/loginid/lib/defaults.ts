@@ -1,11 +1,14 @@
 // Copyright (C) LoginID
-import { JWT } from '../../api'
+import { JWT, MfaNext } from '../../api'
 import { createUUID } from '../../utils'
 import { 
   AllOptions,
   AuthResult,
   Complete,
   ConfirmTransactionOptions,
+  LoginIDTokenSet,
+  MfaInfo,
+  MfaSessionResult,
 } from '../types'
 
 /**
@@ -57,5 +60,44 @@ export const toAuthResult = (authResponse: JWT, isAuthenticated = true, isFallba
     passkeyId: authResponse.passkeyId,
     isAuthenticated: isAuthenticated,
     isFallback: isFallback,
+  }
+}
+
+/**
+ * Converts an `MfaNext` result into an `MfaInfo` object.
+ *
+ * @param {MfaNext} mfaNextResult - The result from an MFA authentication step.
+ * @param {string} [username] - The username associated with the MFA session (optional).
+ * @returns {MfaInfo} - The structured MFA information.
+ */
+export const toMfaInfo = (mfaNextResult: MfaNext, username?: string): MfaInfo => {
+  return {
+    username: username,
+    flow: mfaNextResult.flow,
+    session: mfaNextResult.session,
+    next: mfaNextResult.next,
+  }
+}
+
+/**
+ * Converts MFA information and token set into an `MfaSessionResult` object.
+ *
+ * @param {MfaInfo | null} [info] - The MFA session information, if available.
+ * @param {LoginIDTokenSet} [tokenSet] - The token set containing authentication tokens.
+ * @returns {MfaSessionResult} - The structured MFA session result.
+ */
+export const toMfaSessionDetails = (info?: MfaInfo | null, tokenSet?: LoginIDTokenSet): MfaSessionResult => {
+  return {
+    username: info?.username,
+    ...info?.username && { username: info.username },
+    flow: info?.flow,
+    ...info?.flow && { flow: info.flow },
+    remainingFactors: info?.next || [],
+    isComplete: !!tokenSet?.accessToken,
+    ...info?.session && { session: info.session },
+    ...tokenSet?.idToken && { idToken: tokenSet?.idToken },
+    ...tokenSet?.accessToken && { accessToken: tokenSet?.accessToken },
+    ...tokenSet?.refreshToken && { refreshToken: tokenSet?.refreshToken },
+    ...tokenSet?.payloadSignature && { payloadSignature: tokenSet?.payloadSignature },
   }
 }

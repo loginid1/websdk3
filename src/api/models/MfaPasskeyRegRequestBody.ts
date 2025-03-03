@@ -2,8 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type InternalServerError = {
-    msg: string;
-    msgCode: string;
+import type { CreationResult } from './CreationResult';
+export type MfaPasskeyRegRequestBody = {
+    creationResult: CreationResult;
 };
 

@@ -3,8 +3,9 @@ import { passkeyOptions } from '../lib/defaults'
 import { defaultDeviceInfo } from '../../browser'
 import { ApiError, AuthInitRequestBody } from '../../api/'
 import { LoginIDConfig, VerifyConfigResult } from '../types'
+import { MfaStore } from '../lib/store/mfa-store'
 
-class Utils extends LoginIDBase{
+class Utils extends LoginIDBase {
   /**
    * Initializes a new Utils instance with the provided configuration.
    * 
@@ -163,7 +164,11 @@ class Utils extends LoginIDBase{
    * ```
    */
   public logout() {
+    const appId = this.config.getAppId()
+
     this.session.logout()
+
+    MfaStore.persistInfo(appId, { next: [] })
   }
 }
 

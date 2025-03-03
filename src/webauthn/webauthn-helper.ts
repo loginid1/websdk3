@@ -1,18 +1,23 @@
 import { bufferToBase64Url } from '../utils'
-import { createPasskeyCredential, getPasskeyCredential } from '../loginid/lib/webauthn'
+import AbortControllerManager from '../abort-controller'
 import { AuthenticateWithPasskeysOptions, Transports } from '../loginid/types'
+import { createPasskeyCredential, getPasskeyCredential } from '../loginid/lib/webauthn'
 import { AuthCompleteRequestBody, AuthInit, RegCompleteRequestBody, RegInit } from '../api'
 
 export class WebAuthnHelper {
-
   /**
-   * Retrieves a navigator credential for authentication.
-   * @param {AuthInit} authInitResponseBody The response body from authentication initialization.
-   * @param {AuthenticateWithPasskeysOptions} options Additional options for authentication.
-   * @returns {Promise<AuthAuthCompleteRequestBody>} Completion request body for authentication.
+   * A helper function that attempts public-key credential authentication using WebAuthn API. It is designed to be used with LoginID's
+   * passkey authentication flow. The function takes an authentication initialization response and returns an authentication completion request body.
    */
   static async getNavigatorCredential(authInitResponseBody: AuthInit, options: AuthenticateWithPasskeysOptions = {}) {
     const { assertionOptions, session } = authInitResponseBody
+
+    if (!options.abortController) {
+      AbortControllerManager.renewWebAuthnAbortController()
+      options.abortController = AbortControllerManager.abortController
+    } else {
+      AbortControllerManager.assignWebAuthnAbortController(options.abortController)
+    }
 
     const credential = await getPasskeyCredential(assertionOptions, options)
     const response = credential.response as AuthenticatorAssertionResponse
@@ -31,14 +36,15 @@ export class WebAuthnHelper {
     return authCompleteRequestBody
   }
 
-
   /**
-   * Creates a navigator credential using WebAuthn.
-   * @param {RegInit} regInitResponseBody The response body from registration initialization.
-   * @returns {Promise<RegRegCompleteRequestBody>} Completion request body for registration.
+   * A helper function that creates a public-key credential using WebAuthn API.
+   * It processes the response body from registration initialization and returns 
+   * a registration completion request body.
    */
   static async createNavigatorCredential(regInitResponseBody: RegInit) {
     const { registrationRequestOptions, session } = regInitResponseBody
+
+    AbortControllerManager.renewWebAuthnAbortController()
 
     const credential = await createPasskeyCredential(registrationRequestOptions)
     const response = credential.response as AuthenticatorAttestationResponse

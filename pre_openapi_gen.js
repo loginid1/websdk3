@@ -4,8 +4,13 @@ import * as yaml from "js-yaml";
 const file = fs.readFileSync("./openapi.yaml", "utf8");
 const data = yaml.load(file);
 
-const allowedTags = new Set(["passkeys", "auth", "reg", "tx"]);
+const allowedTags = new Set(["passkeys", "auth", "reg", "tx", "mfa"]);
 const allowedSchemas = new Set();
+
+const allowedSecurityHeaders = new Set([
+  "jwt_header_Authorization",
+  "mfaSession_header_Authorization"
+]);
 
 const extractSchemas = (schema) => {
   if (!schema) return;
@@ -47,7 +52,7 @@ for (const pathKey in data.paths) {
     const hasAllowedTag = method.tags?.some((tag) => allowedTags.has(tag));
 
     if (hasAllowedTag) {
-      if (method.security?.some((sec) => sec.jwt_header_Authorization)) {
+      if (method.security?.some((sec) => Object.keys(sec).some((key) => allowedSecurityHeaders.has(key)))) {
         if (!method.parameters) {
           method.parameters = [];
         }
@@ -91,6 +96,9 @@ for (const pathKey in data.paths) {
 if (data.components && data.components.schemas) {
   for (const schemaKey in data.components.schemas) {
     const schema = data.components.schemas[schemaKey];
+
+    switch (schemaKey) {
+    }
 
     // Filter out schemas not in the allowed list
     if (!allowedSchemas.has(schemaKey)) {
