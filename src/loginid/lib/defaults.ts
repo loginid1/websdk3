@@ -1,4 +1,5 @@
 // Copyright (C) LoginID
+import { JWT } from '../../api'
 import { createUUID } from '../../utils'
 import { 
   AllOptions,
@@ -44,14 +45,16 @@ export const confirmTransactionOptions = (username: string, options: ConfirmTran
 /**
  * Constructs an `AuthResult` object using the provided JWT access token and authentication status.
  * 
- * @param {string} jwtAccess A short-lived authorization token allowing access to protected resources.
- * @param {boolean} [isAuthenticated=true] Indicates if the user is authenticated. Defaults to **`true`**.
- * @param {boolean} [isFallback=false] Indicates if the authentication attempt is a fallback method. Defaults to **`false`**.
- * @returns {AuthResult} The authentication result including token, authentication status, and fallback indication.
+ * @param {JWT} authResponse - The authentication response containing user details and the JWT access token.
+ * @param {boolean} [isAuthenticated=true] - Indicates whether the user is authenticated. Defaults to **`true`**.
+ * @param {boolean} [isFallback=false] - Indicates whether the authentication attempt is a fallback method. Defaults to **`false`**.
+ * @returns {AuthResult} - The authentication result, including the user ID, token, authentication status, and fallback indication.
  */
-export const toAuthResult = (jwtAccess: string, isAuthenticated = true, isFallback = false): AuthResult => {
+export const toAuthResult = (authResponse: JWT, isAuthenticated = true, isFallback = false): AuthResult => {
   return {
-    token: jwtAccess,
+    userId: authResponse.userId,
+    token: authResponse.jwtAccess,
+    passkeyId: authResponse.passkeyId,
     isAuthenticated: isAuthenticated,
     isFallback: isFallback,
   }

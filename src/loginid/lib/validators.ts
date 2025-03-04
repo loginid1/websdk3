@@ -26,7 +26,7 @@ class LoginIDConfigValidator {
     }
 
     // Regex to capture the subdomain part before the first period in the baseUrl
-    const pattern = /https?:\/\/([^.]+)\./;
+    const pattern = /https?:\/\/([^.]+)\./
     const match = this.config.baseUrl.match(pattern)
     if (match) {
       return match[1]

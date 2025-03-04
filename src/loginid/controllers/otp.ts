@@ -88,7 +88,7 @@ class OTP extends LoginIDBase {
         requestBody: request
       })
 
-    const result = toAuthResult(response.jwtAccess)
+    const result = toAuthResult(response)
 
     // Renew abort controller since authentication is complete
     AbortControllerManager.renewWebAuthnAbortController()

@@ -25,6 +25,10 @@ export type DeviceInfo = {
      */
     deviceId?: string;
     /**
+     * Last use timestamp in rfc3339 format
+     */
+    lastUsedAt?: string;
+    /**
      * OS architecture
      */
     osArch?: string;

@@ -180,6 +180,16 @@ export interface AuthResult {
   token: string
 
   /**
+   * The unique identifier of the authenticated user.
+   */
+  userId: string
+
+  /**
+   * The identifier for the passkey used in authentication, if applicable.
+   */
+  passkeyId?: string
+
+  /**
    * An identifier for the device used in the authentication process. This property helps determine if supported authentications can be proceeded,
    * allowing future authentications to identify the device correctly.
    */
@@ -237,6 +247,46 @@ export interface VerifyConfigResult {
    * A code representing the error type.
    */
   code?: string;
+}
+
+/**
+ * Represents the claims included in a TrustID token.
+ */
+export interface TrustIDClaims {
+  /**
+   * Unique identifier for the Trust ID.
+   */
+  id: string;
+
+  /**
+   * Username associated with the token owner.
+   */
+  username: string;
+
+  /**
+   * Audience for which the token is intended. This is the app ID.
+   */
+  aud: string;
+}
+
+/**
+ * Represents a stored Trust ID record in the trust store database.
+ */
+export interface TrustIDRecord {
+  /**
+   * Unique identifier for the Trust ID, derived from the TrustID token.
+   */
+  id: string;
+
+  /**
+   * Username associated with the Trust ID.
+   */
+  username: string;
+
+  /**
+   * Cryptographic key pair used for signing and verification.
+   */
+  keyPair: CryptoKeyPair;
 }
 
 export { ApiError }

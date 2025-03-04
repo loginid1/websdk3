@@ -6,10 +6,18 @@ export type JWT = {
     /**
      * Device ID
      */
-    deviceID?: string;
+    deviceId?: string;
     /**
      * JWT access token
      */
     jwtAccess: string;
+    /**
+     * Passkey ID
+     */
+    passkeyId?: string;
+    /**
+     * User ID
+     */
+    userId: string;
 };
 

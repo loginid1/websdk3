@@ -1,10 +1,10 @@
 import OTP from './otp'
-import AbortControllerManager from '../../abort-controller'
-import { DeviceStore } from '../lib/store'
 import { defaultDeviceInfo } from '../../browser'
 import { mergeFallbackOptions } from '../lib/utils'
 import { NO_LOGIN_OPTIONS_ERROR } from '../lib/errors'
+import { DeviceStore } from '../lib/store/device-store'
 import { bufferToBase64Url, parseJwt } from '../../utils'
+import AbortControllerManager from '../../abort-controller'
 import { createPasskeyCredential, getPasskeyCredential } from '../lib/webauthn'
 import { confirmTransactionOptions, passkeyOptions, toAuthResult } from '../lib/defaults'
 import type {
@@ -22,6 +22,7 @@ import {
   AuthCompleteRequestBody,
   AuthInit,
   AuthInitRequestBody,
+  JWT,
   RegCompleteRequestBody,
   RegInit,
   RegInitRequestBody,
@@ -29,6 +30,7 @@ import {
   TxCompleteRequestBody,
   TxInitRequestBody,
 } from '../../api'
+import { TrustStore } from '../lib/store/trust-store'
 
 /**
  * Extends LoginIDBase to support creation and authentication of passkeys.
@@ -128,7 +130,9 @@ class Passkeys extends OTP {
    */
   async createPasskey(username: string, authzToken: string = '', options: CreatePasskeyOptions = {}): Promise<AuthResult> {
     const appId = this.config.getAppId()
-    const deviceInfo = defaultDeviceInfo(DeviceStore.getDeviceId(appId))
+    const deviceId = DeviceStore.getDeviceId(appId)
+    const deviceInfo = defaultDeviceInfo(deviceId)
+    const trustStore = new TrustStore(appId)
     const opts = passkeyOptions(username, authzToken, options)
 
     opts.authzToken = this.session.getToken(opts)
@@ -140,6 +144,8 @@ class Passkeys extends OTP {
       }
     }
 
+    const trustInfo = await trustStore.setOrSignWithTrustId(username)
+
     const regInitRequestBody: RegInitRequestBody = {
       app: {
         id: appId,
@@ -150,6 +156,7 @@ class Passkeys extends OTP {
         usernameType: opts.usernameType,
         displayName: opts.displayName,
       },
+      ...trustInfo && { trustInfo: trustInfo },
     }
 
     const regInitResponseBody = await this.service
@@ -165,10 +172,10 @@ class Passkeys extends OTP {
       .reg
       .regRegComplete({ requestBody: regCompleteRequestBody })
 
-    const result: AuthResult = toAuthResult(regCompleteResponse.jwtAccess)
+    const result: AuthResult = toAuthResult(regCompleteResponse)
 
     this.session.setJwtCookie(regCompleteResponse.jwtAccess)
-    DeviceStore.persistDeviceId(appId, regCompleteResponse.deviceID)
+    DeviceStore.persistDeviceId(appId, deviceId || regCompleteResponse.deviceId)
 
     return result
   }
@@ -254,7 +261,12 @@ class Passkeys extends OTP {
   async authenticateWithPasskey(username = '', options: AuthenticateWithPasskeysOptions = {}): Promise<AuthResult> {
     const appId = this.config.getAppId()
     const deviceInfo = defaultDeviceInfo(DeviceStore.getDeviceId(appId))
+    const trustStore = new TrustStore(appId)
     const opts = passkeyOptions(username, '', options)
+
+    const trustInfo = await trustStore.setOrSignWithTrustId(
+      options.autoFill ? '' : username,
+    )
   
     const authInitRequestBody: AuthInitRequestBody = {
       app: {
@@ -265,6 +277,7 @@ class Passkeys extends OTP {
         username: username,
         usernameType: opts.usernameType,
       },
+      ...trustInfo && { trustInfo: trustInfo },
     }
 
     const authInitResponseBody = await this.service
@@ -280,9 +293,11 @@ class Passkeys extends OTP {
         .auth
         .authAuthComplete({ requestBody: authCompleteRequestBody })
 
-      const result = toAuthResult(authCompleteResponse.jwtAccess)
+      const result = toAuthResult(authCompleteResponse)
 
       this.session.setJwtCookie(result.token)
+
+      DeviceStore.persistDeviceId(appId, authCompleteResponse.deviceId)
 
       if (opts?.callbacks?.onSuccess) {
         await opts.callbacks.onSuccess(result)
@@ -299,7 +314,8 @@ class Passkeys extends OTP {
         await opts.callbacks.onFallback(username, fallbackOptions)
       }
 
-      return toAuthResult('', false, true)
+      const emptyResponse: JWT = { userId: '', jwtAccess: '' }
+      return toAuthResult(emptyResponse, false, true)
     }
 
     default:
