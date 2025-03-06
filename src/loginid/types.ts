@@ -386,4 +386,44 @@ export interface MfaPerformFactorOptions {
  */
 export interface MfaRequestFactorOptions extends MfaPerformFactorOptions {}
 
+/**
+ * Represents the claims included in a TrustID token.
+ */
+export interface TrustIDClaims {
+  /**
+   * Unique identifier for the Trust ID.
+   */
+  id: string;
+
+  /**
+   * Username associated with the token owner.
+   */
+  username: string;
+
+  /**
+   * Audience for which the token is intended. This is the app ID.
+   */
+  aud: string;
+}
+
+/**
+ * Represents a stored Trust ID record in the trust store database.
+ */
+export interface TrustIDRecord {
+  /**
+   * Unique identifier for the Trust ID, derived from the TrustID token.
+   */
+  id: string;
+
+  /**
+   * Username associated with the Trust ID.
+   */
+  username: string;
+
+  /**
+   * Cryptographic key pair used for signing and verification.
+   */
+  keyPair: CryptoKeyPair;
+}
+
 export { ApiError }
