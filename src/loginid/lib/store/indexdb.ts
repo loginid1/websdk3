@@ -60,6 +60,40 @@ class IndexedDBWrapper {
   }
 
   /**
+   * Retrieves all records from the object store using an index.
+   * @protected
+   * @template T
+   * @param {string} indexName - The name of the index.
+   * @param {Array<string>} value - The value to search for in the index.
+   * @returns {Promise<T[]>} A promise that resolves to an array of matching records.
+   */
+  protected async getAllByIndex<T>(indexName: string, value: string[]): Promise<T[]> {
+    return new Promise<T[]>((resolve, reject) => {
+      const open = this.openDb()
+
+      open.onsuccess = () => {
+        const db = open.result
+        const tx = db.transaction(this.storeKey, 'readonly')
+        const store = tx.objectStore(this.storeKey)
+        const index = store.index(indexName)
+
+        const request = index.getAll(value)
+
+        request.onsuccess = () => {
+          resolve(request.result)
+        }
+
+        request.onerror = () => reject(new StorageError(
+          `Failed to fetch records from index ${indexName}.`,
+          "ERROR_STORAGE_FAILED",
+        ))
+      }
+
+      open.onerror = () => reject(new StorageError('Failed to open the database.', "ERROR_STORAGE_FAILED_TO_OPEN"))
+    })
+  }
+
+  /**
    * Retrieves a record from the object store using an index.
    * @protected
    * @template T

@@ -79,4 +79,32 @@ export class TrustStore extends IndexedDBWrapper {
       return ""
     }
   }
+
+  /**
+   * Retrieves all Trust ID records associated with the given appId.
+   * @returns {Promise<TrustIDRecord[]>} A promise that resolves to an array of trust IDs.
+   */
+  public async getAllTrustIds(): Promise<TrustIDRecord[]> {
+    try {
+      const records = await this.getAllByIndex<TrustIDRecord>(appIdIndex, [this.appId]);
+      return records
+    } catch (error) {
+      console.error("Error retrieving Trust IDs:", error);
+      return [];
+    }
+  }
+
+  /**
+   * Retrieves a Trust ID record by username.
+   * @param {string} username - The username to search for.
+   * @returns {Promise<TrustIDRecord | null>} A promise that resolves to the TrustIDRecord or null if not found.
+   */
+  public async findByUsername(username: string): Promise<TrustIDRecord | null> {
+    try {
+      return await this.getByIndex<TrustIDRecord>(appIdUsernameCompositeIndex, [this.appId, username]);
+    } catch (error) {
+      console.error("Error retrieving Trust ID Record:", error);
+      return null;
+    }
+  }
 }
