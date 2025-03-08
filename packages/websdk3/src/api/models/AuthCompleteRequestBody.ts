@@ -1,13 +1,13 @@
-// Copyright (C) LoginID
-
+/* generated using openapi-typescript-codegen -- do no edit */
 /* istanbul ignore file */
 /* tslint:disable */
-
-import type { AuthenticatorAssertionResponse } from "./AuthenticatorAssertionResponse";
+ 
+import type { AuthenticatorAssertionResponse } from './AuthenticatorAssertionResponse';
 export type AuthCompleteRequestBody = {
-  assertionResult: AuthenticatorAssertionResponse;
-  /**
-   * An opaque object containing session data.
-   */
-  session: string;
+    assertionResult: AuthenticatorAssertionResponse;
+    /**
+     * An opaque object containing session data.
+     */
+    session: string;
 };
+

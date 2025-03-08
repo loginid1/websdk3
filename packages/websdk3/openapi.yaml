@@ -107,7 +107,7 @@ paths:
                 osVersion: 14.2.1
                 screenHeight: 1080
                 screenWidth: 1920
-              trustInfo: Beatae tenetur earum numquam aliquam a.
+              trustInfo: Quod delectus aperiam eligendi.
               user:
                 username: admin@example.com
                 usernameType: email
@@ -134,7 +134,7 @@ paths:
                     appid: https://loalhost:8443
                   rpId: https://localhost:8443/
                   timeout: 5000
-                  userVerification: preferred
+                  userVerification: required
                 crossAuthMethods:
                   - otp
                   - otp:sms
@@ -145,6 +145,15 @@ paths:
                 session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
         '400':
           description: 'bad_request: Bad Request response.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppError'
+              example:
+                msg: Internal error
+                msgCode: internal_error
+        '403':
+          description: 'forbidden: Forbidden response.'
           content:
             application/json:
               schema:
@@ -754,8 +763,8 @@ paths:
                 publicKeyAlgorithm: -8
                 transports:
                   - usb
-                  - cable
-                  - smart-card
+                  - internal
+                  - nfc
               session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
       responses:
         '200':
@@ -844,7 +853,7 @@ paths:
                 screenWidth: 1920
               passkeyOptions:
                 conditionalCreate: false
-              trustInfo: Omnis beatae voluptate aspernatur et.
+              trustInfo: Ut aut consequatur a.
               user:
                 displayName: System Administrator
                 username: admin@example.com
@@ -1040,7 +1049,7 @@ paths:
                     appid: https://loalhost:8443
                   rpId: https://localhost:8443/
                   timeout: 5000
-                  userVerification: preferred
+                  userVerification: required
                 session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
                 txId: 2a363a42-a397-4af0-b089-0935fc223017
         '400':
@@ -1234,7 +1243,7 @@ components:
           type: array
           items:
             type: string
-            example: otp:email
+            example: otp
             enum:
               - otp
               - otp:sms
@@ -1320,7 +1329,7 @@ components:
           $ref: '#/components/schemas/DeviceInfo'
         trustInfo:
           type: string
-          example: Facilis architecto.
+          example: Sed est eaque.
         user:
           $ref: '#/components/schemas/UserLogin'
       example:
@@ -1337,7 +1346,7 @@ components:
           osVersion: 14.2.1
           screenHeight: 1080
           screenWidth: 1920
-        trustInfo: Repellat aut quis harum cupiditate.
+        trustInfo: Quae ut eveniet.
         user:
           username: admin@example.com
           usernameType: email
@@ -1354,7 +1363,7 @@ components:
             bindings
 
             made by the authenticator.
-          example: Eum animi ut dicta assumenda.
+          example: Soluta quia.
         clientDataJSON:
           type: string
           description: >-
@@ -1410,7 +1419,7 @@ components:
           type: boolean
           description: Resident key requirement
           default: false
-          example: false
+          example: true
         residentKey:
           type: string
           description: Resident key requirement
@@ -1450,7 +1459,7 @@ components:
             bindings
 
             made by the authenticator.
-          example: Dolores ea consequuntur eos blanditiis voluptatem.
+          example: Quis eum.
         clientDataJSON:
           type: string
           description: >-
@@ -1510,7 +1519,6 @@ components:
 
             or an empty sequence if the information is unavailable.
           example:
-            - internal
             - internal
             - internal
             - internal
@@ -1645,7 +1653,7 @@ components:
           type: boolean
           description: Credential available on multiple devices
           default: false
-          example: true
+          example: false
         id:
           type: string
           description: Internal passkey ID that uniquely identifies a passkey
@@ -1667,7 +1675,7 @@ components:
       example:
         aaguid: fbfc3007-154e-4ecc-8c0b-6e020557d7bd
         createdAt: 2023-06-15 13:29:41 EDT
-        credentialSynced: true
+        credentialSynced: false
         id: 861ee00b-b40d-493a-a10b-457a0d527b48
         lastUsedAt: '2025-01-02T16:40:44Z'
         lastUsedFromDevice:
@@ -1789,7 +1797,7 @@ components:
           - internal
           - internal
           - internal
-        type: Ut ipsam enim illo.
+        type: Architecto eum animi ut dicta assumenda.
       required:
         - type
         - id
@@ -1798,7 +1806,7 @@ components:
       properties:
         attestation:
           type: string
-          example: none
+          example: enterprise
           enum:
             - none
             - indirect
@@ -1941,8 +1949,8 @@ components:
             - public-key
       description: Additional parameters when creating a new credential.
       example:
-        alg: -257
-        type: Ut ipsam enim illo.
+        alg: -7
+        type: Architecto eum animi ut dicta assumenda.
     PublicKeyCredentialRequestOptions:
       type: object
       properties:
@@ -2099,8 +2107,8 @@ components:
           publicKeyAlgorithm: -8
           transports:
             - usb
-            - cable
-            - smart-card
+            - internal
+            - nfc
         session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
       required:
         - session
@@ -2175,7 +2183,7 @@ components:
           $ref: '#/components/schemas/PasskeyOptions'
         trustInfo:
           type: string
-          example: Consequatur ea voluptas quasi consectetur.
+          example: Eos voluptas nemo vero eum.
         user:
           $ref: '#/components/schemas/User'
       example:
@@ -2194,7 +2202,7 @@ components:
           screenWidth: 1920
         passkeyOptions:
           conditionalCreate: false
-        trustInfo: Accusantium aperiam.
+        trustInfo: Tenetur pariatur tempore.
         user:
           displayName: System Administrator
           username: admin@example.com
