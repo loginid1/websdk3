@@ -1,0 +1,70 @@
+{
+  "name": "@loginid/websdk3",
+  "version": "3.0.8-next.1",
+  "description": "",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE.md"
+  ],
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc --noEmit & tsup ./src/index.ts --no-config  --sourcemap --globalName=LoginID --format esm,cjs,iife --dts --minify",
+    "build:watch": "tsc --noEmit & tsup ./src/index.ts --watch --no-config --format esm,cjs --dts --minify",
+    "commit:pre": "npm run lint && npm run format",
+    "delete-maps": "npm run delete-map-files && npm run delete-references-to-map-files",
+    "delete-map-files": "find ./dist -name '*.map' -delete",
+    "delete-references-to-map-files": "find ./dist -name '*.js' -or -name '*.mjs' -exec sed -i -e 's/sourceMappingURL=[^ ]*.map//g' {} +",
+    "format": "pretty-quick --staged",
+    "gen": "openapi --input ./openapi.yaml --output ./src/api --name LoginIDService --useOptions --useUnionTypes",
+    "commit": "cz",
+    "lint": "eslint \"src/**/*.ts?(x)\"",
+    "lint:fix": "eslint \"src/**/*.ts?(x)\" --fix",
+    "log:env": "echo Using MODE: $MODE && echo Using APP_ENV: $APP_ENV",
+    "test": "jest"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run commit:pre"
+    }
+  },
+  "author": "LoginID Inc.",
+  "license": "ISC",
+  "devDependencies": {
+    "commitizen": "^4.3.0",
+    "cz-conventional-changelog": "^3.3.0",
+    "js-yaml": "^4.1.0",
+    "openapi-typescript-codegen": "^0.27.0",
+    "typedoc": "^0.27.9",
+    "typedoc-plugin-markdown": "^4.2.7",
+    "typedoc-plugin-missing-exports": "^3.0.0",
+    "typedoc-plugin-rename-defaults": "^0.7.1"
+  },
+  "keywords": [
+    "authentication",
+    "passkey",
+    "fido2",
+    "biometrics",
+    "webauthn",
+    "passwordless"
+  ],
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
+}
