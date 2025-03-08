@@ -1,21 +1,22 @@
-import LoginIDError from "../../errors/loginid";
-import { defaultDeviceInfo } from "../../browser";
-import { MfaStore } from "../lib/store/mfa-store";
-import { DeviceStore } from "../lib/store/device-store";
-import { LoginIDParamValidator } from "../lib/validators";
-import { WebAuthnHelper } from "../../webauthn/webauthn-helper";
-import { ApiError, Mfa, MfaBeginRequestBody, MfaNext } from "../../api";
-import { passkeyOptions, toMfaSessionDetails, toMfaInfo } from "../lib/defaults";
+import LoginIDError from '../../errors/loginid'
+import { defaultDeviceInfo } from '../../browser'
+import { MfaStore } from '../lib/store/mfa-store'
+import { DeviceStore } from '../lib/store/device-store'
+import { LoginIDParamValidator } from '../lib/validators'
+import { WebAuthnHelper } from '../../webauthn/webauthn-helper'
+import { ApiError, Mfa, MfaBeginRequestBody, MfaNext } from '../../api'
+import { passkeyOptions, toMfaInfo, toMfaSessionDetails } from '../lib/defaults'
 import {
   LoginIDConfig,
-  MfaFactorName,
   MfaBeginOptions,
-  MfaPerformFactorOptions,
+  MfaFactorName,
   MfaOtpFactorName,
+  MfaPerformFactorOptions,
   MfaRequestFactorOptions,
   MfaSessionResult
-} from "../types";
-import LoginIDBase from "../base";
+} from '../types'
+import LoginIDBase from '../base'
+import { TrustStore } from '../lib/store/trust-store'
 
 class MFA extends LoginIDBase {
   /**
@@ -45,6 +46,9 @@ class MFA extends LoginIDBase {
     const deviceInfo = defaultDeviceInfo(deviceId)
     const opts = passkeyOptions(username, '', options)
 
+    const trustStore = new TrustStore(appId)
+    const trustInfo = await trustStore.setOrSignWithTrustId(username)
+
     const mfaBeginRequestBody: MfaBeginRequestBody = {
       deviceInfo: deviceInfo,
       user: {
@@ -52,12 +56,10 @@ class MFA extends LoginIDBase {
         usernameType: opts.usernameType,
         displayName: opts.displayName,
       },
-      // NOTE: add later
-      trustInfo: "",
+      trustInfo: trustInfo,
     }
 
     const mfaNextResult = await this.service.mfa.mfaMfaBegin({
-      // NOTE: Make sure browser still sets this even if it's empty
       userAgent: '',
       requestBody: mfaBeginRequestBody
     })
@@ -93,70 +95,70 @@ class MFA extends LoginIDBase {
     const { payload, session } = LoginIDParamValidator.mfaOptionValidator(factorName, info, options)
 
     switch (factorName) {
-      case "passkey": {
-        const requestOptions = LoginIDParamValidator.validatePasskeyPayload(payload)
+    case 'passkey': {
+      const requestOptions = LoginIDParamValidator.validatePasskeyPayload(payload)
 
-        if ("rpId" in requestOptions) {
-          const authCompleteRequestBody = await WebAuthnHelper.getNavigatorCredential({
-            action: "proceed",
-            assertionOptions: requestOptions,
-            crossAuthMethods: [],
-            fallbackMethods: [],
-            session: session,
+      if ('rpId' in requestOptions) {
+        const authCompleteRequestBody = await WebAuthnHelper.getNavigatorCredential({
+          action: 'proceed',
+          assertionOptions: requestOptions,
+          crossAuthMethods: [],
+          fallbackMethods: [],
+          session: session,
+        })
+
+        return await this.invokeMfaApi(appId, info?.username, async () => {
+          return await this.service.mfa.mfaMfaPasskeyAuth({
+            authorization: session,
+            requestBody: {
+              assertionResult: authCompleteRequestBody.assertionResult,
+            }
           })
-
-          return await this.invokeMfaApi(appId, info?.username, async () => {
-            return await this.service.mfa.mfaMfaPasskeyAuth({
-              authorization: session,
-              requestBody: {
-                assertionResult: authCompleteRequestBody.assertionResult,
-              }
-            })
-          })
-        }
-
-        if ("rp" in requestOptions) {
-          const regCompleteRequestBody = await WebAuthnHelper.createNavigatorCredential({
-            action: "proceed",
-            registrationRequestOptions: requestOptions,
-            session: session,
-          })
-
-          return await this.invokeMfaApi(appId, info?.username, async () => {
-            return await this.service.mfa.mfaMfaPasskeyReg({
-              authorization: session,
-              requestBody: {
-                creationResult: regCompleteRequestBody.creationResult,
-              }
-            })
-          })
-        }
-
-        break
+        })
       }
+
+      if ('rp' in requestOptions) {
+        const regCompleteRequestBody = await WebAuthnHelper.createNavigatorCredential({
+          action: 'proceed',
+          registrationRequestOptions: requestOptions,
+          session: session,
+        })
+
+        return await this.invokeMfaApi(appId, info?.username, async () => {
+          return await this.service.mfa.mfaMfaPasskeyReg({
+            authorization: session,
+            requestBody: {
+              creationResult: regCompleteRequestBody.creationResult,
+            }
+          })
+        })
+      }
+
+      break
+    }
       
-      case "otp:email":
-      case "otp:sms": {
-        return await this.invokeMfaApi(appId, info?.username, async () => {
-          return await this.service.mfa.mfaMfaOtpVerify({
-            authorization: session,
-            requestBody: {
-              otp: payload,
-            }
-          })
+    case 'otp:email':
+    case 'otp:sms': {
+      return await this.invokeMfaApi(appId, info?.username, async () => {
+        return await this.service.mfa.mfaMfaOtpVerify({
+          authorization: session,
+          requestBody: {
+            otp: payload,
+          }
         })
-      }
+      })
+    }
 
-      case "external": {
-        return await this.invokeMfaApi(appId, info?.username, async () => {
-          return await this.service.mfa.mfaMfaThirdPartyAuthVerify({
-            authorization: session,
-            requestBody: {
-              token: payload,
-            }
-          })
+    case 'external': {
+      return await this.invokeMfaApi(appId, info?.username, async () => {
+        return await this.service.mfa.mfaMfaThirdPartyAuthVerify({
+          authorization: session,
+          requestBody: {
+            token: payload,
+          }
         })
-      }
+      })
+    }
     }
 
     throw new LoginIDError(`MFA factor ${factorName} is not supported in the current MFA flow.`)
@@ -188,7 +190,7 @@ class MFA extends LoginIDBase {
     const { session: newSession } = await this.service.mfa.mfaMfaOtpRequest({
       authorization: session,
       requestBody: {
-        method: factorName === "otp:email" ? "email" : "sms",
+        method: factorName === 'otp:email' ? 'email' : 'sms',
         option: payload,
       }
     })
@@ -230,7 +232,7 @@ class MFA extends LoginIDBase {
    */
   private async invokeMfaApi(
     appId: string,
-    username: string = "",
+    username: string = '',
     fn: () => Promise<Mfa>
   ): Promise<MfaSessionResult> {
     try {

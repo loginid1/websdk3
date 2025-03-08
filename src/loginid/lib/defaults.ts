@@ -9,6 +9,7 @@ import {
   LoginIDTokenSet,
   MfaInfo,
   MfaSessionResult,
+  RemainingFactor,
 } from '../types'
 
 /**
@@ -23,7 +24,6 @@ export const passkeyOptions = (username: string, authzToken: string, options: Al
   return {
     ...options,
     authzToken: authzToken || options.authzToken || '',
-    // NOTE: we will always be defaulting to email for now
     usernameType: options.usernameType || 'other',
     displayName: options.displayName || username,
     callbacks: options.callbacks || {},
@@ -87,12 +87,39 @@ export const toMfaInfo = (mfaNextResult: MfaNext, username?: string): MfaInfo =>
  * @returns {MfaSessionResult} - The structured MFA session result.
  */
 export const toMfaSessionDetails = (info?: MfaInfo | null, tokenSet?: LoginIDTokenSet): MfaSessionResult => {
+  const remainingFactors: RemainingFactor[] = info?.next?.map(factor => {
+    const { name, label, desc } = factor.action;
+    const result: RemainingFactor = {
+      type: name,
+      label,
+      ...desc && { description: desc },
+    };
+
+    if (factor.options) {
+      const options = factor.options
+        .filter(option => (name === "otp:sms" || name === "otp:email") && option.label)
+        .map(option => option.label!)
+        .filter(Boolean);
+
+      if (options.length) {
+        result.options = options;
+      }
+
+      if (name === "passkey") {
+        const passkeyOption = factor.options.find(option => option.value);
+        if (passkeyOption) result.value = passkeyOption.value;
+      }
+    }
+
+    return result;
+  }) || [];
+
   return {
     username: info?.username,
     ...info?.username && { username: info.username },
     flow: info?.flow,
     ...info?.flow && { flow: info.flow },
-    remainingFactors: info?.next || [],
+    remainingFactors: remainingFactors,
     isComplete: !!tokenSet?.accessToken,
     ...info?.session && { session: info.session },
     ...tokenSet?.idToken && { idToken: tokenSet?.idToken },

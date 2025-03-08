@@ -46,6 +46,49 @@ export interface MfaInfo {
 }
 
 /**
+ * Represents an individual MFA factor that the user must complete.
+ */
+export interface RemainingFactor {
+  /**
+   * The type of the MFA factor, such as passkey or OTP via email or SMS.
+   * Use this value in performFactor to initiate the factor.
+   */
+  type: MfaFactorName;
+
+  /**
+   * A user-friendly label for the factor, providing context on how it should be used.
+   */
+  label: string;
+
+  /**
+   * A description of the MFA factor, explaining its purpose or instructions for completion.
+   */
+  description?: string;
+
+  /**
+   * A unique token for authentication, useful for advanced MFA flows across multiple devices.
+   *
+   * This is available for the following MFA factor:
+   * - passkey
+   *
+   * Example: To authenticate or add a passkey on another device, pass this value 
+   * along with the session token to continue the MFA process.
+   */
+  value?: string;
+
+/**
+ * A list of available options for the MFA factor, if applicable.
+ *
+ * Supported for the following MFA factors:
+ * - otp:email
+ * - otp:sms
+ *
+ * Typically includes valid email addresses or phone numbers for OTP delivery.
+ */
+  options?: string[];
+}
+
+/**
  * Represents the result of a Multi-Factor Authentication (MFA) session.
  * This interface is used to track the status of an ongoing MFA process, including
  * remaining factors, user details, and issued authentication tokens.
@@ -61,7 +104,7 @@ export interface MfaSessionResult {
    * List of MFA factors that still need to be completed for authentication.
    * If this list is empty, the authentication process is complete.
    */
-  remainingFactors: MfaFactor[];
+  remainingFactors: RemainingFactor[];
 
   /**
    * The username associated with the authentication session.
