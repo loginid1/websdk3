@@ -1,3 +1,9 @@
+## @loginid/websdk3 [3.1.1](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/websdk3@3.1.0...@loginid/websdk3@3.1.1) (2025-03-10)
+
+### Bug Fixes
+
+* **websdk3:** removed uneeded dependencies ([9f66615](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/9f6661518ed4f6aea44d8df70f3dc41c68114ad4))
+
 ## [3.1.0](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/v3.0.7...v3.1.0) (2025-03-04)
 
 ### Features
