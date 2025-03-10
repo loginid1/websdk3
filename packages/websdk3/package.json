@@ -30,6 +30,7 @@
     "delete-references-to-map-files": "find ./dist -name '*.js' -or -name '*.mjs' -exec sed -i -e 's/sourceMappingURL=[^ ]*.map//g' {} +",
     "gen": "openapi --input ./openapi.yaml --output ./src/api --name LoginIDService --useOptions --useUnionTypes",
     "commit": "cz",
+    "lint": "eslint \"src/**/*.ts?(x)\"",
     "test": "jest"
   },
   "author": "LoginID Inc.",
