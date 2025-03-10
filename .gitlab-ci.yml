@@ -86,4 +86,4 @@ release:
     NPM_TOKEN: $NPM_AUTH_TOKEN
   script:
     - npm i -g @anolilab/multi-semantic-release @semantic-release/gitlab @semantic-release/changelog @semantic-release/git @semantic-release/npm @semantic-release/commit-analyzer conventional-changelog-conventionalcommits
-    - npx multi-semantic-release
+    - npx multi-semantic-release --dry-run
