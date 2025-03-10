@@ -1,3 +1,20 @@
+## [3.1.0](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/v3.0.7...v3.1.0) (2025-03-04)
+
+### Features
+
+* **trust-id:** added trust device implementation ([940f8a7](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/940f8a730e616f8f988c8c96503f0fa832388dfb))
+
+### Bug Fixes
+
+* **deviceId:** added deviceId to authenticateWithPasskey passkey login ([3fed381](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/3fed38115adb98fa9dd2c2be6c076b7470f6a296))
+* **deviceId:** update responseID to responseId to match server response ([eba3fda](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/eba3fda1105735d01daca548512ae8cb92b493fa))
+
+### Miscellaneous Chores
+
+* **AuthResult:** added `userId` and `passkeyId` to AuthResult ([f7c58c8](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/f7c58c8e8ee8dead3f435b717633ab8b7c93bfb7))
+* **release:** 3.0.8-next.1 ([78ea7ea](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/78ea7ea21ab4198a3b096dd395cbbb86f56fd269))
+* **ua-parser:** removed ua-parser dependency ([fa17b58](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/fa17b588a997c1aedb40807acad1ed4889df9e2d))
+
 ## [3.0.8-next.1](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/v3.0.7...v3.0.8-next.1) (2025-01-30)
 
 ### Bug Fixes
