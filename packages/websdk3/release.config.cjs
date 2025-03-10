@@ -6,6 +6,7 @@ module.exports = {
     'main',
     { name: 'next', channel: 'next', prerelease: true },
   ],
+  tagFormat: "websdk3-v${version}",
   plugins: [
     [
       '@semantic-release/commit-analyzer',
@@ -61,6 +62,7 @@ module.exports = {
     ['@semantic-release/npm',
       {
         'npmPublish': true,
+        'pkgRoot': '.',
       }
     ],
     [
