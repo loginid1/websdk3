@@ -1,0 +1,51 @@
+{
+  "name": "@loginid/websdk3",
+  "version": "3.0.8-next.1",
+  "description": "",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE.md"
+  ],
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc --noEmit & tsup ./src/index.ts --no-config  --sourcemap --globalName=LoginID --format esm,cjs,iife --dts --minify",
+    "release": "semantic-release",
+    "delete-maps": "npm run delete-map-files && npm run delete-references-to-map-files",
+    "delete-map-files": "find ./dist -name '*.map' -delete",
+    "delete-references-to-map-files": "find ./dist -name '*.js' -or -name '*.mjs' -exec sed -i -e 's/sourceMappingURL=[^ ]*.map//g' {} +",
+    "gen": "openapi --input ./openapi.yaml --output ./src/api --name LoginIDService --useOptions --useUnionTypes",
+    "commit": "cz",
+    "lint": "eslint \"src/**/*.ts?(x)\"",
+    "test": "jest"
+  },
+  "author": "LoginID Inc.",
+  "license": "ISC",
+  "keywords": [
+    "authentication",
+    "passkey",
+    "fido2",
+    "biometrics",
+    "webauthn",
+    "passwordless"
+  ],
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
+}
