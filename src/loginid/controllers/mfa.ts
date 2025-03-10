@@ -68,6 +68,8 @@ class MFA extends LoginIDBase {
 
     MfaStore.persistInfo(appId, mfaInfo)
 
+    this.session.logout()
+
     return toMfaSessionDetails(mfaInfo)
   }
 
