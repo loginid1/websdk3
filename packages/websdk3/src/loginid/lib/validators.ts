@@ -5,7 +5,6 @@ import {
   LoginIDConfig,
   MfaFactorName,
   MfaInfo,
-  MfaOtpFactorName,
   MfaPerformFactorOptions,
 } from "../types";
 import {
@@ -54,19 +53,6 @@ class LoginIDConfigValidator {
  * Utility class for validating parameters related to LoginID MFA operations.
  */
 class LoginIDParamValidator {
-  /**
-   * Validates and extracts the application ID from the configuration.
-   *
-   * @param {MfaOtpFactorName} factorName - The name of the OTP MFA factor being validated.
-   */
-  public static checkValidMfaOtpFactorName(factorName: MfaOtpFactorName) {
-    if (factorName !== "otp:email" && factorName !== "otp:sms") {
-      new LoginIDError(
-        `MFA factor ${factorName} is not supported in the current MFA request flow.`,
-      );
-    }
-  }
-
   /**
    * Validates and extracts necessary parameters for performing an MFA factor.
    *

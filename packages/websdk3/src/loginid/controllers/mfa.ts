@@ -4,9 +4,7 @@ import {
   LoginIDConfig,
   MfaBeginOptions,
   MfaFactorName,
-  MfaOtpFactorName,
   MfaPerformFactorOptions,
-  MfaRequestFactorOptions,
   MfaSessionResult,
 } from "../types";
 import {
@@ -39,14 +37,14 @@ class MFA extends LoginIDBase {
    * Initiates the pre-authentication process for Multi-Factor Authentication (MFA).
    * This method begins an MFA session and stores session details in local storage.
    *
-   * To proceed with the MFA flow, use the `performFactor` method with the required
+   * To proceed with the MFA flow, use the `performAction` method with the required
    * payload if necessary. To check the current MFA session status, use `getMfaSessionDetails`.
    *
    * @param {string} username - The username of the user initiating MFA.
    * @param {MfaBeginOptions} [options={}] - Optional parameters for initiating MFA.
    * @returns {Promise<MfaSessionResult>} - A promise resolving to the MFA session result.
    */
-  async beginPreAuth(
+  async beginFlow(
     username: string,
     options: MfaBeginOptions = {},
   ): Promise<MfaSessionResult> {
@@ -97,7 +95,7 @@ class MFA extends LoginIDBase {
    * @param {MfaPerformFactorOptions} [options={}] - The options containing session and payload data for the MFA factor.
    * @returns {Promise<MfaSessionResult>} - A promise resolving to the updated MFA session result.
    */
-  async performFactor(
+  async performAction(
     factorName: MfaFactorName,
     options: MfaPerformFactorOptions = {},
   ): Promise<MfaSessionResult> {
@@ -182,46 +180,6 @@ class MFA extends LoginIDBase {
     throw new LoginIDError(
       `MFA factor ${factorName} is not supported in the current MFA flow.`,
     );
-  }
-
-  /**
-   * Requests a new OTP (One-Time Password) for Multi-Factor Authentication (MFA).
-   *
-   * This method is used to initiate an OTP request via email or SMS.
-   * The MFA session is updated upon a successful request.
-   *
-   * - **OTP (email):** Requests an OTP via email.
-   * - **OTP (SMS):** Requests an OTP via SMS.
-   *
-   * @param {MfaOtpFactorName} factorName - The OTP factor being requested (`"otp:email"` or `"otp:sms"`).
-   * @param {MfaRequestFactorOptions} [options={}] - The options containing session and payload data.
-   * @returns {Promise<MfaSessionResult>} - A promise resolving to the updated MFA session result.
-   */
-  async requestFactor(
-    factorName: MfaOtpFactorName,
-    options: MfaRequestFactorOptions = {},
-  ): Promise<MfaSessionResult> {
-    LoginIDParamValidator.checkValidMfaOtpFactorName(factorName);
-
-    const appId = this.config.getAppId();
-    const info = MfaStore.getInfo(appId);
-    const { payload, session } = LoginIDParamValidator.mfaOptionValidator(
-      factorName,
-      info,
-      options,
-    );
-
-    const { session: newSession } = await this.service.mfa.mfaMfaOtpRequest({
-      authorization: session,
-      requestBody: {
-        method: factorName === "otp:email" ? "email" : "sms",
-        option: payload,
-      },
-    });
-
-    MfaStore.updateSession(appId, newSession);
-
-    return toMfaSessionDetails(MfaStore.getInfo(appId));
   }
 
   /**

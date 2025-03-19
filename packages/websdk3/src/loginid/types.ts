@@ -20,7 +20,6 @@ export type Transports = CreationResult["transports"];
 export type MfaFlow = Mfa["flow"];
 export type MfaFactor = MfaAction;
 export type MfaFactorName = MfaAction["action"]["name"];
-export type MfaOtpFactorName = Extract<MfaFactorName, "otp:email" | "otp:sms">;
 
 export type Message = "email" | "sms";
 
@@ -56,7 +55,7 @@ export interface MfaInfo {
 export interface RemainingFactor {
   /**
    * The type of the MFA factor, such as passkey or OTP via email or SMS.
-   * Use this value in performFactor to initiate the factor.
+   * Use this value in performAction to initiate the factor.
    */
   type: MfaFactorName;
 
@@ -429,11 +428,6 @@ export interface MfaPerformFactorOptions {
    */
   payload?: string;
 }
-
-/**
- * Options for requesting an MFA authentication factor.
- */
-export interface MfaRequestFactorOptions extends MfaPerformFactorOptions {}
 
 /**
  * Represents the claims included in a TrustID token.
