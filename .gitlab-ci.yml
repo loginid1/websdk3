@@ -6,6 +6,7 @@ include:
 
 stages:
   - install
+  - build
   - test
   - release
 
@@ -17,34 +18,51 @@ install:
     - when: always
   script:
     - npm install
-    - npm run build
-    - npm pack
   artifacts:
     expire_in: 10 minutes
     when: on_success
     paths:
       - node_modules/
-      - loginid-*.tgz
 
-unit-test:
+build-websdk:
+  stage: build
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: never
+    - changes:
+        - packages/websdk3/src/**
+  script:
+    - npm run build:websdk3
+    - npm run delete-maps:websdk3
+    - npm pack --workspace=@loginid/websdk3
+  artifacts:
+    expire_in: 3 hours
+    when: on_success
+    paths:
+      - loginid-*.tgz
+      - packages/websdk3/dist
+
+unit-test-websdk:
   stage: test
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       when: never
     - if: $CI_PIPELINE_SOURCE == "pipeline" 
       when: never
-    - when: always
+    - changes:
+        - packages/websdk3/src/**
   script:
-    - npm run lint
+    - npm run lint:websdk3
     - npm audit --audit-level=low
-    - npm run test
+    - npm run test:websdk3
 
 chrome-test:
   stage: test
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       when: never
-    - when: always
+    - changes:
+        - packages/websdk3/src/**
   variables:
     BRANCH: $CI_COMMIT_REF_NAME
   trigger:
@@ -58,8 +76,8 @@ release:
       when: never
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       when: never
-    - if: '$CI_COMMIT_BRANCH == "next"'
-      when: manual
+    #- if: '$CI_COMMIT_BRANCH == "next"'
+      #when: manual
     - if: '$CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH'
       when: never
     - when: always
@@ -67,7 +85,5 @@ release:
     GITLAB_TOKEN: $PROJECT_CI_TOKEN
     NPM_TOKEN: $NPM_AUTH_TOKEN
   script:
-    - npm run build
-    - npm run delete-maps
-    - npm i -g semantic-release @semantic-release/gitlab @semantic-release/changelog @semantic-release/git @semantic-release/npm @semantic-release/commit-analyzer conventional-changelog-conventionalcommits
-    - npx semantic-release
+    - npm i -g @anolilab/multi-semantic-release @semantic-release/gitlab @semantic-release/changelog @semantic-release/git @semantic-release/npm @semantic-release/commit-analyzer conventional-changelog-conventionalcommits
+    - npx multi-semantic-release
