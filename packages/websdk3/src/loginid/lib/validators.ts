@@ -78,8 +78,9 @@ class LoginIDParamValidator {
     }
 
     const canFindPayloadInInfo = new Set<MfaFactorName>([
-      "passkey:create",
-      "passkey:use",
+      "passkey:reg",
+      "passkey:auth",
+      "passkey:tx",
       "otp:email",
       "otp:sms",
     ]);
@@ -95,6 +96,15 @@ class LoginIDParamValidator {
     const getFactorPayload = (factor: MfaFactor, key?: string): string => {
       if (!factor.options?.length) {
         throw new LoginIDError(`Payload is required for ${factorName}.`);
+      }
+
+      const isPasskey = new Set<MfaFactorName>([
+        "passkey:reg",
+        "passkey:auth",
+        "passkey:tx",
+      ]);
+      if (isPasskey.has(factorName)) {
+        return factor.options[0].value;
       }
 
       let selectedOption: string | undefined;
@@ -116,8 +126,9 @@ class LoginIDParamValidator {
     };
 
     switch (factorName) {
-      case "passkey:create":
-      case "passkey:use":
+      case "passkey:reg":
+      case "passkey:auth":
+      case "passkey:tx":
         return { session, payload: getFactorPayload(factor) };
 
       case "otp:email":
