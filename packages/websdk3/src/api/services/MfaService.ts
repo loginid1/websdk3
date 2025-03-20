@@ -202,4 +202,35 @@ export class MfaService {
             },
         });
     }
+    /**
+     * Transaction confirmation using passkey.
+     * Confirm a transaction with a passkey.
+     * @returns Mfa OK response.
+     * @throws ApiError
+     */
+    public mfaMfaTxComplete({
+        requestBody,
+        authorization,
+    }: {
+        requestBody: MfaPasskeyAuthRequestBody,
+        /**
+         * JWT Authorization header
+         */
+        authorization?: string,
+    }): CancelablePromise<Mfa> {
+        return this.httpRequest.request({
+            method: 'POST',
+            url: '/fido2/v2/mfa/tx/complete',
+            headers: {
+                'Authorization': authorization,
+            },
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                400: `bad_request: Bad Request response.`,
+                401: `unauthorized: Unauthorized response.`,
+                500: `internal_error: Internal Server Error response.`,
+            },
+        });
+    }
 }

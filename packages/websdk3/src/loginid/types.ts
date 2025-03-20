@@ -410,6 +410,28 @@ export interface MfaBeginOptions {
    * The type of username validation to be used. Defaults to **`other`**.
    */
   usernameType?: UsernameType;
+
+  /**
+   * A string representing transaction details for confirmation during MFA.
+   * This can be any descriptive text, but using a JSON-formatted string is recommended
+   * for structured transaction details.
+   *
+   * Example (plain text):
+   * ```
+   * Payment of $100 to John Doe
+   * ```
+   *
+   * Example (JSON):
+   * ```json
+   * {
+   *   "transactionId": "12345",
+   *   "amount": "100.00",
+   *   "currency": "USD",
+   *   "recipient": "john.doe@example.com"
+   * }
+   * ```
+   */
+  txPayload?: string;
 }
 
 /**

@@ -127,7 +127,11 @@ export const toMfaSessionDetails = (
           result.options = options;
         }
 
-        if (name === "passkey:create" || name === "passkey:use") {
+        if (
+          name === "passkey:reg" ||
+          name === "passkey:auth" ||
+          name === "passkey:tx"
+        ) {
           const passkeyOption = factor.options.find((option) => option.value);
           if (passkeyOption) result.value = passkeyOption.value;
         }
@@ -142,7 +146,7 @@ export const toMfaSessionDetails = (
     flow: info?.flow,
     ...(info?.flow && { flow: info.flow }),
     remainingFactors: remainingFactors,
-    isComplete: !!tokenSet?.accessToken,
+    isComplete: !!tokenSet?.accessToken || !!tokenSet?.payloadSignature,
     ...(info?.session && { session: info.session }),
     ...(tokenSet?.idToken && { idToken: tokenSet?.idToken }),
     ...(tokenSet?.accessToken && { accessToken: tokenSet?.accessToken }),

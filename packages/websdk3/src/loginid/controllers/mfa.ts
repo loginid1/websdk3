@@ -64,6 +64,7 @@ class MFA extends LoginIDBase {
         displayName: opts.displayName,
       },
       trustInfo: trustInfo,
+      ...(options.txPayload && { payload: options.txPayload }),
     };
 
     const mfaNextResult = await this.service.mfa.mfaMfaBegin({
@@ -109,8 +110,9 @@ class MFA extends LoginIDBase {
     );
 
     switch (factorName) {
-      case "passkey:create":
-      case "passkey:use": {
+      case "passkey:reg":
+      case "passkey:auth":
+      case "passkey:tx": {
         const requestOptions =
           LoginIDParamValidator.validatePasskeyPayload(payload);
 
@@ -123,6 +125,17 @@ class MFA extends LoginIDBase {
               fallbackMethods: [],
               session: session,
             });
+
+          if (factorName === "passkey:tx") {
+            return await this.invokeMfaApi(appId, info?.username, async () => {
+              return await this.service.mfa.mfaMfaTxComplete({
+                authorization: session,
+                requestBody: {
+                  assertionResult: authCompleteRequestBody.assertionResult,
+                },
+              });
+            });
+          }
 
           return await this.invokeMfaApi(appId, info?.username, async () => {
             return await this.service.mfa.mfaMfaPasskeyAuth({

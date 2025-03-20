@@ -19,7 +19,7 @@ export type MfaAction = {
         /**
          * Next Action to be performed.
          */
-        name: 'passkey:use' | 'passkey:create' | 'otp:email' | 'otp:sms' | 'otp:verify' | 'external';
+        name: 'passkey:reg' | 'passkey:auth' | 'passkey:tx' | 'otp:email' | 'otp:sms' | 'otp:verify' | 'external';
     };
     /**
      * Additional options associated with the action.

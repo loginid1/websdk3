@@ -6,6 +6,10 @@ import type { DeviceInfo } from './DeviceInfo';
 import type { User } from './User';
 export type MfaBeginRequestBody = {
     deviceInfo?: DeviceInfo;
+    /**
+     * Payload to be signed
+     */
+    payload?: string;
     trustInfo: string;
     user: User;
 };

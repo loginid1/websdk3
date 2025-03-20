@@ -107,7 +107,7 @@ paths:
                 osVersion: 14.2.1
                 screenHeight: 1080
                 screenWidth: 1920
-              trustInfo: Quod delectus aperiam eligendi.
+              trustInfo: Delectus aperiam eligendi voluptatum earum illum.
               user:
                 username: admin@example.com
                 usernameType: email
@@ -452,7 +452,8 @@ paths:
                 osVersion: 14.2.1
                 screenHeight: 1080
                 screenWidth: 1920
-              trustInfo: Id et odio.
+              payload: ak4BXFgauyDtsRvnXWfaTW1DyetX7fTViGY9DRQGQ+g=
+              trustInfo: Velit ut quam voluptatibus id et odio.
               user:
                 displayName: System Administrator
                 username: admin@example.com
@@ -984,6 +985,76 @@ paths:
           required: false
           schema:
             type: string
+  /fido2/v2/mfa/tx/complete:
+    post:
+      tags:
+        - mfa
+      summary: Transaction confirmation using passkey.
+      description: Confirm a transaction with a passkey.
+      operationId: mfa#mfaTxComplete
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MfaPasskeyAuthRequestBody'
+            example:
+              assertionResult:
+                authenticatorData: ix523n3XniH01jM4CIuOn1z0Jw6QbRATXYOsCUyQN...
+                clientDataJSON: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
+                credentialId: 2aChi2dALRLdVP5i/zKr7yvMrP8FIy7MK4lbyUsjO...
+                signature: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
+                userHandle: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
+      responses:
+        '200':
+          description: OK response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mfa'
+              example:
+                accessToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NT...
+                flow: signIn
+                idToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NT...
+                payload: JfeMhXGH1GABxRAXRopd7vtsLEJe16f9ok3oiA8DoEADZ8TOqvgYy...
+                payloadSignature: eyJhbGciOiJIUzI1NiJ9.ew0KICAic3ViIjogIjEyMzQ1Njc4OTAiLA...
+                refreshToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NT...
+        '400':
+          description: 'bad_request: Bad Request response.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppError'
+              example:
+                msg: Internal error
+                msgCode: internal_error
+        '401':
+          description: 'unauthorized: Unauthorized response.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppError'
+              example:
+                msg: Internal error
+                msgCode: internal_error
+        '500':
+          description: 'internal_error: Internal Server Error response.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppError'
+              example:
+                msg: Internal error
+                msgCode: internal_error
+      security:
+        - mfaSession_header_Authorization: []
+      parameters:
+        - name: Authorization
+          in: header
+          description: JWT Authorization header
+          required: false
+          schema:
+            type: string
   /fido2/v2/passkeys:
     get:
       tags:
@@ -1425,7 +1496,7 @@ paths:
                 screenWidth: 1920
               passkeyOptions:
                 conditionalCreate: false
-              trustInfo: Ut aut consequatur a.
+              trustInfo: Perspiciatis et minus aut.
               user:
                 displayName: System Administrator
                 username: admin@example.com
@@ -1440,7 +1511,7 @@ paths:
               example:
                 action: proceed
                 registrationRequestOptions:
-                  attestation: direct
+                  attestation: indirect
                   authenticatorSelection:
                     authenticatorAttachment: platform
                     requireResidentKey: true
@@ -2275,8 +2346,9 @@ components:
               description: Next Action to be performed.
               example: passkey
               enum:
-                - passkey:use
-                - passkey:create
+                - passkey:reg
+                - passkey:auth
+                - passkey:tx
                 - otp:email
                 - otp:sms
                 - otp:verify
@@ -2316,6 +2388,10 @@ components:
       properties:
         deviceInfo:
           $ref: '#/components/schemas/DeviceInfo'
+        payload:
+          type: string
+          description: Payload to be signed
+          example: ak4BXFgauyDtsRvnXWfaTW1DyetX7fTViGY9DRQGQ+g=
         trustInfo:
           type: string
           example: Fugiat deserunt officiis excepturi rerum.
@@ -2333,6 +2409,7 @@ components:
           osVersion: 14.2.1
           screenHeight: 1080
           screenWidth: 1920
+        payload: ak4BXFgauyDtsRvnXWfaTW1DyetX7fTViGY9DRQGQ+g=
         trustInfo: Consectetur et ipsa.
         user:
           displayName: System Administrator
@@ -2807,7 +2884,7 @@ components:
         user:
           $ref: '#/components/schemas/PublicKeyCredentialUserEntity'
       example:
-        attestation: Nihil dolores voluptatem sequi ipsam rerum.
+        attestation: Odio qui totam exercitationem.
         authenticatorSelection:
           authenticatorAttachment: platform
           requireResidentKey: true
@@ -3059,7 +3136,7 @@ components:
       example:
         action: proceed
         registrationRequestOptions:
-          attestation: Nihil dolores voluptatem sequi ipsam rerum.
+          attestation: Odio qui totam exercitationem.
           authenticatorSelection:
             authenticatorAttachment: platform
             requireResidentKey: true
