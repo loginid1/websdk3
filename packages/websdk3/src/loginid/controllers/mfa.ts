@@ -87,7 +87,8 @@ class MFA extends LoginIDBase {
    * It validates the provided options, processes the authentication step, and invokes the corresponding MFA API.
    * The MFA session deatils is updated upon a successful factor completion.
    *
-   * - **OTP (email/SMS):** Provide the OTP code in `options.payload`.
+   * - **OTP Request (email/SMS):** Initiates an OTP request by sending an OTP to the user's contact information. If `options.payload` contains a contact, it will be used; otherwise, the primary contact on record is used.
+   * - **OTP Verify (email/SMS):** Verifies the OTP code provided in `options.payload` by validating it against the expected value.
    * - **External authentication:** Provide the authorization code in `options.payload`.
    * - **Passkeys:** Uses WebAuthn for authentication or registration.
    *
@@ -108,7 +109,8 @@ class MFA extends LoginIDBase {
     );
 
     switch (factorName) {
-      case "passkey": {
+      case "passkey:create":
+      case "passkey:use": {
         const requestOptions =
           LoginIDParamValidator.validatePasskeyPayload(payload);
 
@@ -155,6 +157,22 @@ class MFA extends LoginIDBase {
 
       case "otp:email":
       case "otp:sms": {
+        const { session: newSession } = await this.service.mfa.mfaMfaOtpRequest(
+          {
+            authorization: session,
+            requestBody: {
+              method: factorName === "otp:email" ? "email" : "sms",
+              option: payload,
+            },
+          },
+        );
+
+        MfaStore.updateSession(appId, newSession);
+
+        return toMfaSessionDetails(MfaStore.getInfo(appId));
+      }
+
+      case "otp:verify": {
         return await this.invokeMfaApi(appId, info?.username, async () => {
           return await this.service.mfa.mfaMfaOtpVerify({
             authorization: session,

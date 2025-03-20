@@ -512,6 +512,15 @@ paths:
               example:
                 msg: Internal error
                 msgCode: internal_error
+        '403':
+          description: 'forbidden: Forbidden response.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppError'
+              example:
+                msg: Internal error
+                msgCode: internal_error
         '404':
           description: 'not_found: Not Found response.'
           content:
@@ -2264,16 +2273,18 @@ components:
             name:
               type: string
               description: Next Action to be performed.
-              example: otp:email
+              example: passkey
               enum:
-                - passkey
+                - passkey:use
+                - passkey:create
                 - otp:email
                 - otp:sms
+                - otp:verify
                 - external
           example:
             desc: Laudantium voluptatem.
             label: Ut ipsam enim illo.
-            name: otp:email
+            name: passkey
           required:
             - name
             - label
@@ -2292,7 +2303,7 @@ components:
         action:
           desc: Eaque velit.
           label: Mollitia adipisci earum velit.
-          name: otp:email
+          name: passkey
         options:
           - label: primary@example.com
             value: 3df8feb9-5dc0-451e-8799-ec5d7e1fe1f7

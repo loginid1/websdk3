@@ -127,7 +127,7 @@ export const toMfaSessionDetails = (
           result.options = options;
         }
 
-        if (name === "passkey") {
+        if (name === "passkey:create" || name === "passkey:use") {
           const passkeyOption = factor.options.find((option) => option.value);
           if (passkeyOption) result.value = passkeyOption.value;
         }

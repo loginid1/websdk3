@@ -3,6 +3,7 @@
 import {
   Complete,
   LoginIDConfig,
+  MfaFactor,
   MfaFactorName,
   MfaInfo,
   MfaPerformFactorOptions,
@@ -76,16 +77,54 @@ class LoginIDParamValidator {
       return { session, payload };
     }
 
-    const canFindPayloadInInfo = new Set<MfaFactorName>(["passkey"]);
+    const canFindPayloadInInfo = new Set<MfaFactorName>([
+      "passkey:create",
+      "passkey:use",
+      "otp:email",
+      "otp:sms",
+    ]);
+    if (!info?.next || !canFindPayloadInInfo.has(factorName)) {
+      throw new LoginIDError("Payload is required to perform MFA factor.");
+    }
 
-    if (info?.next && canFindPayloadInInfo.has(factorName)) {
-      const factor = info.next.find((f) => f.action.name === factorName);
+    const factor = info.next.find((f) => f.action.name === factorName);
+    if (!factor) {
+      throw new LoginIDError(`No matching factor found for ${factorName}.`);
+    }
 
-      if (factor?.options?.length) {
-        const factorPayload = factor.options[0].value;
-
-        return { session, payload: factorPayload };
+    const getFactorPayload = (factor: MfaFactor, key?: string): string => {
+      if (!factor.options?.length) {
+        throw new LoginIDError(`Payload is required for ${factorName}.`);
       }
+
+      let selectedOption: string | undefined;
+
+      // If key is provided (e.g., "email:primary"), find the option with that key
+      if (key) {
+        selectedOption = factor.options.find(
+          (option) => option.name === key,
+        )?.label;
+      } else {
+        selectedOption = factor.options[0]?.label;
+      }
+
+      if (!selectedOption) {
+        throw new LoginIDError(`Contact is not found for ${factorName}.`);
+      }
+
+      return selectedOption;
+    };
+
+    switch (factorName) {
+      case "passkey:create":
+      case "passkey:use":
+        return { session, payload: getFactorPayload(factor) };
+
+      case "otp:email":
+        return { session, payload: getFactorPayload(factor, "email:primary") };
+
+      case "otp:sms":
+        return { session, payload: getFactorPayload(factor) };
     }
 
     throw new LoginIDError("Payload is required to perform MFA factor.");
