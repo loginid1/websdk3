@@ -172,6 +172,37 @@ export class MfaService {
         });
     }
     /**
+     * Transaction confirmation using passkey.
+     * Confirm a transaction with a passkey.
+     * @returns Mfa OK response.
+     * @throws ApiError
+     */
+    public mfaMfaPasskeyTx({
+        requestBody,
+        authorization,
+    }: {
+        requestBody: MfaPasskeyAuthRequestBody,
+        /**
+         * JWT Authorization header
+         */
+        authorization?: string,
+    }): CancelablePromise<Mfa> {
+        return this.httpRequest.request({
+            method: 'POST',
+            url: '/fido2/v2/mfa/passkey/tx',
+            headers: {
+                'Authorization': authorization,
+            },
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                400: `bad_request: Bad Request response.`,
+                401: `unauthorized: Unauthorized response.`,
+                500: `internal_error: Internal Server Error response.`,
+            },
+        });
+    }
+    /**
      * Verify auth token created by a third party via management API.
      * Verify authentication token received from a third party.
      * @returns Mfa OK response.
@@ -198,37 +229,6 @@ export class MfaService {
             errors: {
                 400: `bad_request: Bad Request response.`,
                 401: `additional_auth_required: Unauthorized response.`,
-                500: `internal_error: Internal Server Error response.`,
-            },
-        });
-    }
-    /**
-     * Transaction confirmation using passkey.
-     * Confirm a transaction with a passkey.
-     * @returns Mfa OK response.
-     * @throws ApiError
-     */
-    public mfaMfaTxComplete({
-        requestBody,
-        authorization,
-    }: {
-        requestBody: MfaPasskeyAuthRequestBody,
-        /**
-         * JWT Authorization header
-         */
-        authorization?: string,
-    }): CancelablePromise<Mfa> {
-        return this.httpRequest.request({
-            method: 'POST',
-            url: '/fido2/v2/mfa/tx/complete',
-            headers: {
-                'Authorization': authorization,
-            },
-            body: requestBody,
-            mediaType: 'application/json',
-            errors: {
-                400: `bad_request: Bad Request response.`,
-                401: `unauthorized: Unauthorized response.`,
                 500: `internal_error: Internal Server Error response.`,
             },
         });

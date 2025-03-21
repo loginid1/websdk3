@@ -128,7 +128,7 @@ class MFA extends LoginIDBase {
 
           if (factorName === "passkey:tx") {
             return await this.invokeMfaApi(appId, info?.username, async () => {
-              return await this.service.mfa.mfaMfaTxComplete({
+              return await this.service.mfa.mfaMfaPasskeyTx({
                 authorization: session,
                 requestBody: {
                   assertionResult: authCompleteRequestBody.assertionResult,
@@ -265,7 +265,7 @@ class MFA extends LoginIDBase {
       return toMfaSessionDetails(newMfaInfo, tokenSet);
     } catch (error) {
       if (error instanceof ApiError) {
-        if (error.status === 401) {
+        if (error.status === 401 && error.body.session) {
           const mfaNextResult = error.body as MfaNext;
           const mfaInfo = toMfaInfo(mfaNextResult, username);
 
