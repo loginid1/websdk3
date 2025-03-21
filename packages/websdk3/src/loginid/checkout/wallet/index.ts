@@ -3,7 +3,7 @@
 import {
   LoginIDConfig,
   MfaFactorName,
-  MfaPerformFactorOptions,
+  MfaPerformActionOptions,
   MfaSessionResult,
 } from "../../types";
 import { CheckoutDiscovery, DiscoverStrategy } from "../discovery";
@@ -37,7 +37,7 @@ class LoginIDWalletAuth {
 
   async performAction(
     factorName: MfaFactorName,
-    options: MfaPerformFactorOptions = {},
+    options: MfaPerformActionOptions = {},
   ): Promise<MfaSessionResult> {
     const result = await this.mfa.performAction(factorName, options);
     // NOTE: Do what we need to do after performing the MFA action
