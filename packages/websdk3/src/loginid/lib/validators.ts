@@ -6,7 +6,7 @@ import {
   MfaFactor,
   MfaFactorName,
   MfaInfo,
-  MfaPerformFactorOptions,
+  MfaPerformActionOptions,
 } from "../types";
 import {
   PublicKeyCredentialCreationOptions,
@@ -59,14 +59,14 @@ class LoginIDParamValidator {
    *
    * @param {MfaFactorName} factorName - The name of the MFA factor being validated.
    * @param {MfaInfo | null} info - The current MFA session information.
-   * @param {MfaPerformFactorOptions} options - The provided options for performing the MFA factor.
-   * @returns {Pick<Complete<MfaPerformFactorOptions>, "payload" | "session">} - The validated session and payload.
+   * @param {MfaPerformActionOptions} options - The provided options for performing the MFA factor.
+   * @returns {Pick<Complete<MfaPerformActionOptions>, "payload" | "session">} - The validated session and payload.
    */
   public static mfaOptionValidator(
     factorName: MfaFactorName,
     info: MfaInfo | null,
-    options: MfaPerformFactorOptions,
-  ): Pick<Complete<MfaPerformFactorOptions>, "payload" | "session"> {
+    options: MfaPerformActionOptions,
+  ): Pick<Complete<MfaPerformActionOptions>, "payload" | "session"> {
     const { session = info?.session, payload = "" } = options;
 
     if (!session) {
