@@ -212,6 +212,43 @@ class IndexedDBWrapper {
         );
     });
   }
+
+  /**
+   * Deletes a record from the object store by ID.
+   * @protected
+   * @param {string} id - The ID of the record to delete.
+   * @returns {Promise<void>} A promise that resolves when the record is deleted.
+   */
+  protected async deleteRecord(id: string): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      const open = this.openDb();
+
+      open.onsuccess = () => {
+        const db = open.result;
+        const tx = db.transaction(this.storeKey, "readwrite");
+        const store = tx.objectStore(this.storeKey);
+
+        const request = store.delete(id);
+
+        request.onsuccess = () => resolve();
+        request.onerror = () =>
+          reject(
+            new StorageError(
+              "Failed to delete record.",
+              "ERROR_STORAGE_FAILED",
+            ),
+          );
+      };
+
+      open.onerror = () =>
+        reject(
+          new StorageError(
+            "Failed to open the database.",
+            "ERROR_STORAGE_FAILED_TO_OPEN",
+          ),
+        );
+    });
+  }
 }
 
 export default IndexedDBWrapper;

@@ -129,4 +129,22 @@ export class TrustStore extends IndexedDBWrapper {
       return null;
     }
   }
+
+  /**
+   * Deletes all Trust ID records except the one specified.
+   * @param {string} username - The username whose Trust IDs should be deleted, except for the specified one.
+   * @returns {Promise<void>} A promise that resolves when the operation is complete.
+   */
+  public async deleteAllExcept(username: string): Promise<void> {
+    try {
+      const records = await this.getAllTrustIds();
+      const deletePromises = records
+        .filter((record) => record.username !== username)
+        .map((record) => this.deleteRecord(record.id));
+
+      await Promise.all(deletePromises);
+    } catch (error) {
+      console.error("Error deleting Trust IDs:", error);
+    }
+  }
 }

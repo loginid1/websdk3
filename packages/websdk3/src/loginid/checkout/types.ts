@@ -2,6 +2,7 @@
 
 export interface CheckoutContext {
   username?: string;
+  txPayload: string;
 }
 
 export type Flow = "REDIRECT" | "EMBEDDED_CONTEXT";
