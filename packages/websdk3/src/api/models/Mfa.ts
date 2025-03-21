@@ -11,6 +11,10 @@ export type Mfa = {
      */
     accessToken: string;
     /**
+     * Device ID
+     */
+    deviceId?: string;
+    /**
      * The current flow type.
      */
     flow: 'signIn' | 'signUp';

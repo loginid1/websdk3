@@ -437,7 +437,7 @@ export interface MfaBeginOptions {
 /**
  * Options for performing an MFA authentication factor.
  */
-export interface MfaPerformFactorOptions {
+export interface MfaPerformActionOptions {
   /**
    * The MFA state session.
    * This should be obtained from a previous MFA request or initiation step.

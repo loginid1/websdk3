@@ -4,7 +4,7 @@ import {
   LoginIDConfig,
   MfaBeginOptions,
   MfaFactorName,
-  MfaPerformFactorOptions,
+  MfaPerformActionOptions,
   MfaSessionResult,
 } from "../types";
 import {
@@ -94,12 +94,12 @@ class MFA extends LoginIDBase {
    * - **Passkeys:** Uses WebAuthn for authentication or registration.
    *
    * @param {MfaFactorName} factorName - The MFA factor being performed (e.g., `"passkey"`, `"otp:email"`, `"otp:sms"`, `"external"`).
-   * @param {MfaPerformFactorOptions} [options={}] - The options containing session and payload data for the MFA factor.
+   * @param {MfaPerformActionOptions} [options={}] - The options containing session and payload data for the MFA factor.
    * @returns {Promise<MfaSessionResult>} - A promise resolving to the updated MFA session result.
    */
   async performAction(
     factorName: MfaFactorName,
-    options: MfaPerformFactorOptions = {},
+    options: MfaPerformActionOptions = {},
   ): Promise<MfaSessionResult> {
     const appId = this.config.getAppId();
     const info = MfaStore.getInfo(appId);
@@ -257,6 +257,7 @@ class MFA extends LoginIDBase {
       });
 
       this.session.setTokenSet(mfaSuccessResult);
+      DeviceStore.persistDeviceId(appId, mfaSuccessResult.deviceId);
 
       const newMfaInfo = MfaStore.getInfo(appId);
       const tokenSet = this.session.getTokenSet();
