@@ -260,9 +260,8 @@ class MFA extends LoginIDBase {
       DeviceStore.persistDeviceId(appId, mfaSuccessResult.deviceId);
 
       const newMfaInfo = MfaStore.getInfo(appId);
-      const tokenSet = this.session.getTokenSet();
 
-      return toMfaSessionDetails(newMfaInfo, tokenSet);
+      return toMfaSessionDetails(newMfaInfo, mfaSuccessResult);
     } catch (error) {
       if (error instanceof ApiError) {
         if (error.status === 401 && error.body.session) {
