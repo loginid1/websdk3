@@ -1,6 +1,13 @@
 // Copyright (C) LoginID
 
-import { a2b, b2a, base64UrlToBuffer, bufferToBase64Url } from "./utils";
+import {
+  a2b,
+  b2a,
+  base64UrlToBuffer,
+  bufferToBase64Url,
+  generateRandomString,
+  randomUUID,
+} from "./utils";
 
 describe("a2b", () => {
   it("should decode a simple base64-encoded string", () => {
@@ -142,5 +149,45 @@ describe("base64UrlToBuffer", () => {
         159,
       ]),
     ); // Ensure the buffer content matches.
+  });
+});
+
+describe("generateRandomString", () => {
+  it("should generate a string of the specified length", () => {
+    const length = 16;
+    const randomString = generateRandomString(length);
+    expect(randomString).toHaveLength(length);
+  });
+
+  it("should generate a string with default length of 12", () => {
+    const randomString = generateRandomString();
+    expect(randomString).toHaveLength(12);
+  });
+});
+
+describe("randomUUID", () => {
+  const originalRandomUUID = window.crypto.randomUUID;
+
+  beforeEach(() => {
+    Object.defineProperty(window.crypto, "randomUUID", {
+      value: originalRandomUUID,
+      configurable: true,
+    });
+  });
+
+  it("should generate a UUID if supported", () => {
+    const expected = "123e4567-e89b-12d3-a456-426614174000";
+    Object.defineProperty(window.crypto, "randomUUID", {
+      value: () => expected,
+      configurable: true,
+    });
+
+    const uuid = randomUUID();
+    expect(uuid).toHaveLength(36);
+  });
+
+  it("should generate a random string of length 24 if UUID is not supported", () => {
+    const randomString = randomUUID();
+    expect(randomString).toHaveLength(24);
   });
 });

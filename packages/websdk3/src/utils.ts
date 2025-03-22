@@ -276,6 +276,33 @@ const signWithES256PrivateKey = async (
   return bufferToBase64Url(buffer);
 };
 
+/**
+ * Generates a random string of a specified length.
+ *
+ * @param {number} [length=12] - The length of the random string to generate.
+ * @returns {string} A random string of the specified length.
+ */
+export const generateRandomString = (length: number = 12): string => {
+  const array = new Uint8Array(length);
+  crypto.getRandomValues(array);
+  return Array.from(array, (byte) => byte.toString(36))
+    .join("")
+    .slice(0, length);
+};
+
+/**
+ * Generates a random UUID.
+ * If the environment does not support `crypto.randomUUID`, it falls back to generating a random string.
+ *
+ * @returns {string} A random UUID or a random string if `crypto.randomUUID` is not supported.
+ */
+export const randomUUID = (): string => {
+  if (!window.crypto?.randomUUID) {
+    return generateRandomString(24);
+  }
+  return window.crypto.randomUUID();
+};
+
 export {
   a2b,
   applyMixins,

@@ -1,5 +1,23 @@
 // Copyright (C) LoginID
 
+/**
+ * Represents any asynchronous function.
+ * @param {...any} args - The arguments for the function.
+ * @returns {Promise<any>} A promise that resolves to any value.
+ */
+export type AnyAsyncFunction = (...args: any[]) => Promise<any>;
+/**
+ * Represents a function that resolves a promise.
+ * @template T
+ * @param {T | PromiseLike<T>} value - The value to resolve the promise with.
+ */
+export type Resolve<T> = (value: T | PromiseLike<T>) => void;
+/**
+ * Represents a function that rejects a promise.
+ * @param {any} [reason] - The reason for rejecting the promise.
+ */
+export type Reject = (reason?: any) => void;
+
 export interface CheckoutContext {
   username?: string;
   txPayload: string;
