@@ -49,6 +49,16 @@ for (const pathKey in data.paths) {
   for (const methodKey in path) {
     const method = path[methodKey];
 
+    if (pathKey === "/fido2/v2/mfa/begin" && methodKey === "post") {
+      if (method.parameters) {
+        for (const param of method.parameters) {
+          if (param.name === "User-Agent" && param.in === "header") {
+            param.required = false;
+          }
+        }
+      }
+    }
+
     const hasAllowedTag = method.tags?.some((tag) => allowedTags.has(tag));
 
     if (hasAllowedTag) {

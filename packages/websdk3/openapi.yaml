@@ -424,7 +424,7 @@ paths:
           in: header
           description: Raw user-agent header as set by a browser
           allowEmptyValue: true
-          required: true
+          required: false
           schema:
             type: string
             description: Raw user-agent header as set by a browser
