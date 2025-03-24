@@ -68,7 +68,6 @@ class MFA extends LoginIDBase {
     };
 
     const mfaNextResult = await this.service.mfa.mfaMfaBegin({
-      userAgent: "",
       requestBody: mfaBeginRequestBody,
     });
 

@@ -22,14 +22,14 @@ export class MfaService {
      * @throws ApiError
      */
     public mfaMfaBegin({
-        userAgent,
         requestBody,
+        userAgent,
     }: {
+        requestBody: MfaBeginRequestBody,
         /**
          * Raw user-agent header as set by a browser
          */
-        userAgent: string,
-        requestBody: MfaBeginRequestBody,
+        userAgent?: string,
     }): CancelablePromise<MfaNext> {
         return this.httpRequest.request({
             method: 'POST',
