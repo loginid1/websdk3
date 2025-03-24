@@ -26,7 +26,7 @@ export class ChildMessages implements ChildMessagesAPI {
    * @readonly
    * @type {string}
    */
-  private readonly allowedOrigin: string;
+  private allowedOrigin: string;
   /**
    * Indicates if the handshake is complete.
    * @private
@@ -69,6 +69,7 @@ export class ChildMessages implements ChildMessagesAPI {
         type: "handshake-response",
       } as MessageData;
       event.source?.postMessage(data, options);
+      this.allowedOrigin = event.origin;
       this.isHandshakeComplete = true;
       return;
     }

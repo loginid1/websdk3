@@ -8,8 +8,8 @@ import {
   isConditionalUIAvailable,
   isPlatformAuthenticatorAvailable,
 } from "./browser";
+import { LoginIDMerchantCheckout, LoginIDWalletAuth } from "./loginid/checkout";
 import { WebAuthnHelper } from "./webauthn/webauthn-helper";
-import { LoginIDWalletAuth } from "./loginid/checkout";
 import PasskeyError from "./errors/passkey";
 import AbortError from "./errors/abort";
 import LoginIDMfa from "./loginid/mfa";
@@ -23,6 +23,7 @@ export {
   AbortError,
   LoginIDMfa,
   LoginIDWebSDK,
+  LoginIDMerchantCheckout,
   LoginIDWalletAuth,
   PasskeyError,
   WebAuthnHelper,

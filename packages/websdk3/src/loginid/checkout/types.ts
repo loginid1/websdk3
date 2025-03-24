@@ -18,6 +18,8 @@ export type Resolve<T> = (value: T | PromiseLike<T>) => void;
  */
 export type Reject = (reason?: any) => void;
 
+export type ResultCallback<T, U> = (param: T) => Promise<U>;
+
 export interface CheckoutContext {
   username?: string;
   txPayload: string;

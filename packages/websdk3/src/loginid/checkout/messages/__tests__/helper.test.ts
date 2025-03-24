@@ -14,6 +14,10 @@ describe("verifyMessage", () => {
     expect(verifyMessage(validEvent, origin)).toBe(true);
   });
 
+  it("should return true for valid message event with wild card", () => {
+    expect(verifyMessage(validEvent, "*")).toBe(true);
+  });
+
   it("should return false if event origin does not match", () => {
     const invalidOriginEvent = { ...validEvent, origin: "https://invalid.com" };
     expect(verifyMessage(invalidOriginEvent, origin)).toBe(false);
