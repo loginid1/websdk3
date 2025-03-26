@@ -9,6 +9,16 @@ import { Flow, ResultCallback } from "../types";
 export type ReceiverType = Flow | "DISCOVER";
 
 /**
+ * Options for configuring how data is sent in a communication flow.
+ *
+ * @property {string} [redirectUrl] - An optional URL to redirect to after the data is sent.
+ * This is typically used in flows like "REDIRECT" where a return path is needed.
+ */
+export interface SendDataOptions {
+  redirectUrl?: string;
+}
+
+/**
  * Interface for a communicator used by the merchant to receive data
  * from different flows or discovery operations.
  */
@@ -36,7 +46,13 @@ export interface WalletCommunicator {
    * @template U - The type of the response data to be sent back.
    * @param {ReceiverType} type - Specifies the communication flow or operation (e.g., "REDIRECT", "DISCOVER").
    * @param {ResultCallback<T, U>} callback - A function that processes the received data and returns a result.
+   * @param {SendDataOptions} options - Optional settings to customize the behavior of the data sending process,
+   * such as providing a `redirectUrl` for redirect-based flows.
    * This function is invoked when a request of the specified type is received.
    */
-  sendData<T, U>(type: ReceiverType, callback: ResultCallback<T, U>): void;
+  sendData<T, U>(
+    type: ReceiverType,
+    callback: ResultCallback<T, U>,
+    options?: SendDataOptions,
+  ): void;
 }

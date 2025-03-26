@@ -5,7 +5,7 @@ import {
   getQueryParams,
   isInIframe,
 } from "../helpers";
-import { ReceiverType, WalletCommunicator } from "./types";
+import { ReceiverType, SendDataOptions, WalletCommunicator } from "./types";
 import { ChildMessagesAPI } from "../messages";
 import { ResultCallback } from "../types";
 
@@ -25,17 +25,16 @@ export class WalletToMerchant implements WalletCommunicator {
   public sendData<T, U>(
     type: ReceiverType,
     callback: ResultCallback<T, U>,
+    options: SendDataOptions,
   ): void {
     if (!isInIframe()) {
       const params = getQueryParams();
-      const { redirect_url } = params;
       const result = callback(params as T);
 
-      if (!redirect_url) {
-        throw new Error("Missing redirect_url query parameter");
+      const redirectUrl = options.redirectUrl;
+      if (redirectUrl) {
+        buildQueryParamsAndRedirect(redirectUrl, result);
       }
-
-      buildQueryParamsAndRedirect(redirect_url, result);
       return;
     }
 
