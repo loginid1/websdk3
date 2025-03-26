@@ -20,14 +20,24 @@ export type Reject = (reason?: any) => void;
 
 export type ResultCallback<T, U> = (param: T) => Promise<U>;
 
-export interface CheckoutContext {
-  username?: string;
-  txPayload: string;
-}
-
 export type Flow = "REDIRECT" | "EMBEDDED_CONTEXT";
 
 export interface DiscoverResult {
   username?: string;
   flow: Flow;
+}
+
+export interface CheckoutBeginFlowOptions {
+  username?: string;
+  txPayload: string;
+}
+
+export interface CheckoutPerformActionOptions {
+  /**
+   * The payload required for completing the authentication factor.
+   * This typically contains user input or challenge-response data.
+   */
+  payload?: string;
+
+  redirectUrl?: string;
 }

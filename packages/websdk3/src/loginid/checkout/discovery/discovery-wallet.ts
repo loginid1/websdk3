@@ -1,6 +1,6 @@
 // Copyright (C) LoginID
 
-import CheckoutIdStore from "../../lib/store/checkout-id";
+import { TrustStore } from "../../lib/store/trust-store";
 import { DiscoverStrategy } from "./types";
 import { DiscoverResult } from "../types";
 
@@ -9,6 +9,21 @@ import { DiscoverResult } from "../types";
  * Implements the DiscoverStrategy to implement the discover method.
  */
 export class CheckoutDiscovery implements DiscoverStrategy {
+  /**
+   * The application ID used for identifying the trust store.
+   * @private
+   * @type {string}
+   */
+  private appId: string;
+
+  /**
+   * Creates an instance of CheckoutDiscovery.
+   * @param {string} appId - The application ID for the trust store.
+   */
+  constructor(appId: string) {
+    this.appId = appId;
+  }
+
   /**
    * Determines the appropriate authentication flow based on available user information.
    *
@@ -29,9 +44,11 @@ export class CheckoutDiscovery implements DiscoverStrategy {
     } else {
       // Attempt to find the first one trust ID
       // NOTE: For now we only allow one trust ID for checkout
-      const checkoutId = CheckoutIdStore.getCookieCheckoutId();
-      if (checkoutId) {
-        return { username: checkoutId, flow: "EMBEDDED_CONTEXT" };
+      const store = new TrustStore(this.appId);
+      const records = await store.getAllTrustIds();
+      if (records.length > 0) {
+        const { username } = records[0];
+        return { username: username, flow: "EMBEDDED_CONTEXT" };
       }
     }
 

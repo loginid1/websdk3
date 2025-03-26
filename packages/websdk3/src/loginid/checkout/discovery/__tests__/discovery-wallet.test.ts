@@ -1,24 +1,17 @@
 // Copyright (C) LoginID
 
-import CheckoutIdStore from "../../../lib/store/checkout-id.ts";
+import { TrustStore } from "../../../lib/store/trust-store";
 import { CheckoutDiscovery } from "../discovery-wallet";
 
-jest.mock("../../../lib/store/checkout-id.ts", () => ({
-  __esModule: true,
-  default: {
-    setCheckoutId: jest.fn(),
-    getCheckoutId: jest.fn(),
-    setCookieCheckoutId: jest.fn(),
-    getCookieCheckoutId: jest.fn(),
-  },
-}));
+jest.mock("../../../lib/store/trust-store");
 
 describe("CheckoutDiscovery", () => {
+  const mockAppId = "testAppId";
   const username = "testUser";
   let checkoutDiscovery: CheckoutDiscovery;
 
   beforeEach(() => {
-    checkoutDiscovery = new CheckoutDiscovery();
+    checkoutDiscovery = new CheckoutDiscovery(mockAppId);
   });
 
   afterEach(() => {
@@ -34,18 +27,31 @@ describe("CheckoutDiscovery", () => {
   });
 
   it("should return REDIRECT when username is not provided and no trust ID is found", async () => {
-    (CheckoutIdStore.getCookieCheckoutId as jest.Mock).mockReturnValue(
-      undefined,
-    );
+    (TrustStore.prototype.getAllTrustIds as jest.Mock).mockResolvedValue([]);
     const result = await checkoutDiscovery.discover();
     expect(result).toEqual({ flow: "REDIRECT" });
   });
 
   it("should return EMBEDDED_CONTEXT when one trust ID is found", async () => {
-    (CheckoutIdStore.getCookieCheckoutId as jest.Mock).mockReturnValue(
-      "abc123",
-    );
+    (TrustStore.prototype.getAllTrustIds as jest.Mock).mockResolvedValue([
+      { username: "testUser" },
+    ]);
     const result = await checkoutDiscovery.discover();
-    expect(result).toEqual({ username: "abc123", flow: "EMBEDDED_CONTEXT" });
+    expect(result).toEqual({ username: "testUser", flow: "EMBEDDED_CONTEXT" });
+  });
+
+  it("should return EMBEDDED_CONTEXT and the first user when more than one trust ID is found", async () => {
+    (TrustStore.prototype.getAllTrustIds as jest.Mock).mockResolvedValue([
+      { username: "user1" },
+      { username: "user2" },
+    ]);
+    const result = await checkoutDiscovery.discover();
+    expect(result).toEqual({ username: "user1", flow: "EMBEDDED_CONTEXT" });
+  });
+
+  it("should return REDIRECT when no trust IDs are found", async () => {
+    (TrustStore.prototype.getAllTrustIds as jest.Mock).mockResolvedValue([]);
+    const result = await checkoutDiscovery.discover();
+    expect(result).toEqual({ flow: "REDIRECT" });
   });
 });
