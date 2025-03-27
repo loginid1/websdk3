@@ -3,7 +3,7 @@
 import {
   exportPublicKeyJwk,
   generateES256KeyPair,
-  generateRandomId,
+  randomUUID,
 } from "../../../utils";
 import StorageError from "../../../errors/storage";
 import { CheckoutIDRecord } from "../../types";
@@ -32,7 +32,7 @@ export class CheckoutIdStore extends IndexedDBWrapper {
   public async setCheckoutId(): Promise<string> {
     const keyPair = await generateES256KeyPair();
     const publicKey = await exportPublicKeyJwk(keyPair);
-    const token = { id: generateRandomId() };
+    const token = { id: randomUUID() };
     const checkoutId = await signJwtWithJwk(
       token,
       publicKey,
