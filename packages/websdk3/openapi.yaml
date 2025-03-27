@@ -107,7 +107,10 @@ paths:
                 osVersion: 14.2.1
                 screenHeight: 1080
                 screenWidth: 1920
-              trustInfo: Delectus aperiam eligendi voluptatum earum illum.
+              trustItems:
+                auth: DqjUIcwnq7edyyeMGCxWNqs1cNBrEjBXlB2mVxfja8s=
+                merchant: gpOLtpZWhxkKgwEJyYzB2ckXn9IXDID7jjiaYFYTfS4=
+                wallet: NlPsJDfILKo0nCxuu2lrv6q9SBqgKLvpIuqSI4izk9k=
               user:
                 username: admin@example.com
                 usernameType: email
@@ -453,7 +456,10 @@ paths:
                 screenHeight: 1080
                 screenWidth: 1920
               payload: ak4BXFgauyDtsRvnXWfaTW1DyetX7fTViGY9DRQGQ+g=
-              trustInfo: Velit ut quam voluptatibus id et odio.
+              trustItems:
+                auth: DqjUIcwnq7edyyeMGCxWNqs1cNBrEjBXlB2mVxfja8s=
+                merchant: gpOLtpZWhxkKgwEJyYzB2ckXn9IXDID7jjiaYFYTfS4=
+                wallet: NlPsJDfILKo0nCxuu2lrv6q9SBqgKLvpIuqSI4izk9k=
               user:
                 displayName: System Administrator
                 username: admin@example.com
@@ -832,9 +838,10 @@ paths:
                 publicKey: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
                 publicKeyAlgorithm: -8
                 transports:
-                  - usb
-                  - internal
-                  - nfc
+                  - ble
+                  - cable
+                  - hybrid
+                  - cable
       responses:
         '200':
           description: OK response.
@@ -1410,9 +1417,10 @@ paths:
                 publicKey: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
                 publicKeyAlgorithm: -8
                 transports:
-                  - usb
-                  - internal
-                  - nfc
+                  - ble
+                  - cable
+                  - hybrid
+                  - cable
               session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
       responses:
         '200':
@@ -1501,7 +1509,10 @@ paths:
                 screenWidth: 1920
               passkeyOptions:
                 conditionalCreate: false
-              trustInfo: Perspiciatis et minus aut.
+              trustItems:
+                auth: DqjUIcwnq7edyyeMGCxWNqs1cNBrEjBXlB2mVxfja8s=
+                merchant: gpOLtpZWhxkKgwEJyYzB2ckXn9IXDID7jjiaYFYTfS4=
+                wallet: NlPsJDfILKo0nCxuu2lrv6q9SBqgKLvpIuqSI4izk9k=
               user:
                 displayName: System Administrator
                 username: admin@example.com
@@ -1516,7 +1527,7 @@ paths:
               example:
                 action: proceed
                 registrationRequestOptions:
-                  attestation: indirect
+                  attestation: direct
                   authenticatorSelection:
                     authenticatorAttachment: platform
                     requireResidentKey: true
@@ -1891,7 +1902,7 @@ components:
           type: array
           items:
             type: string
-            example: otp
+            example: otp:sms
             enum:
               - otp
               - otp:sms
@@ -1975,9 +1986,16 @@ components:
           $ref: '#/components/schemas/Application'
         deviceInfo:
           $ref: '#/components/schemas/DeviceInfo'
-        trustInfo:
-          type: string
-          example: Sed est eaque.
+        trustItems:
+          type: object
+          description: TrustIDs provided with the request
+          example:
+            auth: DqjUIcwnq7edyyeMGCxWNqs1cNBrEjBXlB2mVxfja8s=
+            merchant: gpOLtpZWhxkKgwEJyYzB2ckXn9IXDID7jjiaYFYTfS4=
+            wallet: NlPsJDfILKo0nCxuu2lrv6q9SBqgKLvpIuqSI4izk9k=
+          additionalProperties:
+            type: string
+            example: Temporibus cumque rerum natus aut alias similique.
         user:
           $ref: '#/components/schemas/UserLogin'
       example:
@@ -1994,7 +2012,10 @@ components:
           osVersion: 14.2.1
           screenHeight: 1080
           screenWidth: 1920
-        trustInfo: Quae ut eveniet.
+        trustItems:
+          auth: DqjUIcwnq7edyyeMGCxWNqs1cNBrEjBXlB2mVxfja8s=
+          merchant: gpOLtpZWhxkKgwEJyYzB2ckXn9IXDID7jjiaYFYTfS4=
+          wallet: NlPsJDfILKo0nCxuu2lrv6q9SBqgKLvpIuqSI4izk9k=
         user:
           username: admin@example.com
           usernameType: email
@@ -2011,7 +2032,7 @@ components:
             bindings
 
             made by the authenticator.
-          example: Soluta quia.
+          example: Amet architecto.
         clientDataJSON:
           type: string
           description: >-
@@ -2071,7 +2092,7 @@ components:
         residentKey:
           type: string
           description: Resident key requirement
-          example: required
+          example: preferred
           enum:
             - discouraged
             - preferred
@@ -2086,8 +2107,8 @@ components:
             - discouraged
       example:
         authenticatorAttachment: platform
-        requireResidentKey: false
-        residentKey: required
+        requireResidentKey: true
+        residentKey: preferred
         userVerification: Aspernatur quod qui rerum totam asperiores.
     CreationResult:
       type: object
@@ -2107,7 +2128,7 @@ components:
             bindings
 
             made by the authenticator.
-          example: Quis eum.
+          example: Ut dicta assumenda exercitationem.
         clientDataJSON:
           type: string
           description: >-
@@ -2167,7 +2188,6 @@ components:
 
             or an empty sequence if the information is unavailable.
           example:
-            - internal
             - internal
             - internal
       example:
@@ -2346,11 +2366,11 @@ components:
             desc:
               type: string
               description: Action description
-              example: Quae adipisci veritatis.
+              example: Quae aut consequuntur voluptatibus fugiat nobis cumque.
             label:
               type: string
               description: Human readable action label
-              example: Excepturi iste nulla tenetur.
+              example: Aut vel ducimus ratione quidem ut.
             name:
               type: string
               description: Next Action to be performed.
@@ -2364,8 +2384,8 @@ components:
                 - otp:verify
                 - external
           example:
-            desc: Laudantium voluptatem.
-            label: Ut ipsam enim illo.
+            desc: Nihil id ea temporibus.
+            label: Qui ea qui.
             name: passkey
           required:
             - name
@@ -2383,8 +2403,8 @@ components:
       description: Next Action to be performed.
       example:
         action:
-          desc: Eaque velit.
-          label: Mollitia adipisci earum velit.
+          desc: Nihil dolor aperiam corrupti.
+          label: Ut voluptatem quia aliquid non.
           name: passkey
         options:
           - label: primary@example.com
@@ -2402,9 +2422,16 @@ components:
           type: string
           description: Payload to be signed
           example: ak4BXFgauyDtsRvnXWfaTW1DyetX7fTViGY9DRQGQ+g=
-        trustInfo:
-          type: string
-          example: Fugiat deserunt officiis excepturi rerum.
+        trustItems:
+          type: object
+          description: TrustIDs provided with the request
+          example:
+            auth: DqjUIcwnq7edyyeMGCxWNqs1cNBrEjBXlB2mVxfja8s=
+            merchant: gpOLtpZWhxkKgwEJyYzB2ckXn9IXDID7jjiaYFYTfS4=
+            wallet: NlPsJDfILKo0nCxuu2lrv6q9SBqgKLvpIuqSI4izk9k=
+          additionalProperties:
+            type: string
+            example: Architecto alias repellat.
         user:
           $ref: '#/components/schemas/User'
       example:
@@ -2420,14 +2447,16 @@ components:
           screenHeight: 1080
           screenWidth: 1920
         payload: ak4BXFgauyDtsRvnXWfaTW1DyetX7fTViGY9DRQGQ+g=
-        trustInfo: Consectetur et ipsa.
+        trustItems:
+          auth: DqjUIcwnq7edyyeMGCxWNqs1cNBrEjBXlB2mVxfja8s=
+          merchant: gpOLtpZWhxkKgwEJyYzB2ckXn9IXDID7jjiaYFYTfS4=
+          wallet: NlPsJDfILKo0nCxuu2lrv6q9SBqgKLvpIuqSI4izk9k=
         user:
           displayName: System Administrator
           username: admin@example.com
           usernameType: email
       required:
         - user
-        - trustInfo
     MfaNext:
       type: object
       properties:
@@ -2541,19 +2570,19 @@ components:
         label:
           type: string
           description: Human readable label
-          example: Doloremque qui ea qui maiores.
+          example: Facilis ex eos quisquam ducimus.
         name:
           type: string
           description: Option name
-          example: Possimus quae aut consequuntur voluptatibus fugiat nobis.
+          example: Aut quos commodi inventore beatae hic.
         value:
           type: string
           description: Option value to be used in the next request
-          example: Id ea temporibus.
+          example: Voluptatem impedit quos dolor quis.
       example:
-        label: Nihil dolor aperiam corrupti.
-        name: Ut voluptatem quia aliquid non.
-        value: Aut eveniet nobis error id et.
+        label: Magnam in dolorem voluptas non.
+        name: Repudiandae nulla nihil nulla animi voluptatum.
+        value: Voluptate temporibus.
       required:
         - value
     MfaOtpRequestRequestBody:
@@ -2628,9 +2657,10 @@ components:
           publicKey: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
           publicKeyAlgorithm: -8
           transports:
-            - usb
-            - internal
-            - nfc
+            - ble
+            - cable
+            - hybrid
+            - cable
       required:
         - creationResult
     MfaThirdPartyAuthVerifyRequestBody:
@@ -2684,7 +2714,7 @@ components:
       example:
         aaguid: fbfc3007-154e-4ecc-8c0b-6e020557d7bd
         createdAt: 2023-06-15 13:29:41 EDT
-        credentialSynced: false
+        credentialSynced: true
         id: 861ee00b-b40d-493a-a10b-457a0d527b48
         lastUsedAt: '2025-01-02T16:40:44Z'
         lastUsedFromDevice:
@@ -2794,6 +2824,7 @@ components:
           example:
             - internal
             - internal
+            - internal
         type:
           type: string
           description: The valid credential types.
@@ -2805,8 +2836,7 @@ components:
         transports:
           - internal
           - internal
-          - internal
-        type: Architecto eum animi ut dicta assumenda.
+        type: Nulla tenetur temporibus quae adipisci.
       required:
         - type
         - id
@@ -2942,7 +2972,7 @@ components:
             generated,
 
             e.g., RSA or Elliptic Curve.
-          example: -35
+          example: -7
           enum:
             - -7
             - -35
@@ -2958,8 +2988,8 @@ components:
             - public-key
       description: Additional parameters when creating a new credential.
       example:
-        alg: -7
-        type: Architecto eum animi ut dicta assumenda.
+        alg: -35
+        type: Nulla tenetur temporibus quae adipisci.
     PublicKeyCredentialRequestOptions:
       type: object
       properties:
@@ -3115,9 +3145,10 @@ components:
           publicKey: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
           publicKeyAlgorithm: -8
           transports:
-            - usb
-            - internal
-            - nfc
+            - ble
+            - cable
+            - hybrid
+            - cable
         session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
       required:
         - session
@@ -3190,9 +3221,16 @@ components:
           $ref: '#/components/schemas/DeviceInfo'
         passkeyOptions:
           $ref: '#/components/schemas/PasskeyOptions'
-        trustInfo:
-          type: string
-          example: Eos voluptas nemo vero eum.
+        trustItems:
+          type: object
+          description: TrustIDs provided with the request
+          example:
+            auth: DqjUIcwnq7edyyeMGCxWNqs1cNBrEjBXlB2mVxfja8s=
+            merchant: gpOLtpZWhxkKgwEJyYzB2ckXn9IXDID7jjiaYFYTfS4=
+            wallet: NlPsJDfILKo0nCxuu2lrv6q9SBqgKLvpIuqSI4izk9k=
+          additionalProperties:
+            type: string
+            example: Quis harum cupiditate facilis aliquam earum.
         user:
           $ref: '#/components/schemas/User'
       example:
@@ -3211,7 +3249,10 @@ components:
           screenWidth: 1920
         passkeyOptions:
           conditionalCreate: false
-        trustInfo: Tenetur pariatur tempore.
+        trustItems:
+          auth: DqjUIcwnq7edyyeMGCxWNqs1cNBrEjBXlB2mVxfja8s=
+          merchant: gpOLtpZWhxkKgwEJyYzB2ckXn9IXDID7jjiaYFYTfS4=
+          wallet: NlPsJDfILKo0nCxuu2lrv6q9SBqgKLvpIuqSI4izk9k=
         user:
           displayName: System Administrator
           username: admin@example.com

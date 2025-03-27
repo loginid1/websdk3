@@ -8,7 +8,10 @@ import type { UserLogin } from './UserLogin';
 export type AuthInitRequestBody = {
     app: Application;
     deviceInfo: DeviceInfo;
-    trustInfo?: string;
+    /**
+     * TrustIDs provided with the request
+     */
+    trustItems?: Record<string, string>;
     user?: UserLogin;
 };
 
