@@ -432,6 +432,16 @@ export interface MfaBeginOptions {
    * ```
    */
   txPayload?: string;
+
+  // NOTE: This doc might need to be changed after
+  /**
+   * An identifier generated on the merchant side to identify the current checkout session.
+   * This identifier is used as a key to retrieve associated trust information.
+   *
+   * It is passed to the wallet to link the session with wallet-issued identity data,
+   * enabling secure transaction confirmation without revealing end-user identity to the merchant.
+   */
+  checkoutId?: string;
 }
 
 /**

@@ -14,6 +14,7 @@ import {
 } from "../lib/defaults";
 import { ApiError, Mfa, MfaBeginRequestBody, MfaNext } from "../../api";
 import { WebAuthnHelper } from "../../webauthn/webauthn-helper";
+import { CheckoutIdStore } from "../lib/store/checkout-id";
 import { LoginIDParamValidator } from "../lib/validators";
 import { DeviceStore } from "../lib/store/device-store";
 import { TrustStore } from "../lib/store/trust-store";
@@ -54,7 +55,15 @@ class MFA extends LoginIDBase {
     const opts = passkeyOptions(username, "", options);
 
     const trustStore = new TrustStore(appId);
-    const trustInfo = await trustStore.setOrSignWithTrustId(username);
+    const trustId = await trustStore.setOrSignWithTrustId(username);
+
+    // NOTE: This needs to be clarified
+    let walletTrustId = "";
+    if (options.txPayload) {
+      // NOTE: This needs to be clarified
+      const checkoutIdStore = new CheckoutIdStore();
+      walletTrustId = await checkoutIdStore.setCheckoutId();
+    }
 
     const mfaBeginRequestBody: MfaBeginRequestBody = {
       deviceInfo: deviceInfo,
@@ -64,7 +73,10 @@ class MFA extends LoginIDBase {
         displayName: opts.displayName,
       },
       trustItems: {
-        ...(trustInfo && { auth: trustInfo }),
+        ...(trustId && { auth: trustId }),
+        ...(walletTrustId && { wallet: walletTrustId }),
+        // NOTE: This needs to be clarified
+        ...(options.checkoutId && { merchant: options.checkoutId }),
       },
       ...(options.txPayload && { payload: options.txPayload }),
     };
