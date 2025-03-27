@@ -1,0 +1,26 @@
+{
+  "name": "@loginid/core",
+  "private": true,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "version": "0.0.1",
+  "description": "A private package that will share code across multiple SDKs",
+  "scripts": {
+    "build": "tsc --noEmit & tsup ./src/index.ts --no-config  --sourcemap --globalName=LoginID --format esm,cjs,iife --dts --minify",
+    "lint": "eslint \"src/**/*.ts?(x)\"",
+    "gen": "openapi --input ./openapi.yaml --output ./src/api --name LoginIDService --useOptions --useUnionTypes",
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
