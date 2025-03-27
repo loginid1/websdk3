@@ -11,6 +11,7 @@ import {
   getPasskeyCredential,
 } from "../loginid/lib/webauthn";
 import { AuthenticateWithPasskeysOptions, Transports } from "../loginid/types";
+import AbortControllerManager from "../abort-controller";
 import { bufferToBase64Url } from "../utils";
 
 export class WebAuthnHelper {
@@ -23,6 +24,15 @@ export class WebAuthnHelper {
     options: AuthenticateWithPasskeysOptions = {},
   ) {
     const { assertionOptions, session } = authInitResponseBody;
+
+    if (!options.abortController) {
+      AbortControllerManager.renewWebAuthnAbortController();
+      options.abortController = AbortControllerManager.abortController;
+    } else {
+      AbortControllerManager.assignWebAuthnAbortController(
+        options.abortController,
+      );
+    }
 
     const credential = await getPasskeyCredential(assertionOptions, options);
     const response = credential.response as AuthenticatorAssertionResponse;
@@ -50,6 +60,8 @@ export class WebAuthnHelper {
    */
   static async createNavigatorCredential(regInitResponseBody: RegInit) {
     const { registrationRequestOptions, session } = regInitResponseBody;
+
+    AbortControllerManager.renewWebAuthnAbortController();
 
     const credential = await createPasskeyCredential(
       registrationRequestOptions,

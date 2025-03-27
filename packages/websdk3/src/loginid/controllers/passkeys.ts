@@ -125,7 +125,7 @@ class Passkeys extends OTP {
         usernameType: opts.usernameType,
         displayName: opts.displayName,
       },
-      ...(trustInfo && { trustInfo: trustInfo }),
+      ...(trustInfo && { trustItems: { auth: trustInfo } }),
     };
 
     const regInitResponseBody = await this.service.reg.regRegInit({
@@ -216,7 +216,7 @@ class Passkeys extends OTP {
         username: username,
         usernameType: opts.usernameType,
       },
-      ...(trustInfo && { trustInfo: trustInfo }),
+      ...(trustInfo && { trustItems: { auth: trustInfo } }),
     };
 
     const authInitResponseBody = await this.service.auth.authAuthInit({

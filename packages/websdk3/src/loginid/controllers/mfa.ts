@@ -63,7 +63,9 @@ class MFA extends LoginIDBase {
         usernameType: opts.usernameType,
         displayName: opts.displayName,
       },
-      trustInfo: trustInfo,
+      trustItems: {
+        ...(trustInfo && { auth: trustInfo }),
+      },
       ...(options.txPayload && { payload: options.txPayload }),
     };
 

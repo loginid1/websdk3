@@ -10,7 +10,10 @@ export type MfaBeginRequestBody = {
      * Payload to be signed
      */
     payload?: string;
-    trustInfo: string;
+    /**
+     * TrustIDs provided with the request
+     */
+    trustItems?: Record<string, string>;
     user: User;
 };
 
