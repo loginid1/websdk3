@@ -1,7 +1,6 @@
 // Copyright (C) LoginID
 
 import { createMerchantCommunicatorHidden } from "../creators";
-import CheckoutIdStore from "../../lib/store/checkout-id";
 import { DiscoverStrategy } from "./types";
 import { DiscoverResult } from "../types";
 
@@ -17,11 +16,6 @@ export class CheckoutDiscoveryMerchant implements DiscoverStrategy {
   }
 
   async discover(): Promise<DiscoverResult> {
-    const checkoutId = CheckoutIdStore.getCheckoutId();
-    if (checkoutId) {
-      return { username: checkoutId, flow: "EMBEDDED_CONTEXT" };
-    }
-
     const { communicator, iframe } = createMerchantCommunicatorHidden(
       this.iframeUrl,
     );
@@ -31,11 +25,6 @@ export class CheckoutDiscoveryMerchant implements DiscoverStrategy {
 
     iframe.remove();
 
-    if (result.username) {
-      CheckoutIdStore.setCheckoutId(result.username);
-      return { username: result.username, flow: result.flow };
-    }
-
-    return { flow: "REDIRECT" };
+    return result;
   }
 }

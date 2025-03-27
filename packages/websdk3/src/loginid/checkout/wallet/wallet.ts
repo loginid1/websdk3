@@ -1,13 +1,12 @@
 // Copyright (C) LoginID
 
-import { LoginIDConfig, MfaFactorName, MfaSessionResult } from "../../types";
 import {
   CheckoutBeginFlowOptions,
   CheckoutPerformActionOptions,
 } from "../types";
+import { LoginIDConfig, MfaFactorName, MfaSessionResult } from "../../types";
 import { CheckoutDiscovery, DiscoverStrategy } from "../discovery";
-import CheckoutIdStore from "../../lib/store/checkout-id";
-import LoginIDConfigValidator from "../../lib/validators";
+import { CheckoutIdStore } from "../../lib/store/checkout-id";
 import { createWalletCommunicator } from "../creators";
 import { WalletCommunicator } from "../communicators";
 import LoginIDMfa from "../../mfa";
@@ -17,12 +16,13 @@ class LoginIDWalletAuth {
   private mfa: LoginIDMfa;
   private discovery: DiscoverStrategy;
   private communicator: WalletCommunicator;
+  private checkoutIdStore: CheckoutIdStore;
 
   constructor(config: LoginIDConfig) {
-    const val = new LoginIDConfigValidator(config);
     this.communicator = createWalletCommunicator();
-    this.discovery = new CheckoutDiscovery(val.getAppId());
+    this.discovery = new CheckoutDiscovery();
     this.mfa = new LoginIDMfa(config);
+    this.checkoutIdStore = new CheckoutIdStore();
   }
 
   async discover(): Promise<void> {
@@ -33,12 +33,9 @@ class LoginIDWalletAuth {
   async beginFlow(
     options: CheckoutBeginFlowOptions,
   ): Promise<MfaSessionResult> {
-    // NOTE: Do what we need to do before starting the MFA flow
-    const username = CheckoutIdStore.getCookieCheckoutId();
-    if (!options.username) {
-      options.username = username;
-    }
-
+    // NOTE: deal with the checkout ID here when we get more
+    const checkoutId = this.checkoutIdStore.setOrSignWithCheckoutId();
+    console.log(checkoutId);
     const opts = { txPayload: options.txPayload };
     return await this.mfa.beginFlow(options.username || "", opts);
   }
@@ -52,8 +49,6 @@ class LoginIDWalletAuth {
 
     // Make sure only one trsut ID is stored for checkout
     if ((result.payloadSignature || result.accessToken) && result.username) {
-      CheckoutIdStore.setCookieCheckoutId(result.username);
-
       const callback = async () => ({
         checkoutId: result.username,
       });

@@ -491,4 +491,19 @@ export interface TrustIDRecord {
   keyPair: CryptoKeyPair;
 }
 
+/**
+ * Represents a stored checkout ID record.
+ */
+export interface CheckoutIDRecord {
+  /**
+   * Unique identifier for the Trust ID, derived from the TrustID token.
+   */
+  id: string;
+
+  /**
+   * Cryptographic key pair used for signing and verification.
+   */
+  keyPair: CryptoKeyPair;
+}
+
 export { ApiError };

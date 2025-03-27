@@ -5,7 +5,6 @@ import {
   EmbeddedContextResult,
   StartCheckoutParams,
 } from "./types";
-import CheckoutIdStore from "../../lib/store/checkout-id";
 import { CheckoutDiscoveryMerchant } from "../discovery";
 import { createMerchantCommunicator } from "../creators";
 
@@ -30,10 +29,6 @@ class LoginIDMerchantCheckout {
       if (result.error) {
         await params.errorCallback?.(result.error);
         return;
-      }
-
-      if (result.checkoutId) {
-        CheckoutIdStore.setCheckoutId(result.checkoutId);
       }
 
       await params.successCallback?.(result.checkoutId || "");

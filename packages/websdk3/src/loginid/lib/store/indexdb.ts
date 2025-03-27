@@ -179,6 +179,56 @@ class IndexedDBWrapper {
   }
 
   /**
+   * Retrieves the first record from the object store.
+   * @protected
+   * @template T
+   * @returns {Promise<T>} A promise that resolves to the first record in the store.
+   */
+  protected async getFirstRecord<T>(): Promise<T> {
+    return new Promise<T>((resolve, reject) => {
+      const open = this.openDb();
+
+      open.onsuccess = () => {
+        const db = open.result;
+        const tx = db.transaction(this.storeKey, "readonly");
+        const store = tx.objectStore(this.storeKey);
+
+        const request = store.openCursor();
+
+        request.onsuccess = () => {
+          const cursor = request.result;
+          if (cursor) {
+            resolve(cursor.value);
+          } else {
+            reject(
+              new StorageError(
+                "No records found in the store.",
+                "ERROR_STORAGE_NOT_FOUND",
+              ),
+            );
+          }
+        };
+
+        request.onerror = () =>
+          reject(
+            new StorageError(
+              "Failed to fetch first record.",
+              "ERROR_STORAGE_FAILED",
+            ),
+          );
+      };
+
+      open.onerror = () =>
+        reject(
+          new StorageError(
+            "Failed to open the database.",
+            "ERROR_STORAGE_FAILED_TO_OPEN",
+          ),
+        );
+    });
+  }
+
+  /**
    * Inserts or updates a record in the object store.
    * @protected
    * @template T

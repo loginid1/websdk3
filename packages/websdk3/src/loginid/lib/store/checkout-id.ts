@@ -1,40 +1,111 @@
 // Copyright (C) LoginID
 
-import { getCookie, setCookie } from "../../../utils";
-import LocalStorageWrapper from "./local-storage";
+import {
+  exportPublicKeyJwk,
+  generateES256KeyPair,
+  generateRandomId,
+} from "../../../utils";
+import StorageError from "../../../errors/storage";
+import { CheckoutIDRecord } from "../../types";
+import { signJwtWithJwk } from "../tokens";
+import IndexedDBWrapper from "./indexdb";
 
-const key = "loginid_checkout-id";
-const cookieKey = "loginid_checkout_id";
+const dbVersion = 1;
+const dbName = "loginid-checkout-store";
+const trustStorageKey = `LoginID_checkout-id`;
+
 /**
- * Utility class to manage the Checkout ID in localStorage.
+ * CheckoutIdStore extends IndexedDBWrapper to manage checkout ID records.
  */
-export class CheckoutIdStore extends LocalStorageWrapper {
+export class CheckoutIdStore extends IndexedDBWrapper {
   /**
-   * Saves the checkout ID to localStorage.
-   *
-   * @param {string} checkoutId - The checkout ID to be stored.
+   * Creates an instance of CheckoutIdStore.
    */
-  public static setCheckoutId(checkoutId: string) {
-    this.setItem(key, checkoutId);
+  constructor() {
+    super(dbName, dbVersion, trustStorageKey);
   }
 
   /**
-   * Retrieves the checkout ID from localStorage.
-   *
-   * @returns {string} The stored checkout ID, or an empty string if not found.
+   * Generates a random checkout ID and stores it.
+   * @returns {Promise<string>} The signed checkout ID.
    */
-  public static getCheckoutId(): string {
-    return this.getItem(key) || "";
+  public async setCheckoutId(): Promise<string> {
+    const keyPair = await generateES256KeyPair();
+    const publicKey = await exportPublicKeyJwk(keyPair);
+    const token = { id: generateRandomId() };
+    const checkoutId = await signJwtWithJwk(
+      token,
+      publicKey,
+      keyPair.privateKey,
+    );
+
+    await this.putRecord({
+      id: token.id,
+      keyPair,
+    });
+
+    return checkoutId;
   }
 
-  public static setCookieCheckoutId(checkoutId: string) {
-    const cookie = `${cookieKey}=${checkoutId}; SameSite=None; Secure; Path=/; Max-Age=31536000`;
-    setCookie(cookie);
+  /**
+   * Retrieves the stored checkout ID if it exists.
+   * @returns {Promise<string | null>} The checkout ID or null if not found.
+   */
+  public async getCheckoutId(): Promise<string | null> {
+    try {
+      const record = await this.getFirstRecord<CheckoutIDRecord>();
+      const publicKey = await exportPublicKeyJwk(record.keyPair);
+      const token = { id: record.id };
+      const checkoutId = await signJwtWithJwk(
+        token,
+        publicKey,
+        record.keyPair.privateKey,
+      );
+      return checkoutId;
+    } catch (error) {
+      if (
+        error instanceof StorageError &&
+        error.code === "ERROR_STORAGE_NOT_FOUND"
+      ) {
+        return null;
+      }
+      throw error;
+    }
   }
 
-  public static getCookieCheckoutId(): string {
-    return getCookie(cookieKey) || "";
+  /**
+   * Creates a JWS using the stored checkout ID.
+   * @returns {Promise<string>} The signed checkout ID.
+   */
+  public async signWithCheckoutId(): Promise<string> {
+    // Its expected that there should one be one checkout ID record
+    const record = await this.getFirstRecord<CheckoutIDRecord>();
+    const publicKey = await exportPublicKeyJwk(record.keyPair);
+    const token = { id: record.id };
+    const trustId = await signJwtWithJwk(
+      token,
+      publicKey,
+      record.keyPair.privateKey,
+    );
+    return trustId;
+  }
+
+  /**
+   * Checks if a checkout ID exists. If it does, signs with it; otherwise, generates and stores a new checkout ID.
+   * @returns {Promise<string>} The signed checkout ID.
+   */
+  public async setOrSignWithCheckoutId(): Promise<string> {
+    try {
+      return await this.signWithCheckoutId();
+    } catch (error) {
+      if (
+        error instanceof StorageError &&
+        error.code === "ERROR_STORAGE_NOT_FOUND"
+      ) {
+        return await this.setCheckoutId();
+      }
+      console.log("IndexDB error: " + error);
+      return "";
+    }
   }
 }
-
-export default CheckoutIdStore;

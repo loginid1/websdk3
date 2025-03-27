@@ -1,7 +1,7 @@
 // Copyright (C) LoginID
 
 import { exportPublicKeyJwk, generateES256KeyPair } from "../../../utils";
-import { signWithTrustId, toTrustIDPayload } from "../tokens";
+import { signJwtWithJwk, toTrustIDPayload } from "../tokens";
 import StorageError from "../../../errors/storage";
 import { TrustIDRecord } from "../../types";
 import IndexedDBWrapper from "./indexdb";
@@ -42,7 +42,7 @@ export class TrustStore extends IndexedDBWrapper {
     const keyPair = await generateES256KeyPair();
     const publicKey = await exportPublicKeyJwk(keyPair);
     const token = toTrustIDPayload(this.appId, username);
-    const trustId = await signWithTrustId(token, publicKey, keyPair.privateKey);
+    const trustId = await signJwtWithJwk(token, publicKey, keyPair.privateKey);
 
     await this.putRecord({
       id: token.id,
@@ -66,7 +66,7 @@ export class TrustStore extends IndexedDBWrapper {
     );
     const publicKey = await exportPublicKeyJwk(record.keyPair);
     const token = toTrustIDPayload(this.appId, username, record.id);
-    const trustId = await signWithTrustId(
+    const trustId = await signJwtWithJwk(
       token,
       publicKey,
       record.keyPair.privateKey,

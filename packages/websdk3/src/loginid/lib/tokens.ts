@@ -34,14 +34,14 @@ const toTrustIDPayload = (
 };
 
 /**
- * Signs a Trust ID token using an ES256 private key.
- * @param {TrustIDClaims} payload - The payload to sign.
+ * Signs a token payload using an ES256 private key.
+ * @param {Record<string, any>} payload - The payload to sign.
  * @param {JsonWebKey} publicKeyJwk - The public key associated with the private key.
  * @param {CryptoKey} privateKey - The private key used for signing.
- * @returns {Promise<string>} The signed JWT Trust ID.
+ * @returns {Promise<string>} The signed JWT.
  */
-const signWithTrustId = async (
-  payload: TrustIDClaims,
+const signJwtWithJwk = async (
+  payload: Record<string, any>,
   publicKeyJwk: JsonWebKey,
   privateKey: CryptoKey,
 ): Promise<string> => {
@@ -58,4 +58,4 @@ const signWithTrustId = async (
   return `${unsignedToken}.${signature}`;
 };
 
-export { signWithTrustId, toTrustIDPayload };
+export { signJwtWithJwk, toTrustIDPayload };
