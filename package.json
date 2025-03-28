@@ -3,7 +3,9 @@
   "private": true,
   "type": "module",
   "workspaces": [
-    "packages/*"
+    "packages/websdk3",
+    "packages/core",
+    "packages/checkout"
   ],
   "license": "ISC",
   "lint-staged": {
@@ -42,6 +44,8 @@
     "build:websdk3": "npm run build --workspace=@loginid/websdk3",
     "lint:websdk3": "npm run lint --workspace=@loginid/websdk3",
     "test:websdk3": "npm run test --workspace=@loginid/websdk3",
-    "delete-maps:websdk3": "npm run delete-maps --workspace=@loginid/websdk3"
+    "delete-maps:websdk3": "npm run delete-maps --workspace=@loginid/websdk3",
+    "build:core": "npm run build --workspace=@loginid/core",
+    "test:core": "npm run test --workspace=@loginid/core"
   }
 }
