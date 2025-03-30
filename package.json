@@ -5,7 +5,9 @@
   "workspaces": [
     "packages/websdk3",
     "packages/core",
-    "packages/checkout"
+    "packages/checkout/commons",
+    "packages/checkout/merchant",
+    "packages/checkout/wallet"
   ],
   "license": "ISC",
   "lint-staged": {

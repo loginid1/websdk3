@@ -1,0 +1,23 @@
+{
+  "name": "@loginid/checkout-commons",
+  "private": true,
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "version": "0.0.1",
+  "description": "A private package that will share code across checkout SDKs",
+  "scripts": {
+    "build": "tsc --noEmit & tsup ./src/**/index.ts --no-config --sourcemap --format esm --dts --minify",
+    "lint": "eslint \"src/**/*.ts?(x)\"",
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

@@ -10,7 +10,9 @@ module.exports = {
   transformIgnorePatterns: ["/node_modules/"],
   projects: [
     "<rootDir>/packages/core",
-    "<rootDir>/packages/checkout",
     "<rootDir>/packages/websdk3",
+    "<rootDir>/packages/checkout/commons",
+    "<rootDir>/packages/checkout/merchant",
+    "<rootDir>/packages/checkout/wallet",
   ],
 };
