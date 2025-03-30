@@ -1,10 +1,7 @@
 // Copyright (C) LoginID
 
-import {
-  EmbeddedContextData,
-  EmbeddedContextResult,
-  StartCheckoutParams,
-} from "./types";
+import { EmbeddedContextResult, StartCheckoutParams } from "./types";
+import { EmbeddedContextData } from "@loginid/checkout-commons";
 import { CheckoutDiscoveryMerchant } from "../discovery";
 import { createMerchantCommunicator } from "../creators";
 import { CheckoutIdStore } from "@loginid/core/store";
@@ -18,13 +15,13 @@ class LoginIDMerchantCheckout {
   public static async startCheckout(
     params: StartCheckoutParams,
   ): Promise<void> {
+    const store = new CheckoutIdStore();
     const discovery = new CheckoutDiscoveryMerchant(params.iframe.src);
+
+    const checkoutId = await store.setOrSignWithCheckoutId();
     const discoveryResult = await discovery.discover();
 
     if (discoveryResult.flow === "EMBEDDED_CONTEXT") {
-      const store = new CheckoutIdStore();
-      const checkoutId = await store.setOrSignWithCheckoutId();
-
       const communicator = createMerchantCommunicator(params);
       const data = {
         txPayload: params.txPayload,

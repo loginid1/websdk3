@@ -9,12 +9,6 @@ export interface StartCheckoutParams {
   successCallback?: (checkoutContext: string) => Promise<void>;
 }
 
-export interface EmbeddedContextData {
-  txPayload: string;
-  username?: string;
-  checkoutId?: string;
-}
-
 export interface EmbeddedContextResult {
   checkoutCookie?: string;
   error?: string;

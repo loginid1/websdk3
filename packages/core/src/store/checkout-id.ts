@@ -13,7 +13,7 @@ import { StorageError } from "../errors";
 const dbVersion = 1;
 const checkoutIdDbName = "lid_c_cid";
 const checkoutIdStorageKey = "lid-cid-k";
-const walletTrustIdDbName = "lid_wtid";
+const walletTrustIdDbName = "lid_c_wtid";
 const walletTrustIdStorageKey = "lid-wtid-k";
 
 /**

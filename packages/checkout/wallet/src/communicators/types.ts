@@ -18,6 +18,17 @@ export interface SendDataOptions {
  */
 export interface WalletCommunicator {
   /**
+   * Retrieves any previously received data associated with the given communication type.
+   *
+   * @template T - The expected type of the retrieved data.
+   * @param {ReceiverType} type - The type of communication flow to retrieve data for
+   * (e.g., "REDIRECT", "DISCOVER").
+   * @returns {T | undefined} - The data associated with the given type, or `undefined`
+   * if no such data has been received.
+   */
+  retrievePotentialData<T>(type: ReceiverType): T | void;
+
+  /**
    * Registers a callback to handle incoming data of a specific type and send a response.
    *
    * @template T - The type of the incoming request data.

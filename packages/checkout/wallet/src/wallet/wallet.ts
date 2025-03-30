@@ -9,7 +9,7 @@ import {
   CheckoutBeginFlowOptions,
   CheckoutPerformActionOptions,
 } from "../types";
-import { DiscoverResult } from "@loginid/checkout-commons";
+import { DiscoverResult, EmbeddedContextData } from "@loginid/checkout-commons";
 import { createWalletCommunicator } from "../creators";
 import { WalletCommunicator } from "../communicators";
 import { CheckoutDiscovery } from "../discovery";
@@ -35,8 +35,12 @@ class LoginIDWalletAuth {
   async beginFlow(
     options: CheckoutBeginFlowOptions,
   ): Promise<MfaSessionResult> {
+    const eData =
+      this.communicator.retrievePotentialData<EmbeddedContextData>(
+        "EMBEDDED_CONTEXT",
+      );
     const opts = {
-      checkoutId: options.checkoutId,
+      checkoutId: options.checkoutId ?? eData?.checkoutId,
       txPayload: options.txPayload,
     };
     return await this.mfa.beginFlow(options.username || "", opts);

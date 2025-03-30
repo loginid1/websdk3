@@ -38,7 +38,7 @@ export class ChildMessages implements ChildMessagesAPI {
    * @private
    * @type {MessageEvent[]}
    */
-  private pendingRequests: MessageEvent[] = [];
+  private static pendingRequests: MessageEvent[] = [];
 
   /**
    * Creates an instance of ChildMessages.
@@ -80,7 +80,7 @@ export class ChildMessages implements ChildMessagesAPI {
     if (this.methods[method]) {
       this.processMessage(event);
     } else {
-      this.pendingRequests.push(event);
+      ChildMessages.pendingRequests.push(event);
       return;
     }
   }
@@ -92,8 +92,8 @@ export class ChildMessages implements ChildMessagesAPI {
    * @returns {Promise<void>}
    */
   public async processPendingRequests(): Promise<void> {
-    while (this.pendingRequests.length > 0) {
-      const event = this.pendingRequests.shift();
+    while (ChildMessages.pendingRequests.length > 0) {
+      const event = ChildMessages.pendingRequests.shift();
       if (event) {
         this.processMessage(event);
       }
@@ -142,5 +142,14 @@ export class ChildMessages implements ChildMessagesAPI {
    */
   public addMethod(name: IframeMethod, fn: AnyAsyncFunction) {
     this.methods[name] = fn;
+  }
+
+  /**
+   * Retrieves the list of pending message requests.
+   * @public
+   * @returns {MessageEvent[]} A shallow copy of the pending message events.
+   */
+  public getPendingRequests(): MessageEvent[] {
+    return [...ChildMessages.pendingRequests];
   }
 }

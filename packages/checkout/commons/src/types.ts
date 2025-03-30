@@ -77,3 +77,9 @@ export interface MessageData {
  * @type {string}
  */
 export type IframeMethod = "discover" | "sign_transaction";
+
+export interface EmbeddedContextData {
+  txPayload: string;
+  username?: string;
+  checkoutId?: string;
+}

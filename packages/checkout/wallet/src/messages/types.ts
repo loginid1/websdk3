@@ -22,6 +22,7 @@ export interface ChildMessagesAPI {
    *
    * @returns {Promise<void>} A promise that resolves when all pending requests have been processed.
    */
+
   processPendingRequests(): Promise<void>;
   /**
    * Adds a method to the collection of child methods.
@@ -31,4 +32,11 @@ export interface ChildMessagesAPI {
    * @param {AnyAsyncFunction} fn - The function to execute when the method is called.
    */
   addMethod(name: IframeMethod, fn: AnyAsyncFunction): void;
+
+  /**
+   * Retrieves the list of pending message requests.
+   *
+   * @returns {MessageEvent[]} A shallow copy of the pending message events.
+   */
+  getPendingRequests(): MessageEvent[];
 }

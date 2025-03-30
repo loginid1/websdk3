@@ -16,6 +16,7 @@ describe("ChildMessages", () => {
     mockPostMessage = jest.fn();
     childMessages = new ChildMessages(allowedOrigin);
     (verifyMessage as jest.Mock).mockReturnValue(true);
+    (ChildMessages as any).pendingRequests = [];
   });
 
   it("should process pending requests", async () => {
@@ -34,7 +35,7 @@ describe("ChildMessages", () => {
       source: { postMessage: mockPostMessage } as any,
     });
 
-    (childMessages as any).pendingRequests.push(event1, event2);
+    (ChildMessages as any).pendingRequests.push(event1, event2);
 
     await childMessages.processPendingRequests();
 
@@ -136,8 +137,8 @@ describe("ChildMessages", () => {
 
     (childMessages as any).handleMessage(event);
 
-    expect((childMessages as any).pendingRequests.length).toBe(1);
-    expect((childMessages as any).pendingRequests[0].data.method).toBe(
+    expect((ChildMessages as any).pendingRequests.length).toBe(1);
+    expect((ChildMessages as any).pendingRequests[0].data.method).toBe(
       "unregisteredMethod",
     );
   });
@@ -164,5 +165,22 @@ describe("ChildMessages", () => {
       },
       { targetOrigin: allowedOrigin },
     );
+  });
+
+  it("should return a shallow copy of the pending requests", () => {
+    const mockEvent = new MessageEvent("message", {
+      data: { id: "001", method: "testMethod", params: {} },
+      source: { postMessage: mockPostMessage } as any,
+    });
+
+    (ChildMessages as any).pendingRequests.push(mockEvent);
+
+    const pending = childMessages.getPendingRequests();
+
+    expect(pending).toHaveLength(1);
+    expect(pending[0]).toBe(mockEvent);
+
+    pending.pop();
+    expect((ChildMessages as any).pendingRequests).toHaveLength(1);
   });
 });

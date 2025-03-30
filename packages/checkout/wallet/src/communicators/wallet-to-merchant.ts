@@ -22,6 +22,31 @@ export class WalletToMerchant implements WalletCommunicator {
     this.childIframeApi = childIframeApi;
   }
 
+  public retrievePotentialData<T>(type: ReceiverType): T | void {
+    if (!isInIframe()) {
+      return;
+    }
+
+    switch (type) {
+      case "EMBEDDED_CONTEXT": {
+        const getPendingRequests = this.childIframeApi.getPendingRequests();
+
+        // Find the first message request
+        for (const request of getPendingRequests) {
+          const { type } = request.data;
+          if (type === "message") {
+            return request.data.params as T;
+          }
+        }
+
+        return;
+      }
+
+      default:
+        throw new Error(`Invalid receiver type: ${type}`);
+    }
+  }
+
   public sendData<T, U>(
     type: ReceiverType,
     callback: ResultCallback<T, U>,
