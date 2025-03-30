@@ -1,11 +1,7 @@
 // Copyright (C) LoginID
 
-import {
-  buildQueryParamsAndRedirect,
-  getQueryParams,
-  isInIframe,
-} from "../helpers";
 import { ReceiverType, SendDataOptions, WalletCommunicator } from "./types";
+import { buildQueryParamsAndRedirect, isInIframe } from "../helpers";
 import { ChildMessagesAPI } from "../messages";
 import { ResultCallback } from "../types";
 
@@ -28,12 +24,9 @@ export class WalletToMerchant implements WalletCommunicator {
     options: SendDataOptions,
   ): void {
     if (!isInIframe()) {
-      const params = getQueryParams();
-      const result = callback(params as T);
-
       const redirectUrl = options.redirectUrl;
       if (redirectUrl) {
-        buildQueryParamsAndRedirect(redirectUrl, result);
+        buildQueryParamsAndRedirect(redirectUrl, {});
       }
       return;
     }

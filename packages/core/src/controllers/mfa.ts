@@ -7,8 +7,13 @@ import {
   MfaPerformActionOptions,
   MfaSessionResult,
 } from "./types";
+import {
+  DeviceStore,
+  MfaStore,
+  TrustStore,
+  WalletTrustIdStore,
+} from "../store";
 import { mfaOptions, toMfaInfo, toMfaSessionDetails } from "../defaults";
-import { CheckoutIdStore, DeviceStore, MfaStore, TrustStore } from "../store";
 import { ApiError, Mfa, MfaBeginRequestBody, MfaNext } from "../api";
 import { LoginIDParamValidator } from "../validators";
 import { defaultDeviceInfo } from "../utils/browser";
@@ -50,12 +55,10 @@ export class MFA extends LoginIDBase {
     const trustStore = new TrustStore(appId);
     const trustId = await trustStore.setOrSignWithTrustId(username);
 
-    // NOTE: This needs to be clarified
     let walletTrustId = "";
     if (options.txPayload) {
-      // NOTE: This needs to be clarified
-      const checkoutIdStore = new CheckoutIdStore();
-      walletTrustId = await checkoutIdStore.setCheckoutId();
+      const store = new WalletTrustIdStore();
+      walletTrustId = await store.setOrSignWithCheckoutId();
     }
 
     const mfaBeginRequestBody: MfaBeginRequestBody = {

@@ -16,6 +16,7 @@ export class CheckoutDiscoveryMerchant implements DiscoverStrategy {
   }
 
   async discover(): Promise<DiscoverResult> {
+    // NOTE: check for checkout cookie here after
     const { communicator, iframe } = createMerchantCommunicatorHidden(
       this.iframeUrl,
     );

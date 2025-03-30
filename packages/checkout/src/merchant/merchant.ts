@@ -7,8 +7,14 @@ import {
 } from "./types";
 import { CheckoutDiscoveryMerchant } from "../discovery";
 import { createMerchantCommunicator } from "../creators";
+import { CheckoutIdStore } from "@loginid/core/store";
 
 class LoginIDMerchantCheckout {
+  public static async getCheckoutId(): Promise<string> {
+    const store = new CheckoutIdStore();
+    return await store.setOrSignWithCheckoutId();
+  }
+
   public static async startCheckout(
     params: StartCheckoutParams,
   ): Promise<void> {
@@ -31,7 +37,9 @@ class LoginIDMerchantCheckout {
         return;
       }
 
-      await params.successCallback?.(result.checkoutId || "");
+      // NOTE: set checkout cookie here after
+
+      await params.successCallback?.(result.checkoutCookie || "");
       return;
     }
 

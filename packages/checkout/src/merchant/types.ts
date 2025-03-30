@@ -6,7 +6,7 @@ export interface StartCheckoutParams {
   mountTarget: HTMLElement;
   fallbackCallback: () => Promise<void>;
   errorCallback?: (error: string) => Promise<void>;
-  successCallback?: (checkoutId: string) => Promise<void>;
+  successCallback?: (checkoutContext: string) => Promise<void>;
 }
 
 export interface EmbeddedContextData {
@@ -15,6 +15,6 @@ export interface EmbeddedContextData {
 }
 
 export interface EmbeddedContextResult {
-  checkoutId?: string;
+  checkoutCookie?: string;
   error?: string;
 }

@@ -11,23 +11,31 @@ import { CheckoutIDRecord } from "../types";
 import { StorageError } from "../errors";
 
 const dbVersion = 1;
-const dbName = "loginid-checkout-store";
-const trustStorageKey = `LoginID_checkout-id`;
+const checkoutIdDbName = "lid_c_cid";
+const checkoutIdStorageKey = "lid-cid-k";
+const walletTrustIdDbName = "lid_wtid";
+const walletTrustIdStorageKey = "lid-wtid-k";
 
 /**
- * CheckoutIdStore extends IndexedDBWrapper to manage checkout ID records.
+ * BaseCheckoutStore provides a common implementation for managing checkout ID records
+ * using IndexedDB. It handles generation, storage, retrieval, and signing of unique IDs.
  */
-export class CheckoutIdStore extends IndexedDBWrapper {
+export class BaseCheckoutStore extends IndexedDBWrapper {
   /**
-   * Creates an instance of CheckoutIdStore.
+   * Constructs a new BaseCheckoutStore instance.
+   *
+   * @param {string} dbName - The name of the IndexedDB database.
+   * @param {string} trustStorageKey - The key used for namespacing storage.
    */
-  constructor() {
+  constructor(dbName: string, trustStorageKey: string) {
     super(dbName, dbVersion, trustStorageKey);
   }
 
   /**
-   * Generates a random checkout ID and stores it.
-   * @returns {Promise<string>} The signed checkout ID.
+   * Generates a new random checkout ID, signs it using a newly created key pair,
+   * and stores the key pair in IndexedDB.
+   *
+   * @returns {Promise<string>} A signed checkout ID (JWS).
    */
   public async setCheckoutId(): Promise<string> {
     const keyPair = await generateES256KeyPair();
@@ -48,8 +56,9 @@ export class CheckoutIdStore extends IndexedDBWrapper {
   }
 
   /**
-   * Retrieves the stored checkout ID if it exists.
-   * @returns {Promise<string | null>} The checkout ID or null if not found.
+   * Retrieves the first checkout ID from storage, if available, and returns a signed version of it.
+   *
+   * @returns {Promise<string | null>} The signed checkout ID or null if no ID is found.
    */
   public async getCheckoutId(): Promise<string | null> {
     try {
@@ -74,11 +83,12 @@ export class CheckoutIdStore extends IndexedDBWrapper {
   }
 
   /**
-   * Creates a JWS using the stored checkout ID.
-   * @returns {Promise<string>} The signed checkout ID.
+   * Signs a new token using the stored key pair and checkout ID.
+   *
+   * @returns {Promise<string>} A signed token (JWS) representing the checkout ID.
+   * @throws {StorageError} If no checkout ID is found in storage.
    */
   public async signWithCheckoutId(): Promise<string> {
-    // Its expected that there should one be one checkout ID record
     const record = await this.getFirstRecord<CheckoutIDRecord>();
     const publicKey = await exportPublicKeyJwk(record.keyPair);
     const token = { id: record.id };
@@ -91,8 +101,10 @@ export class CheckoutIdStore extends IndexedDBWrapper {
   }
 
   /**
-   * Checks if a checkout ID exists. If it does, signs with it; otherwise, generates and stores a new checkout ID.
-   * @returns {Promise<string>} The signed checkout ID.
+   * Checks for the existence of a checkout ID and signs with it if available;
+   * otherwise, generates a new one and returns the signed value.
+   *
+   * @returns {Promise<string>} The signed checkout ID (JWS).
    */
   public async setOrSignWithCheckoutId(): Promise<string> {
     try {
@@ -107,5 +119,31 @@ export class CheckoutIdStore extends IndexedDBWrapper {
       console.log("IndexDB error: " + error);
       return "";
     }
+  }
+}
+
+/**
+ * CheckoutIdStore is a concrete implementation of BaseCheckoutStore
+ * specifically for managing checkout ID records.
+ */
+export class CheckoutIdStore extends BaseCheckoutStore {
+  /**
+   * Constructs a new CheckoutIdStore instance using predefined DB and key values.
+   */
+  constructor() {
+    super(checkoutIdDbName, checkoutIdStorageKey);
+  }
+}
+
+/**
+ * WalletTrustIdStore is a concrete implementation of BaseCheckoutStore
+ * specifically for managing wallet trust ID records.
+ */
+export class WalletTrustIdStore extends BaseCheckoutStore {
+  /**
+   * Constructs a new WalletTrustIdStore instance using predefined DB and key values.
+   */
+  constructor() {
+    super(walletTrustIdDbName, walletTrustIdStorageKey);
   }
 }
