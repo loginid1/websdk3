@@ -12,6 +12,7 @@ export interface StartCheckoutParams {
 export interface EmbeddedContextData {
   txPayload: string;
   username?: string;
+  checkoutId?: string;
 }
 
 export interface EmbeddedContextResult {

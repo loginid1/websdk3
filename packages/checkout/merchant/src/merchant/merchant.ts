@@ -22,10 +22,13 @@ class LoginIDMerchantCheckout {
     const discoveryResult = await discovery.discover();
 
     if (discoveryResult.flow === "EMBEDDED_CONTEXT") {
+      const store = new CheckoutIdStore();
+      const checkoutId = await store.setOrSignWithCheckoutId();
+
       const communicator = createMerchantCommunicator(params);
       const data = {
         txPayload: params.txPayload,
-        username: discoveryResult.username,
+        checkoutId: checkoutId,
       };
       const result = await communicator.receiveData<
         EmbeddedContextData,

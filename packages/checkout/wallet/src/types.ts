@@ -20,6 +20,7 @@ export interface CheckoutBeginFlowOptions {
    * enabling secure transaction confirmation without revealing end-user identity to the merchant.
    */
   checkoutId?: string;
+  username?: string;
 }
 
 export interface CheckoutPerformActionOptions {

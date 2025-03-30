@@ -9,6 +9,7 @@ import {
   CheckoutBeginFlowOptions,
   CheckoutPerformActionOptions,
 } from "../types";
+import { DiscoverResult } from "@loginid/checkout-commons";
 import { createWalletCommunicator } from "../creators";
 import { WalletCommunicator } from "../communicators";
 import { CheckoutDiscovery } from "../discovery";
@@ -24,10 +25,11 @@ class LoginIDWalletAuth {
     this.mfa = new LoginIDMfa(config);
   }
 
-  async discover(): Promise<void> {
+  async discover(): Promise<DiscoverResult> {
     const discovery = new CheckoutDiscovery();
     const result = await discovery.discover();
     this.communicator.sendData("DISCOVER", async () => result);
+    return result;
   }
 
   async beginFlow(
@@ -37,7 +39,7 @@ class LoginIDWalletAuth {
       checkoutId: options.checkoutId,
       txPayload: options.txPayload,
     };
-    return await this.mfa.beginFlow("", opts);
+    return await this.mfa.beginFlow(options.username || "", opts);
   }
 
   async performAction(
