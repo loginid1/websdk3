@@ -8,4 +8,9 @@ module.exports = {
     "^.+\\.ts?$": "ts-jest",
   },
   transformIgnorePatterns: ["/node_modules/"],
+  projects: [
+    "<rootDir>/packages/core",
+    "<rootDir>/packages/checkout",
+    "<rootDir>/packages/websdk3",
+  ],
 };

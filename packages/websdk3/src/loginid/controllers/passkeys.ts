@@ -6,7 +6,6 @@ import type {
   AuthResult,
   ConfirmTransactionOptions,
   CreatePasskeyOptions,
-  LoginIDConfig,
   Otp,
   RequestOtpOptions,
 } from "../types";
@@ -18,19 +17,18 @@ import {
   TxComplete,
   TxCompleteRequestBody,
   TxInitRequestBody,
-} from "../../api";
+} from "@loginid/core/api";
 import {
   confirmTransactionOptions,
   passkeyOptions,
   toAuthResult,
 } from "../lib/defaults";
-import { WebAuthnHelper } from "../../webauthn/webauthn-helper";
-import { DeviceStore } from "../lib/store/device-store";
-import { NO_LOGIN_OPTIONS_ERROR } from "../lib/errors";
-import { TrustStore } from "../lib/store/trust-store";
+import { NO_LOGIN_OPTIONS_ERROR, WebAuthnHelper } from "@loginid/core/webauthn";
+import { defaultDeviceInfo } from "@loginid/core/utils/browser";
+import { DeviceStore, TrustStore } from "@loginid/core/store";
+import { LoginIDConfig } from "@loginid/core/controllers";
+import { parseJwt } from "@loginid/core/utils/crypto";
 import { mergeFallbackOptions } from "../lib/utils";
-import { defaultDeviceInfo } from "../../browser";
-import { parseJwt } from "../../utils";
 import OTP from "./otp";
 
 /**

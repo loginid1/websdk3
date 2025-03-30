@@ -5,7 +5,7 @@ import { StorageErrorCode } from "./types";
 /**
  * Error class for storage related errors.
  */
-class StorageError extends Error {
+export class StorageError extends Error {
   /**
    * The error code.
    *
@@ -26,5 +26,3 @@ class StorageError extends Error {
     this.code = code;
   }
 }
-
-export default StorageError;

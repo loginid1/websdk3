@@ -5,7 +5,7 @@ import { PasskeyErrorCode } from "./types";
 /**
  * Error class for passkey-related errors.
  */
-class PasskeyError extends Error {
+export class PasskeyError extends Error {
   public readonly code: PasskeyErrorCode;
 
   /**
@@ -20,5 +20,3 @@ class PasskeyError extends Error {
     this.cause = originalError;
   }
 }
-
-export default PasskeyError;

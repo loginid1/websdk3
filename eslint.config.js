@@ -12,7 +12,7 @@ export default tseslint.config(
     plugins: {
       headers,
     },
-    ignores: ["packages/websdk3/src/api/**"],
+    ignores: ["packages/core/src/api"],
     rules: {
       "@typescript-eslint/no-explicit-any": "off",
       "headers/header-format": [
@@ -27,7 +27,7 @@ export default tseslint.config(
     },
   },
   {
-    files: ["packages/websdk3/**/*.{ts,tsx}"],
+    files: ["packages/websdk3/**/*.{ts,tsx}", "packages/core/**/*.{ts,tsx}"],
     rules: {
       "@typescript-eslint/no-unsafe-declaration-merging": "off",
       "@typescript-eslint/no-empty-object-type": "off",
