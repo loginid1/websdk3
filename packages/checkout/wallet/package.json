@@ -43,7 +43,7 @@
     "wallet"
   ],
   "dependencies": {
-    "@loginid/core": "^0.0.1",
-    "@loginid/checkout-commons": "^0.0.1"
+    "@loginid/core": "*",
+    "@loginid/checkout-commons": "*"
   }
 }
