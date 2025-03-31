@@ -10,10 +10,26 @@ import { createMerchantCommunicatorHidden } from "../creators";
 export class CheckoutDiscoveryMerchant implements DiscoverStrategy {
   private readonly iframeUrl: string;
 
+  /**
+   * Initializes a new instance of the discovery class for merchant-side use.
+   *
+   * @param {string} iframeUrl - The URL to the hosted wallet page used for hidden discovery.
+   */
   constructor(iframeUrl: string) {
     this.iframeUrl = iframeUrl;
   }
 
+  /**
+   * Performs discovery by embedding a hidden iframe and requesting context from the wallet.
+   *
+   * The wallet responds with a `DiscoverResult`, which includes:
+   * - `flow`: Whether to continue with an `"EMBEDDED_CONTEXT"` or switch to `"REDIRECT"`.
+   *
+   * After the discovery request completes, the hidden iframe is removed from the DOM.
+   *
+   * @returns {Promise<DiscoverResult>} A promise resolving to wallet-side discovery info,
+   * used to determine how to proceed with the authentication flow.
+   */
   async discover(): Promise<DiscoverResult> {
     // NOTE: check for checkout cookie here after
     const { communicator, iframe } = createMerchantCommunicatorHidden(

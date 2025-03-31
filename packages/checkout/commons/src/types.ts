@@ -1,7 +1,17 @@
 // Copyright (C) LoginID
 
+/**
+ * Represents the communication flow type used during checkout.
+ *
+ * - `"REDIRECT"`: Indicates that the wallet should be opened in a new tab or window via full-page redirect.
+ * - `"EMBEDDED_CONTEXT"`: Indicates that the wallet is loaded in an iframe embedded on the merchant's page.
+ */
 export type Flow = "REDIRECT" | "EMBEDDED_CONTEXT";
 
+/**
+ * The result of a discovery call from the wallet, used by the merchant to determine
+ * how to proceed with the checkout authentication flow.
+ */
 export interface DiscoverResult {
   username?: string;
   flow: Flow;
@@ -78,8 +88,25 @@ export interface MessageData {
  */
 export type IframeMethod = "discover" | "sign_transaction";
 
+/**
+ * Data sent from the merchant to the wallet when initiating an embedded checkout session.
+ * This provides the necessary context for the wallet to begin authentication.
+ */
 export interface EmbeddedContextData {
+  /**
+   * A stringified transaction payload representing the purchase or action being authorized.
+   * This is signed as part of the wallet's MFA process to ensure integrity.
+   */
   txPayload: string;
+
+  /**
+   * The end user's username, if already known or linked to the checkout session.
+   * Optional—can be auto-filled by the wallet in some cases.
+   */
   username?: string;
+
+  /**
+   * The unique identifier for the current checkout session, used for tracking and trust-linking.
+   */
   checkoutId?: string;
 }

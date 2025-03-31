@@ -12,12 +12,3 @@ export type Resolve<T> = (value: T | PromiseLike<T>) => void;
  * @param {any} [reason] - The reason for rejecting the promise.
  */
 export type Reject = (reason?: any) => void;
-
-//export type ResultCallback<T, U> = (param: T) => Promise<U>;
-
-export type Flow = "REDIRECT" | "EMBEDDED_CONTEXT";
-
-export interface DiscoverResult {
-  username?: string;
-  flow: Flow;
-}

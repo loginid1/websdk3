@@ -2,6 +2,12 @@
 
 import { MESSAGES_CHANNEL } from "./constants";
 
+/**
+ * Builds a URL with query parameters and redirects the browser to it.
+ *
+ * @param {string} url - The base URL to redirect to (e.g., the wallet's entry point).
+ * @param {Record<string, any>} params - An object representing query parameters to append to the URL.
+ */
 export const buildQueryParamsAndRedirect = (
   url: string,
   params: Record<string, any>,
