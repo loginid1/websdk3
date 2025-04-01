@@ -42,10 +42,11 @@ install:
 build-websdk:
   stage: build
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-      when: never
-    - changes:
-        - packages/websdk3/src/**
+    # - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    #   when: never
+    # - changes:
+    #     - packages/websdk3/src/**
+    - when: always
   script:
     - npm run build:websdk3
     - npm run delete-maps:websdk3
