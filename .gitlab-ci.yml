@@ -34,7 +34,7 @@ install:
 .aws-deploy: &aws-deploy
   - |
     echo "Upload index.global.js to ${S3_BUCKET} S3 bucket"
-    aws s3 cp ./packages/websdk3/dist/index.global.js s3://$S3_BUCKET
+    aws s3 sync ./packages/websdk3/dist/index.global.js s3://$S3_BUCKET --delete
 
     echo "Invalidate ${CF_DISTRIBUTION_ID} CDN cache"
     aws cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/*"
