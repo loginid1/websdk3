@@ -113,10 +113,7 @@ class LoginIDWalletAuth {
     options: CheckoutPerformActionOptions = {},
   ): Promise<MfaSessionResult> {
     const result = await this.mfa.performAction(factorName, options);
-    // NOTE: Do what we need to do after performing the MFA action
-
-    // Make sure only one trsut ID is stored for checkout
-    if ((result.payloadSignature || result.accessToken) && result.username) {
+    if (result.payloadSignature || result.accessToken) {
       const callback = async () => ({
         checkoutCookie: result.username,
       });

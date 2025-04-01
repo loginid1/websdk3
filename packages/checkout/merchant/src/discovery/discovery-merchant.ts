@@ -1,7 +1,12 @@
 // Copyright (C) LoginID
 
-import { DiscoverResult, DiscoverStrategy } from "@loginid/checkout-commons";
+import {
+  DiscoverResult,
+  DiscoverStrategy,
+  LID_CHECKOUT_KEY,
+} from "@loginid/checkout-commons";
 import { createMerchantCommunicatorHidden } from "../creators";
+import { LocalStorageFlagger } from "@loginid/core/store";
 
 /**
  * Class responsible for inituating discovering user and authentication contexts on merchant side.
@@ -31,7 +36,11 @@ export class CheckoutDiscoveryMerchant implements DiscoverStrategy {
    * used to determine how to proceed with the authentication flow.
    */
   async discover(): Promise<DiscoverResult> {
-    // NOTE: check for checkout cookie here after
+    const hasHadEmbedded = LocalStorageFlagger.isStamped(LID_CHECKOUT_KEY);
+    if (hasHadEmbedded) {
+      return { flow: "EMBEDDED_CONTEXT" };
+    }
+
     const { communicator, iframe } = createMerchantCommunicatorHidden(
       this.iframeUrl,
     );

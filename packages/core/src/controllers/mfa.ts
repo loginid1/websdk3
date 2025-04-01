@@ -52,13 +52,16 @@ export class MFA extends LoginIDBase {
     const deviceInfo = defaultDeviceInfo(deviceId);
     const opts = mfaOptions(username, options);
 
-    const trustStore = new TrustStore(appId);
-    const trustId = await trustStore.setOrSignWithTrustId(username);
-
     let walletTrustId = "";
     if (options.txPayload) {
       const store = new WalletTrustIdStore();
       walletTrustId = await store.setOrSignWithCheckoutId();
+    }
+
+    let trustId = "";
+    if (!options.checkoutId && !walletTrustId) {
+      const store = new TrustStore(appId);
+      trustId = await store.setOrSignWithTrustId(username);
     }
 
     const mfaBeginRequestBody: MfaBeginRequestBody = {
@@ -71,7 +74,6 @@ export class MFA extends LoginIDBase {
       trustItems: {
         ...(trustId && { auth: trustId }),
         ...(walletTrustId && { wallet: walletTrustId }),
-        // NOTE: This needs to be clarified
         ...(options.checkoutId && { merchant: options.checkoutId }),
       },
       ...(options.txPayload && { payload: options.txPayload }),

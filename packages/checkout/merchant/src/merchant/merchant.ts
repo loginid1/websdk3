@@ -1,10 +1,13 @@
 // Copyright (C) LoginID
 
+import {
+  EmbeddedContextData,
+  LID_CHECKOUT_KEY,
+} from "@loginid/checkout-commons";
+import { CheckoutIdStore, LocalStorageFlagger } from "@loginid/core/store";
 import { EmbeddedContextResult, StartCheckoutParams } from "./types";
-import { EmbeddedContextData } from "@loginid/checkout-commons";
 import { CheckoutDiscoveryMerchant } from "../discovery";
 import { createMerchantCommunicator } from "../creators";
-import { CheckoutIdStore } from "@loginid/core/store";
 
 /**
  * Facilitates the integration of LoginID's checkout authentication flow on the merchant side.
@@ -67,7 +70,7 @@ class LoginIDMerchantCheckout {
         return;
       }
 
-      // NOTE: set checkout cookie here after
+      LocalStorageFlagger.stamp(LID_CHECKOUT_KEY);
 
       await params.successCallback?.(result.checkoutCookie || "");
       return;
