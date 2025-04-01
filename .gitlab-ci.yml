@@ -7,7 +7,7 @@ include:
 stages:
   - install
   - build
-#  - test
+  - test
   - release
 
 install:
