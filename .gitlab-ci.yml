@@ -34,9 +34,9 @@ install:
 .aws-deploy: &aws-deploy
   - |
     echo "Upload index.global.js to ${S3_BUCKET} S3 bucket"
-    aws s3 cp ./packages/websdk3/dist/index.global.js s3://$S3_BUCKET
+    aws s3 cp ./packages/websdk3/dist/index.global.js s3://$S3_BUCKET/sdk/js/$CI_COMMIT_TAG/index.global.js
 
-    echo "Invalidate ${CF_DISTRIBUTION_ID} CDN cache"
+    echo "Invalidate ${CF_DISTRIBUTION_ID} CloudFront distribution cache"
     aws cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/*"
 
 build-websdk:
@@ -123,11 +123,5 @@ deploy-cloudfront-s3-bucket:
   script:
     - *aws-deploy
   rules:
-    # - if: $CI_PIPELINE_SOURCE == "pipeline" 
-    #   when: never
-    # - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-    #   when: never
-    # - if: '$CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH'
-    #   when: never
-    # - when: always
-    - when: manual
+    - if: $CI_COMMIT_TAG
+      when: manual
