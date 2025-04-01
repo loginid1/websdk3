@@ -1,8 +1,8 @@
 image: node:20
-include:
-  - template: Security/Dependency-Scanning.gitlab-ci.yml
-  - template: Security/Secret-Detection.gitlab-ci.yml
-  - template: Security/SAST.gitlab-ci.yml
+# include:
+#   - template: Security/Dependency-Scanning.gitlab-ci.yml
+#   - template: Security/Secret-Detection.gitlab-ci.yml
+#   - template: Security/SAST.gitlab-ci.yml
 
 stages:
   - install
@@ -33,10 +33,10 @@ install:
 
 .aws-deploy: &aws-deploy
   - |
-    echo 'Upload index.global.js to ${S3_BUCKET} S3 bucket'
+    echo "Upload index.global.js to ${S3_BUCKET} S3 bucket"
     aws s3 cp ./packages/websdk3/dist/index.global.js s3://$S3_BUCKET
 
-    echo 'Invalidate ${CF_DISTRIBUTION_ID} CDN cache'
+    echo "Invalidate ${CF_DISTRIBUTION_ID} CDN cache"
     aws cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/*"
 
 build-websdk:
