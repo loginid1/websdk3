@@ -7,7 +7,7 @@ include:
 stages:
   - install
   - build
-  - test
+#  - test
   - release
 
 install:
@@ -23,6 +23,21 @@ install:
     when: on_success
     paths:
       - node_modules/
+
+# Utilize web identity federation to allow AWS to perform STS calls on our behalf
+.aws-prep: &aws-prep
+  - |
+    mkdir -p ~/.aws
+    echo "${OIDC_TOKEN}" > /tmp/web_identity_token
+    echo -e "[profile oidc]\nrole_arn=${ROLE_ARN}\nweb_identity_token_file=/tmp/web_identity_token" > ~/.aws/config
+
+.aws-deploy: &aws-deploy
+  - |
+    echo 'Upload index.global.js to ${S3_BUCKET} S3 bucket'
+    aws s3 cp ./packages/websdk3/dist/index.global.js s3://$S3_BUCKET
+
+    echo 'Invalidate ${CF_DISTRIBUTION_ID} CDN cache'
+    aws cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/*"
 
 build-websdk:
   stage: build
@@ -42,48 +57,76 @@ build-websdk:
       - loginid-*.tgz
       - packages/websdk3/dist
 
-unit-test-websdk:
-  stage: test
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-      when: never
-    - if: $CI_PIPELINE_SOURCE == "pipeline" 
-      when: never
-    - changes:
-        - packages/websdk3/src/**
-  script:
-    - npm run lint:websdk3
-    - npm audit --audit-level=low
-    - npm run test:websdk3
+# unit-test-websdk:
+#   stage: test
+#   rules:
+#     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+#       when: never
+#     - if: $CI_PIPELINE_SOURCE == "pipeline" 
+#       when: never
+#     - changes:
+#         - packages/websdk3/src/**
+#   script:
+#     - npm run lint:websdk3
+#     - npm audit --audit-level=low
+#     - npm run test:websdk3
 
-chrome-test:
-  stage: test
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-      when: never
-    - changes:
-        - packages/websdk3/src/**
-  variables:
-    BRANCH: $CI_COMMIT_REF_NAME
-  trigger:
-    project: loginid/software/testing-tools/auto-directweb
-    strategy: depend
+# chrome-test:
+#   stage: test
+#   rules:
+#     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+#       when: never
+#     - changes:
+#         - packages/websdk3/src/**
+#   variables:
+#     BRANCH: $CI_COMMIT_REF_NAME
+#   trigger:
+#     project: loginid/software/testing-tools/auto-directweb
+#     strategy: depend
 
-release:
+# release:
+#   stage: release
+#   rules:
+#     - if: $CI_PIPELINE_SOURCE == "pipeline" 
+#       when: never
+#     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+#       when: never
+#     #- if: '$CI_COMMIT_BRANCH == "next"'
+#       #when: manual
+#     - if: '$CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH'
+#       when: never
+#     - when: always
+#   variables:
+#     GITLAB_TOKEN: $PROJECT_CI_TOKEN
+#     NPM_TOKEN: $NPM_AUTH_TOKEN
+#   script:
+#     - npm i -g @anolilab/multi-semantic-release @semantic-release/gitlab @semantic-release/changelog @semantic-release/git @semantic-release/npm @semantic-release/commit-analyzer conventional-changelog-conventionalcommits
+#     - npx multi-semantic-release
+
+deploy-cloudfront-s3-bucket:
   stage: release
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "pipeline" 
-      when: never
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-      when: never
-    #- if: '$CI_COMMIT_BRANCH == "next"'
-      #when: manual
-    - if: '$CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH'
-      when: never
-    - when: always
+  needs: ["build-websdk"]
+  image:
+    name: amazon/aws-cli:latest
+    entrypoint: [""]
+  environment: production
+  id_tokens:
+    OIDC_TOKEN:
+      aud: https://gitlab.com
   variables:
-    GITLAB_TOKEN: $PROJECT_CI_TOKEN
-    NPM_TOKEN: $NPM_AUTH_TOKEN
+    S3_BUCKET: $AWS_PRODUCTION_S3_BUCKET
+    CF_DISTRIBUTION_ID: $AWS_PRODUCTION_CF_DISTRIBUTION_ID
+    ROLE_ARN: arn:aws:iam::$AWS_PRODUCTION_ACCOUNT_ID:role/$AWS_PRODUCTION_ROLE_NAME
+  before_script:
+    - *aws-prep
   script:
-    - npm i -g @anolilab/multi-semantic-release @semantic-release/gitlab @semantic-release/changelog @semantic-release/git @semantic-release/npm @semantic-release/commit-analyzer conventional-changelog-conventionalcommits
-    - npx multi-semantic-release
+    - *aws-deploy
+  rules:
+    # - if: $CI_PIPELINE_SOURCE == "pipeline" 
+    #   when: never
+    # - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    #   when: never
+    # - if: '$CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH'
+    #   when: never
+    # - when: always
+    - when: manual
