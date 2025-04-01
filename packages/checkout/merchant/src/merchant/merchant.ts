@@ -70,7 +70,7 @@ class LoginIDMerchantCheckout {
         return;
       }
 
-      LocalStorageFlagger.stamp(LID_CHECKOUT_KEY);
+      LocalStorageFlagger.stampWithRandomUUID(LID_CHECKOUT_KEY);
 
       await params.successCallback?.(result.checkoutCookie || "");
       return;
