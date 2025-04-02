@@ -106,7 +106,6 @@ build-websdk:
 
 deploy-cloudfront-s3-bucket:
   stage: release
-  needs: ["build-websdk"]
   image:
     name: amazon/aws-cli:latest
     entrypoint: [""]
