@@ -49,6 +49,19 @@
     "test:websdk3": "npm run test --workspace=@loginid/websdk3",
     "delete-maps:websdk3": "npm run delete-maps --workspace=@loginid/websdk3",
     "build:core": "npm run build --workspace=@loginid/core",
-    "test:core": "npm run test --workspace=@loginid/core"
+    "lint:core": "npm run lint --workspace=@loginid/core",
+    "test:core": "npm run test --workspace=@loginid/core",
+    "delete-maps:core": "npm run delete-maps --workspace=@loginid/core",
+    "build:checkout-commons": "npm run build --workspace=@loginid/checkout-commons",
+    "lint:checkout-commons": "npm run lint --workspace=@loginid/checkout-commons",
+    "test:checkout-commons": "npm run test --workspace=@loginid/checkout-commons",
+    "build:checkout-merchant": "npm run build --workspace=@loginid/checkout-merchant",
+    "lint:checkout-merchant": "npm run lint --workspace=@loginid/checkout-merchant",
+    "test:checkout-merchant": "npm run test --workspace=@loginid/checkout-merchant",
+    "delete-maps:checkout-merchant": "npm run delete-maps --workspace=@loginid/checkout-merchant",
+    "build:checkout-wallet": "npm run build --workspace=@loginid/checkout-wallet",
+    "lint:checkout-wallet": "npm run lint --workspace=@loginid/checkout-wallet",
+    "test:checkout-wallet": "npm run test --workspace=@loginid/checkout-wallet",
+    "delete-maps:checkout-wallet": "npm run delete-maps --workspace=@loginid/checkout-wallet"
   }
 }
