@@ -10,5 +10,6 @@ This package includes:
 
 ## Internal Package
 
+
 This is an _internal package_ to the [LoginID SDK monorepo](https://gitlab.com/loginid/software/sdks/loginid-websdk3).  
 It is not intended for direct external use.
