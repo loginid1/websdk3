@@ -29,6 +29,7 @@ build:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       when: never
+    - when: always
   script:
     - npm run build:core
     - npm run delete-maps:core
