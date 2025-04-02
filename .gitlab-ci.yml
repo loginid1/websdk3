@@ -33,6 +33,8 @@ build-websdk:
   script:
     - npm run build:core
     - npm run delete-maps:core
+    # Note this is needed for e2e tests
+    - npm pack --workspace=@loginid/core
 
     - npm run build:websdk3
     - npm run delete-maps:websdk3
