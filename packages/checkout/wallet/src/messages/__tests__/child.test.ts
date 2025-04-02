@@ -167,20 +167,50 @@ describe("ChildMessages", () => {
     );
   });
 
-  it("should return a shallow copy of the pending requests", () => {
+  it("should return a shallow copy immediately if pending requests exist", async () => {
     const mockEvent = new MessageEvent("message", {
       data: { id: "001", method: "testMethod", params: {} },
-      source: { postMessage: mockPostMessage } as any,
+      source: { postMessage: jest.fn() } as any,
     });
 
-    (ChildMessages as any).pendingRequests.push(mockEvent);
+    (ChildMessages as any).pendingRequests = [mockEvent];
 
-    const pending = childMessages.getPendingRequests();
+    const pending = await childMessages.getPendingRequests();
 
     expect(pending).toHaveLength(1);
     expect(pending[0]).toBe(mockEvent);
 
+    // Verify it's a shallow copy
     pending.pop();
     expect((ChildMessages as any).pendingRequests).toHaveLength(1);
+  });
+
+  it("should wait up to 0.5s and return an empty array if no pending requests arrive", async () => {
+    (ChildMessages as any).pendingRequests = [];
+
+    const start = Date.now();
+    const pending = await childMessages.getPendingRequests();
+    const elapsed = Date.now() - start;
+
+    expect(pending).toEqual([]);
+    expect(elapsed).toBeGreaterThanOrEqual(490); // allow small variation
+    expect(elapsed).toBeLessThanOrEqual(600);
+  });
+
+  it("should wait and return pending requests if they arrive before timeout", async () => {
+    (ChildMessages as any).pendingRequests = [];
+
+    setTimeout(() => {
+      const mockEvent = new MessageEvent("message", {
+        data: { id: "002", method: "testMethod", params: {} },
+        source: { postMessage: jest.fn() } as any,
+      });
+      (ChildMessages as any).pendingRequests.push(mockEvent);
+    }, 100); // within the 500ms timeout
+
+    const pending = await childMessages.getPendingRequests();
+
+    expect(pending).toHaveLength(1);
+    expect(pending[0].data.id).toBe("002");
   });
 });

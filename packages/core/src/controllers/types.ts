@@ -212,6 +212,12 @@ export interface MfaSessionResult {
    * Ensures that the authentication data has not been tampered with.
    */
   payloadSignature?: string;
+
+  /**
+   * The next recommended MFA factor action to take.
+   * Indicates which MFA factor the user should complete next in order to proceed.
+   */
+  nextAction?: MfaFactorName;
 }
 
 /**

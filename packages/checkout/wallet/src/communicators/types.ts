@@ -26,7 +26,7 @@ export interface WalletCommunicator {
    * @returns {T | undefined} - The data associated with the given type, or `undefined`
    * if no such data has been received.
    */
-  retrievePotentialData<T>(type: ReceiverType): T | void;
+  retrievePotentialData<T>(type: ReceiverType): Promise<T | void>;
 
   /**
    * Registers a callback to handle incoming data of a specific type and send a response.

@@ -41,14 +41,15 @@ export class WalletToMerchant implements WalletCommunicator {
    * @returns {T | void} - The retrieved data if available, or `void` if no matching request is found or not in an iframe.
    * @throws {Error} Throws if the receiver type is invalid.
    */
-  public retrievePotentialData<T>(type: ReceiverType): T | void {
+  public async retrievePotentialData<T>(type: ReceiverType): Promise<T | void> {
     if (!isInIframe()) {
       return;
     }
 
     switch (type) {
       case "EMBEDDED_CONTEXT": {
-        const getPendingRequests = this.childIframeApi.getPendingRequests();
+        const getPendingRequests =
+          await this.childIframeApi.getPendingRequests();
 
         // Find the first message request
         for (const request of getPendingRequests) {

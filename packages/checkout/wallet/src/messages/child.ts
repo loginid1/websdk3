@@ -145,11 +145,33 @@ export class ChildMessages implements ChildMessagesAPI {
   }
 
   /**
-   * Retrieves the list of pending message requests.
+   * Retrieves the list of pending message requests, waiting up to 0.5s for any to arrive.
    * @public
-   * @returns {MessageEvent[]} A shallow copy of the pending message events.
+   * @async
+   * @returns {Promise<MessageEvent[]>} A shallow copy of the pending message events.
    */
-  public getPendingRequests(): MessageEvent[] {
-    return [...ChildMessages.pendingRequests];
+  public async getPendingRequests(): Promise<MessageEvent[]> {
+    if (ChildMessages.pendingRequests.length > 0) {
+      return [...ChildMessages.pendingRequests];
+    }
+
+    return new Promise<MessageEvent[]>((resolve) => {
+      const timeout = setTimeout(() => {
+        cleanup();
+        resolve([]);
+      }, 500);
+
+      const interval = setInterval(() => {
+        if (ChildMessages.pendingRequests.length > 0) {
+          cleanup();
+          resolve([...ChildMessages.pendingRequests]);
+        }
+      }, 10);
+
+      const cleanup = () => {
+        clearTimeout(timeout);
+        clearInterval(interval);
+      };
+    });
   }
 }

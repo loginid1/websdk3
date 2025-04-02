@@ -2,6 +2,7 @@
 
 import {
   MfaBeginOptions,
+  MfaFactorName,
   MfaInfo,
   MfaSessionResult,
   RemainingFactor,
@@ -93,12 +94,26 @@ export const toMfaSessionDetails = (
       return result;
     }) || [];
 
+  const factorPriority: MfaFactorName[] = [
+    "passkey:auth",
+    "passkey:tx",
+    "passkey:reg",
+    "otp:sms",
+    "otp:email",
+    "external",
+  ];
+
+  const nextAction = factorPriority.find((name) =>
+    info?.next?.some((factor) => factor.action.name === name),
+  );
+
   return {
     username: info?.username,
     ...(info?.username && { username: info.username }),
     flow: info?.flow,
     ...(info?.flow && { flow: info.flow }),
     remainingFactors: remainingFactors,
+    ...(nextAction && { nextAction }),
     isComplete: !!tokenSet?.accessToken || !!tokenSet?.payloadSignature,
     ...(info?.session && { session: info.session }),
     ...(tokenSet?.idToken && { idToken: tokenSet?.idToken }),

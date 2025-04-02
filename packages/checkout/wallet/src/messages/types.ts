@@ -36,7 +36,7 @@ export interface ChildMessagesAPI {
   /**
    * Retrieves the list of pending message requests.
    *
-   * @returns {MessageEvent[]} A shallow copy of the pending message events.
+   * @returns {Promise<MessageEvent[]>} A shallow copy of the pending message events.
    */
-  getPendingRequests(): MessageEvent[];
+  getPendingRequests(): Promise<MessageEvent[]>;
 }

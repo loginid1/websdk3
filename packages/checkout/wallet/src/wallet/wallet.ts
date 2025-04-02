@@ -79,11 +79,11 @@ class LoginIDWalletAuth {
     options: CheckoutBeginFlowOptions,
   ): Promise<MfaSessionResult> {
     const eData =
-      this.communicator.retrievePotentialData<EmbeddedContextData>(
+      await this.communicator.retrievePotentialData<EmbeddedContextData>(
         "EMBEDDED_CONTEXT",
       );
     const opts = {
-      checkoutId: options.checkoutId ?? eData?.checkoutId,
+      checkoutId: options.checkoutId || eData?.checkoutId,
       txPayload: options.txPayload,
     };
     return await this.mfa.beginFlow(options.username || "", opts);
