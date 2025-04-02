@@ -6,7 +6,7 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     // If there are issues with tests, its because of this
-    "types": [],
+    "types": ["node"],
 
     /* Bundler mode */
     "moduleResolution": "bundler",
