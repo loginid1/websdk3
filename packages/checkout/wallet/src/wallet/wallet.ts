@@ -101,11 +101,10 @@ class LoginIDWalletAuth {
    * or external authentication via third-party providers.
    *
    * After a successful authentication, this method will attempt to communicate the result
-   * (e.g., a checkout trust token or identifier) back to the parent frame (if embedded),
-   * or performs a redirect if a `redirectUrl` is provided (optional).
+   * (e.g., a checkout trust token or identifier) back to the parent frame (if embedded).
    *
    * @param {MfaFactorName} factorName - The MFA factor to be executed.
-   * @param {CheckoutPerformActionOptions} [options={}] - The payload or redirect instructions for the factor.
+   * @param {CheckoutPerformActionOptions} [options={}] - The payload for the factor.
    * @returns {Promise<MfaSessionResult>} - A promise resolving to the updated MFA session result.
    */
   async performAction(
@@ -114,13 +113,9 @@ class LoginIDWalletAuth {
   ): Promise<MfaSessionResult> {
     const result = await this.mfa.performAction(factorName, options);
     if (result.payloadSignature || result.accessToken) {
-      const callback = async () => ({
-        checkoutCookie: result.username,
-      });
+      const callback = async () => ({});
 
-      this.communicator.sendData("EMBEDDED_CONTEXT", callback, {
-        redirectUrl: options.redirectUrl,
-      });
+      this.communicator.sendData("EMBEDDED_CONTEXT", callback, {});
     }
 
     return result;

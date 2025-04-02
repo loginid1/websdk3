@@ -49,7 +49,9 @@ class LoginIDMerchantCheckout {
     params: StartCheckoutParams,
   ): Promise<void> {
     const store = new CheckoutIdStore();
-    const discovery = new CheckoutDiscoveryMerchant(params.iframe.src);
+    const discovery = new CheckoutDiscoveryMerchant(
+      params.discoverUrl || params.iframe.src,
+    );
 
     const checkoutId = await store.setOrSignWithCheckoutId();
     const discoveryResult = await discovery.discover();
@@ -57,7 +59,6 @@ class LoginIDMerchantCheckout {
     if (discoveryResult.flow === "EMBEDDED_CONTEXT") {
       const communicator = createMerchantCommunicator(params);
       const data = {
-        txPayload: params.txPayload,
         checkoutId: checkoutId,
       };
       const result = await communicator.receiveData<
@@ -72,7 +73,7 @@ class LoginIDMerchantCheckout {
 
       LocalStorageFlagger.stampWithRandomUUID(LID_CHECKOUT_KEY);
 
-      await params.successCallback?.(result.checkoutCookie || "");
+      await params.successCallback?.();
       return;
     }
 

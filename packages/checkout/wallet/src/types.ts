@@ -50,10 +50,4 @@ export interface CheckoutPerformActionOptions {
    * This typically contains user input or challenge-response data.
    */
   payload?: string;
-
-  /**
-   * Optional URL to redirect the user to after completing the MFA action.
-   * Commonly used in redirect-based flows when not embedded.
-   */
-  redirectUrl?: string;
 }
