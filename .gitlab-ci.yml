@@ -40,7 +40,6 @@ build:
     - npm pack --workspace=@loginid/websdk3
 
     - npm run build:checkout-commons
-    - npm run delete-maps:checkout-commons
 
     - npm run build:checkout-merchant
     - npm run delete-maps:checkout-merchant
