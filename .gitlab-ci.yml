@@ -24,70 +24,38 @@ install:
     paths:
       - node_modules/
 
-# Original serialized version (commented out)
-#
-# build:
-#   stage: build
-#   rules:
-#     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-#       when: never
-#   script:
-#     - npm run build:core
-#     - npm run delete-maps:core
-#
-#     - npm run build:websdk3
-#     - npm run delete-maps:websdk3
-#     # Note this is needed for e2e tests
-#     - npm pack --workspace=@loginid/websdk3
-#
-#     - npm run build:checkout-commons
-#     - npm run delete-maps:checkout-commons
-#
-#     - npm run build:checkout-merchant
-#     - npm run delete-maps:checkout-merchant
-#
-#     - npm run build:checkout-wallet
-#     - npm run delete-maps:checkout-wallet
-#   artifacts:
-#     expire_in: 3 hours
-#     when: on_success
-#     paths:
-#       - loginid-*.tgz
-#       - packages/core/dist
-#       - packages/websdk3/dist
-#       - packages/checkout/commons/dist
-#       - packages/checkout/merchant/dist
-#       - packages/checkout/wallet/dist
-
 build:
   stage: build
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       when: never
-    - when: always
-  parallel:
-    matrix:
-      - PACKAGE: core
-      - PACKAGE: websdk3
-      - PACKAGE: checkout-commons
-      - PACKAGE: checkout-merchant
-      - PACKAGE: checkout-wallet
   script:
-    - echo "Building $PACKAGE..."
-    - npm run build:$PACKAGE
-    - npm run delete-maps:$PACKAGE
+    - npm run build:core
+    - npm run delete-maps:core
 
-    # Only run npm pack for websdk3
-    - |
-      if [ "$PACKAGE" == "websdk3" ]; then
-        npm pack --workspace=@loginid/websdk3
-      fi
+    - npm run build:websdk3
+    - npm run delete-maps:websdk3
+    # Note this is needed for e2e tests
+    - npm pack --workspace=@loginid/websdk3
+
+    - npm run build:checkout-commons
+    - npm run delete-maps:checkout-commons
+
+    - npm run build:checkout-merchant
+    - npm run delete-maps:checkout-merchant
+
+    - npm run build:checkout-wallet
+    - npm run delete-maps:checkout-wallet
   artifacts:
     expire_in: 3 hours
     when: on_success
     paths:
       - loginid-*.tgz
-      - packages/$PACKAGE/dist
+      - packages/core/dist
+      - packages/websdk3/dist
+      - packages/checkout/commons/dist
+      - packages/checkout/merchant/dist
+      - packages/checkout/wallet/dist
 
 audit:
   stage: test
