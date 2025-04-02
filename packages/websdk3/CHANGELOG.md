@@ -1,3 +1,10 @@
+## @loginid/websdk3 [3.2.0](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/websdk3@3.1.1...@loginid/websdk3@3.2.0) (2025-04-02)
+
+### Features
+
+* **core:** added init version of core internal package ([3966aa1](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/3966aa1cb4e1ccc2a4f19e1a5f53f0a4e0e5df50))
+* **websdk3:** Added wallet auth implementation ([9baa40f](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/9baa40f39bbc6f02b1634d95f38df5e0474b4857))
+
 ## @loginid/websdk3 [3.1.1](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/websdk3@3.1.0...@loginid/websdk3@3.1.1) (2025-03-10)
 
 ### Bug Fixes
