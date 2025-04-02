@@ -10,4 +10,5 @@ module.exports = {
   },
   transformIgnorePatterns: ["<rootDir>/node_modules/"],
   displayName: "websdk3",
+  passWithNoTests: true,
 };

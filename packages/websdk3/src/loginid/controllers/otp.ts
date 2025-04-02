@@ -2,7 +2,6 @@
 
 import {
   AuthResult,
-  LoginIDConfig,
   Message,
   RequestAndSendOtpOptions,
   ValidateOtpOptions,
@@ -10,10 +9,10 @@ import {
 import {
   AuthCodeRequestSMSRequestBody,
   AuthCodeVerifyRequestBody,
-} from "../../api";
+} from "@loginid/core/api";
+import { LoginIDBase, LoginIDConfig } from "@loginid/core/controllers";
+import { AbortControllerManager } from "@loginid/core/webauthn";
 import { passkeyOptions, toAuthResult } from "../lib/defaults";
-import AbortControllerManager from "../../abort-controller";
-import LoginIDBase from "../base";
 
 /**
  * Extends LoginIDBase to support OTP methods.

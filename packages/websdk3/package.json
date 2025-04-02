@@ -23,13 +23,11 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsc --noEmit & tsup ./src/index.ts --no-config  --sourcemap --globalName=LoginID --format esm,cjs,iife --dts --minify",
+    "build": "tsc --noEmit && tsup && node ./post-def-typing.cjs",
     "release": "semantic-release",
     "delete-maps": "npm run delete-map-files && npm run delete-references-to-map-files",
     "delete-map-files": "find ./dist -name '*.map' -delete",
     "delete-references-to-map-files": "find ./dist -name '*.js' -or -name '*.mjs' -exec sed -i -e 's/sourceMappingURL=[^ ]*.map//g' {} +",
-    "gen": "openapi --input ./openapi.yaml --output ./src/api --name LoginIDService --useOptions --useUnionTypes",
-    "commit": "cz",
     "lint": "eslint \"src/**/*.ts?(x)\"",
     "test": "jest"
   },
@@ -47,5 +45,8 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
+  },
+  "dependencies": {
+    "@loginid/core": "*"
   }
 }

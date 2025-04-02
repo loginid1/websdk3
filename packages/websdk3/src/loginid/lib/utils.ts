@@ -1,6 +1,6 @@
 // Copyright (C) LoginID
 
-import { AuthInit } from "../../api/models/AuthInit";
+import { AuthInit } from "@loginid/core/api";
 import { FallbackOptions } from "../types";
 
 /**

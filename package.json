@@ -3,7 +3,11 @@
   "private": true,
   "type": "module",
   "workspaces": [
-    "packages/*"
+    "packages/websdk3",
+    "packages/core",
+    "packages/checkout/commons",
+    "packages/checkout/merchant",
+    "packages/checkout/wallet"
   ],
   "license": "ISC",
   "lint-staged": {
@@ -16,6 +20,7 @@
   "devDependencies": {
     "@eslint/js": "^9.22.0",
     "@types/jest": "^29.5.14",
+    "dts-bundle-generator": "^9.5.1",
     "eslint": "^9.22.0",
     "eslint-config-prettier": "^10.1.1",
     "eslint-plugin-headers": "^1.2.1",
@@ -42,6 +47,21 @@
     "build:websdk3": "npm run build --workspace=@loginid/websdk3",
     "lint:websdk3": "npm run lint --workspace=@loginid/websdk3",
     "test:websdk3": "npm run test --workspace=@loginid/websdk3",
-    "delete-maps:websdk3": "npm run delete-maps --workspace=@loginid/websdk3"
+    "delete-maps:websdk3": "npm run delete-maps --workspace=@loginid/websdk3",
+    "build:core": "npm run build --workspace=@loginid/core",
+    "lint:core": "npm run lint --workspace=@loginid/core",
+    "test:core": "npm run test --workspace=@loginid/core",
+    "delete-maps:core": "npm run delete-maps --workspace=@loginid/core",
+    "build:checkout-commons": "npm run build --workspace=@loginid/checkout-commons",
+    "lint:checkout-commons": "npm run lint --workspace=@loginid/checkout-commons",
+    "test:checkout-commons": "npm run test --workspace=@loginid/checkout-commons",
+    "build:checkout-merchant": "npm run build --workspace=@loginid/checkout-merchant",
+    "lint:checkout-merchant": "npm run lint --workspace=@loginid/checkout-merchant",
+    "test:checkout-merchant": "npm run test --workspace=@loginid/checkout-merchant",
+    "delete-maps:checkout-merchant": "npm run delete-maps --workspace=@loginid/checkout-merchant",
+    "build:checkout-wallet": "npm run build --workspace=@loginid/checkout-wallet",
+    "lint:checkout-wallet": "npm run lint --workspace=@loginid/checkout-wallet",
+    "test:checkout-wallet": "npm run test --workspace=@loginid/checkout-wallet",
+    "delete-maps:checkout-wallet": "npm run delete-maps --workspace=@loginid/checkout-wallet"
   }
 }

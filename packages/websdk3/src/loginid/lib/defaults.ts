@@ -6,8 +6,8 @@ import {
   Complete,
   ConfirmTransactionOptions,
 } from "../types";
-import { createUUID } from "../../utils";
-import { JWT } from "../../api";
+import { randomUUID } from "@loginid/core/utils/crypto";
+import { JWT } from "@loginid/core/api";
 
 /**
  * Merges provided options with default values for passkey options.
@@ -25,7 +25,6 @@ export const passkeyOptions = (
   return {
     ...options,
     authzToken: authzToken || options.authzToken || "",
-    // NOTE: we will always be defaulting to email for now
     usernameType: options.usernameType || "other",
     displayName: options.displayName || username,
     callbacks: options.callbacks || {},
@@ -46,7 +45,7 @@ export const confirmTransactionOptions = (
   return {
     ...passkeyOptions(username, "", options),
     txType: options.txType || "raw",
-    nonce: options.nonce || createUUID(),
+    nonce: options.nonce || randomUUID(),
   };
 };
 

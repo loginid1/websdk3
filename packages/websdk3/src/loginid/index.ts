@@ -1,12 +1,11 @@
 // Copyright (C) LoginID
 
+import { LoginIDBase, Utils } from "@loginid/core/controllers";
 import PasskeyManager from "./controllers/passkey-manager";
+import { LoginIDConfig } from "@loginid/core/controllers";
+import { applyMixins } from "@loginid/core/helpers";
 import Passkeys from "./controllers/passkeys";
-import type { LoginIDConfig } from "./types";
-import Utils from "./controllers/utils";
-import { applyMixins } from "../utils";
 import OTP from "./controllers/otp";
-import LoginIDBase from "./base";
 
 interface LoginIDWebSDK extends Passkeys, OTP, PasskeyManager, Utils {}
 

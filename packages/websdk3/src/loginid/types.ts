@@ -1,12 +1,17 @@
 // Copyright (C) LoginID
 
-import { ApiError, AuthCode, CreationResult, DeviceInfo, User } from "../api";
+import {
+  ApiError,
+  AuthCode,
+  CreationResult,
+  DeviceInfo,
+} from "@loginid/core/api";
+import { UsernameType } from "@loginid/core/controllers";
 
 export type Complete<T> = {
   [P in keyof T]-?: T[P];
 };
 
-export type UsernameType = User["usernameType"];
 export type DeviceInfoRequestBody = DeviceInfo;
 export type Transports = CreationResult["transports"];
 
@@ -32,24 +37,9 @@ export interface AllOptions {
 }
 
 /**
- * Configuration for LoginID FIDO service.
- */
-export interface LoginIDConfig {
-  /**
-   * The base URL for LoginID FIDO service which can be obtained on the [dashboard](https://dashboard.loginid.io).
-   */
-  baseUrl: string;
-
-  /**
-   * The optional app ID for specific application.
-   */
-  appId?: string;
-}
-
-/**
  * The base interface for passkey options.
  */
-export interface PasskeyOptions {
+export interface MainPasskeyOptions {
   /**
    * Authorization token used for accessing protected resources typically used for adding multiple passkeys to a user.
    */
@@ -96,7 +86,7 @@ export interface DeletePasskeyOptions extends PasskeyManagementOptions {}
 /**
  * Authenticate with passkeys options.
  */
-export interface AuthenticateWithPasskeysOptions extends PasskeyOptions {
+export interface AuthenticateWithPasskeysOptions extends MainPasskeyOptions {
   /**
    * When true it will enable passkeys on the browser autofill suggestions if supported (conditional UI). Username does not need to be set.
    */
@@ -118,7 +108,7 @@ export interface AuthenticateWithPasskeyAutofillOptions
 /**
  * Create passkeys options interface.
  */
-export interface CreatePasskeyOptions extends PasskeyOptions {
+export interface CreatePasskeyOptions extends MainPasskeyOptions {
   /**
    * A human-palatable name for the user account, intended only for display on your passkeys and modals.
    */
@@ -128,7 +118,7 @@ export interface CreatePasskeyOptions extends PasskeyOptions {
 /**
  * Confirm transaction options.
  */
-export interface ConfirmTransactionOptions extends PasskeyOptions {
+export interface ConfirmTransactionOptions extends MainPasskeyOptions {
   /**
    * Specify the type of transaction being confirmed for additional validation.
    */
@@ -207,86 +197,6 @@ export interface AuthResult {
    * providing suggested authentications to use instead.
    */
   fallbackOptions?: FallbackOptions;
-}
-
-/**
- * General information about the current user session. Information is obtained from the stored authorization token.
- */
-export interface SessionInfo {
-  /**
-   * Current authenticated user's username.
-   */
-  username: string;
-
-  /**
-   * Current authenticated user's ID.
-   */
-  id: string;
-}
-
-/**
- * The result of verifying the application's configuration settings.
- */
-export interface VerifyConfigResult {
-  /**
-   * Indicates whether the configuration is valid.
-   */
-  isValid: boolean;
-
-  /**
-   * Suggested solution to fix any configuration issues.
-   */
-  solution?: string;
-
-  /**
-   * A message describing the issue with the configuration, if any.
-   */
-  message?: string;
-
-  /**
-   * A code representing the error type.
-   */
-  code?: string;
-}
-
-/**
- * Represents the claims included in a TrustID token.
- */
-export interface TrustIDClaims {
-  /**
-   * Unique identifier for the Trust ID.
-   */
-  id: string;
-
-  /**
-   * Username associated with the token owner.
-   */
-  username: string;
-
-  /**
-   * Audience for which the token is intended. This is the app ID.
-   */
-  aud: string;
-}
-
-/**
- * Represents a stored Trust ID record in the trust store database.
- */
-export interface TrustIDRecord {
-  /**
-   * Unique identifier for the Trust ID, derived from the TrustID token.
-   */
-  id: string;
-
-  /**
-   * Username associated with the Trust ID.
-   */
-  username: string;
-
-  /**
-   * Cryptographic key pair used for signing and verification.
-   */
-  keyPair: CryptoKeyPair;
 }
 
 export { ApiError };

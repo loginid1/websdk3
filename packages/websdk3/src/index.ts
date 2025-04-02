@@ -1,16 +1,16 @@
 // Copyright (C) LoginID
 
 import {
-  createPasskeyCredential,
-  getPasskeyCredential,
-} from "./loginid/lib/webauthn";
-import {
   isConditionalUIAvailable,
   isPlatformAuthenticatorAvailable,
-} from "./browser";
-import { WebAuthnHelper } from "./webauthn/webauthn-helper";
-import PasskeyError from "./errors/passkey";
-import AbortError from "./errors/abort";
+} from "@loginid/core/utils/browser";
+import {
+  WebAuthnHelper,
+  createPasskeyCredential,
+  getPasskeyCredential,
+} from "@loginid/core/webauthn";
+import { AbortError, PasskeyError } from "@loginid/core/errors";
+import { LoginIDMfa } from "@loginid/core/mfa";
 import LoginIDWebSDK from "./loginid";
 
 export {
@@ -19,13 +19,13 @@ export {
   isConditionalUIAvailable,
   isPlatformAuthenticatorAvailable,
   AbortError,
+  LoginIDMfa,
   LoginIDWebSDK,
   PasskeyError,
   WebAuthnHelper,
 };
-export type { Passkey, PasskeyCollection } from "./api";
+export type { Passkey, PasskeyCollection } from "@loginid/core/api";
 
-export * as LoginIDAPI from "./api";
 export * from "./loginid/types";
 
 export default LoginIDWebSDK;

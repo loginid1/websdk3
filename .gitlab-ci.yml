@@ -44,40 +44,87 @@ build-websdk:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       when: never
-    - changes:
-        - packages/websdk3/src/**
+    - when: always
   script:
+    - npm run build:core
+    - npm run delete-maps:core
+    # Note this is needed for e2e tests
+    - npm pack --workspace=@loginid/core
+
     - npm run build:websdk3
     - npm run delete-maps:websdk3
+    # Note this is needed for e2e tests
     - npm pack --workspace=@loginid/websdk3
+
+    - npm run build:checkout-commons
+
+    - npm run build:checkout-merchant
+    - npm run delete-maps:checkout-merchant
+
+    - npm run build:checkout-wallet
+    - npm run delete-maps:checkout-wallet
   artifacts:
     expire_in: 3 hours
     when: on_success
     paths:
       - loginid-*.tgz
+      - packages/core/dist
       - packages/websdk3/dist
+      - packages/checkout/commons/dist
+      - packages/checkout/merchant/dist
+      - packages/checkout/wallet/dist
 
-unit-test-websdk:
+audit:
   stage: test
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       when: never
     - if: $CI_PIPELINE_SOURCE == "pipeline" 
       when: never
-    - changes:
-        - packages/websdk3/src/**
+    - when: always
   script:
-    - npm run lint:websdk3
     - npm audit --audit-level=low
-    - npm run test:websdk3
+
+
+# Original unit test job (commented out)
+#
+# unit-test-websdk:
+#   stage: test
+#   rules:
+#     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+#       when: never
+#     - if: $CI_PIPELINE_SOURCE == "pipeline" 
+#       when: never
+#   script:
+#     - npm run lint:websdk3
+#     - npm run test:websdk3
+
+unit-tests:
+  stage: test
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: never
+    - if: '$CI_PIPELINE_SOURCE == "pipeline"'
+      when: never
+    - when: always
+  parallel:
+    matrix:
+      - PACKAGE: core
+      - PACKAGE: websdk3
+      - PACKAGE: checkout-commons
+      - PACKAGE: checkout-merchant
+      - PACKAGE: checkout-wallet
+  script:
+    - echo "Running lint and tests for $PACKAGE..."
+    - npm run lint:$PACKAGE
+    - npm run test:$PACKAGE
 
 chrome-test:
   stage: test
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       when: never
-    - changes:
-        - packages/websdk3/src/**
+    - when: always
   variables:
     BRANCH: $CI_COMMIT_REF_NAME
   trigger:
