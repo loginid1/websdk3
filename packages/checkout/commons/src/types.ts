@@ -94,18 +94,6 @@ export type IframeMethod = "discover" | "sign_transaction";
  */
 export interface EmbeddedContextData {
   /**
-   * A stringified transaction payload representing the purchase or action being authorized.
-   * This is signed as part of the wallet's MFA process to ensure integrity.
-   */
-  txPayload: string;
-
-  /**
-   * The end user's username, if already known or linked to the checkout session.
-   * Optional—can be auto-filled by the wallet in some cases.
-   */
-  username?: string;
-
-  /**
    * The unique identifier for the current checkout session, used for tracking and trust-linking.
    */
   checkoutId?: string;
