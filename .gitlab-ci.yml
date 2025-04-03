@@ -31,14 +31,6 @@ install:
     echo "${OIDC_TOKEN}" > /tmp/web_identity_token
     echo -e "[profile oidc]\nrole_arn=${ROLE_ARN}\nweb_identity_token_file=/tmp/web_identity_token" > ~/.aws/config
 
-.aws-deploy: &aws-deploy
-  - |
-    echo "Upload index.global.js to ${S3_BUCKET} S3 bucket"
-    aws s3 cp ./packages/websdk3/dist/index.global.js s3://$S3_BUCKET/sdk/js/$CI_COMMIT_TAG/index.global.js
-
-    echo "Invalidate ${CF_DISTRIBUTION_ID} CloudFront distribution cache"
-    aws cloudfront create-invalidation --distribution-id "$CF_DISTRIBUTION_ID" --paths "/*"
-
 build-websdk:
   stage: build
   rules:
@@ -46,6 +38,7 @@ build-websdk:
       when: never
     - when: always
   script:
+    # Order matters
     - npm run build:core
     - npm run delete-maps:core
     # Note this is needed for e2e tests
@@ -85,20 +78,6 @@ audit:
   script:
     - npm audit --audit-level=low
 
-
-# Original unit test job (commented out)
-#
-# unit-test-websdk:
-#   stage: test
-#   rules:
-#     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-#       when: never
-#     - if: $CI_PIPELINE_SOURCE == "pipeline" 
-#       when: never
-#   script:
-#     - npm run lint:websdk3
-#     - npm run test:websdk3
-
 unit-tests:
   stage: test
   rules:
@@ -123,6 +102,8 @@ chrome-test:
   stage: test
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: never
+    - if: '$CI_COMMIT_TAG'
       when: never
     - when: always
   variables:
@@ -166,7 +147,7 @@ deploy-cloudfront-s3-bucket:
   before_script:
     - *aws-prep
   script:
-    - *aws-deploy
+    - sh ./scripts/aws-deploy-s3.sh
   rules:
     - if: $CI_COMMIT_TAG
       when: manual
