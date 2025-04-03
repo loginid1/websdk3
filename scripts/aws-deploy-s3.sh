@@ -7,7 +7,7 @@ VERSION="${CI_COMMIT_TAG##*@}"
 
 if [ "$PACKAGE_NAME" = "@loginid/websdk3" ]; then
   FILE_PATH="./packages/websdk3/dist/index.global.js"
-  S3_PATH="sdk/js/web/$VERSION/websdk3.min.js"
+  S3_PATH="sdk/js/web/$VERSION/web.min.js"
 elif [ "$PACKAGE_NAME" = "@loginid/checkout-merchant" ]; then
   FILE_PATH="./packages/checkout/merchant/dist/index.global.js"
   S3_PATH="sdk/js/merchant/$VERSION/merchant.min.js"
