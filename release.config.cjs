@@ -61,7 +61,7 @@ module.exports = {
     ],
     ['@semantic-release/npm',
       {
-        'npmPublish': false,
+        'npmPublish': true,
         'pkgRoot': '.',
       }
     ],
