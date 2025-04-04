@@ -2,8 +2,11 @@
 set -e
 
 echo "Obtaining package and version from tag..."
-PACKAGE="${CI_COMMIT_TAG%@*}"
+PACKAGE_NAME="${CI_COMMIT_TAG%@*}"
 VERSION="${CI_COMMIT_TAG##*@}"
+
+echo "Package name: $PACKAGE_NAME"
+echo "Version: $VERSION"
 
 if [ "$PACKAGE_NAME" = "@loginid/websdk3" ]; then
   FILE_PATH="./packages/websdk3/dist/index.global.js"
