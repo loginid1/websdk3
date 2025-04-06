@@ -134,24 +134,28 @@ class LoginIDWalletAuth {
     if (factorName === "passkey:reg" && options.authzToken) {
       const checkoutId = CheckoutIdLocalStorage.getCheckoutId();
       const opts: MfaBeginOptions = {
-        //authzToken: options.authzToken,
         checkoutId: checkoutId,
         // NOTE: This is questionable
         txPayload: randomUUID(),
       };
 
-      const result = await this.mfa.beginFlow(options.username || "", opts);
-      if (result.nextAction !== "external") {
+      const { nextAction } = await this.mfa.beginFlow(
+        options.username || "",
+        opts,
+      );
+      if (nextAction !== "external") {
         throw new LoginIDError(
           "User cannot create a passkey without external authentication",
         );
       }
 
-      await this.mfa.performAction("external", { payload: options.authzToken });
+      const { accessToken } = await this.mfa.performAction("external", {
+        payload: options.authzToken,
+      });
 
       await this.mfa.beginFlow(options.username || "", opts);
 
-      options = { ...options, authzToken: "" };
+      options = { ...options, authzToken: accessToken };
     }
 
     const result = await this.mfa.performAction(factorName, options);
