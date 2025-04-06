@@ -25,23 +25,30 @@ export class MfaService {
   public mfaMfaBegin({
     requestBody,
     userAgent,
+    authorization,
   }: {
     requestBody: MfaBeginRequestBody;
     /**
      * Raw user-agent header as set by a browser
      */
     userAgent?: string;
+    /**
+     * JWT Authorization header
+     */
+    authorization?: string;
   }): CancelablePromise<MfaNext> {
     return this.httpRequest.request({
       method: "POST",
       url: "/fido2/v2/mfa/begin",
       headers: {
         "User-Agent": userAgent,
+        Authorization: authorization,
       },
       body: requestBody,
       mediaType: "application/json",
       errors: {
         400: `bad_request: Bad Request response.`,
+        401: `unauthorized: Unauthorized response.`,
         403: `forbidden: Forbidden response.`,
         404: `not_found: Not Found response.`,
         500: `internal_error: Internal Server Error response.`,

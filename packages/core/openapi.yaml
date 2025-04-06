@@ -137,7 +137,7 @@ paths:
                     appid: https://loalhost:8443
                   rpId: https://localhost:8443/
                   timeout: 5000
-                  userVerification: required
+                  userVerification: discouraged
                 crossAuthMethods:
                   - otp
                   - otp:sms
@@ -437,6 +437,12 @@ paths:
           example: >-
             Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like
             Gecko) Chrome/51.0.2704.103 Safari/537.36
+        - name: Authorization
+          in: header
+          description: JWT Authorization header
+          required: false
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -519,6 +525,15 @@ paths:
               example:
                 msg: Internal error
                 msgCode: internal_error
+        '401':
+          description: 'unauthorized: Unauthorized response.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppError'
+              example:
+                msg: Internal error
+                msgCode: internal_error
         '403':
           description: 'forbidden: Forbidden response.'
           content:
@@ -546,6 +561,9 @@ paths:
               example:
                 msg: Internal error
                 msgCode: internal_error
+      security:
+        - jwt_header_Authorization:
+            - reg:write
   /fido2/v2/mfa/otp/request:
     post:
       tags:
@@ -838,10 +856,9 @@ paths:
                 publicKey: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
                 publicKeyAlgorithm: -8
                 transports:
-                  - ble
-                  - cable
-                  - hybrid
-                  - cable
+                  - usb
+                  - internal
+                  - nfc
       responses:
         '200':
           description: OK response.
@@ -1417,10 +1434,9 @@ paths:
                 publicKey: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
                 publicKeyAlgorithm: -8
                 transports:
-                  - ble
-                  - cable
-                  - hybrid
-                  - cable
+                  - usb
+                  - internal
+                  - nfc
               session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
       responses:
         '200':
@@ -1509,6 +1525,7 @@ paths:
                 screenWidth: 1920
               passkeyOptions:
                 conditionalCreate: false
+                securityKey: false
               trustItems:
                 auth: DqjUIcwnq7edyyeMGCxWNqs1cNBrEjBXlB2mVxfja8s=
                 merchant: gpOLtpZWhxkKgwEJyYzB2ckXn9IXDID7jjiaYFYTfS4=
@@ -1708,7 +1725,7 @@ paths:
                     appid: https://loalhost:8443
                   rpId: https://localhost:8443/
                   timeout: 5000
-                  userVerification: required
+                  userVerification: discouraged
                 session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
                 txId: 2a363a42-a397-4af0-b089-0935fc223017
         '400':
@@ -1902,7 +1919,7 @@ components:
           type: array
           items:
             type: string
-            example: otp:sms
+            example: otp
             enum:
               - otp
               - otp:sms
@@ -1995,7 +2012,7 @@ components:
             wallet: NlPsJDfILKo0nCxuu2lrv6q9SBqgKLvpIuqSI4izk9k=
           additionalProperties:
             type: string
-            example: Temporibus cumque rerum natus aut alias similique.
+            example: Repellat aut quis harum cupiditate.
         user:
           $ref: '#/components/schemas/UserLogin'
       example:
@@ -2032,7 +2049,7 @@ components:
             bindings
 
             made by the authenticator.
-          example: Amet architecto.
+          example: Dolores ea consequuntur eos blanditiis voluptatem.
         clientDataJSON:
           type: string
           description: >-
@@ -2088,11 +2105,11 @@ components:
           type: boolean
           description: Resident key requirement
           default: false
-          example: true
+          example: false
         residentKey:
           type: string
           description: Resident key requirement
-          example: preferred
+          example: discouraged
           enum:
             - discouraged
             - preferred
@@ -2100,15 +2117,15 @@ components:
         userVerification:
           type: string
           description: User verification requirement
-          example: required
+          example: preferred
           enum:
             - required
             - preferred
             - discouraged
       example:
-        authenticatorAttachment: platform
+        authenticatorAttachment: cross-platform
         requireResidentKey: true
-        residentKey: preferred
+        residentKey: discouraged
         userVerification: Aspernatur quod qui rerum totam asperiores.
     CreationResult:
       type: object
@@ -2128,7 +2145,7 @@ components:
             bindings
 
             made by the authenticator.
-          example: Ut dicta assumenda exercitationem.
+          example: Velit quo cupiditate voluptatibus.
         clientDataJSON:
           type: string
           description: >-
@@ -2198,6 +2215,7 @@ components:
         publicKey: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
         publicKeyAlgorithm: -8
         transports:
+          - internal
           - internal
           - internal
       required:
@@ -2366,11 +2384,11 @@ components:
             desc:
               type: string
               description: Action description
-              example: Quae aut consequuntur voluptatibus fugiat nobis cumque.
+              example: Nihil id ea temporibus.
             label:
               type: string
               description: Human readable action label
-              example: Aut vel ducimus ratione quidem ut.
+              example: Qui ea qui.
             name:
               type: string
               description: Next Action to be performed.
@@ -2384,8 +2402,8 @@ components:
                 - otp:verify
                 - external
           example:
-            desc: Nihil id ea temporibus.
-            label: Qui ea qui.
+            desc: Nihil dolor aperiam corrupti.
+            label: Ut voluptatem quia aliquid non.
             name: passkey
           required:
             - name
@@ -2403,8 +2421,8 @@ components:
       description: Next Action to be performed.
       example:
         action:
-          desc: Nihil dolor aperiam corrupti.
-          label: Ut voluptatem quia aliquid non.
+          desc: Excepturi iste nulla tenetur.
+          label: Aut eveniet nobis error id et.
           name: passkey
         options:
           - label: primary@example.com
@@ -2431,7 +2449,7 @@ components:
             wallet: NlPsJDfILKo0nCxuu2lrv6q9SBqgKLvpIuqSI4izk9k=
           additionalProperties:
             type: string
-            example: Architecto alias repellat.
+            example: Aliquam earum minima.
         user:
           $ref: '#/components/schemas/User'
       example:
@@ -2455,8 +2473,6 @@ components:
           displayName: System Administrator
           username: admin@example.com
           usernameType: email
-      required:
-        - user
     MfaNext:
       type: object
       properties:
@@ -2570,19 +2586,19 @@ components:
         label:
           type: string
           description: Human readable label
-          example: Facilis ex eos quisquam ducimus.
+          example: Repudiandae nulla nihil nulla animi voluptatum.
         name:
           type: string
           description: Option name
-          example: Aut quos commodi inventore beatae hic.
+          example: Ducimus aut voluptatem impedit quos dolor quis.
         value:
           type: string
           description: Option value to be used in the next request
-          example: Voluptatem impedit quos dolor quis.
+          example: Magnam in dolorem voluptas non.
       example:
-        label: Magnam in dolorem voluptas non.
-        name: Repudiandae nulla nihil nulla animi voluptatum.
-        value: Voluptate temporibus.
+        label: Aut vel ducimus ratione quidem ut.
+        name: Voluptate temporibus.
+        value: Quae aut consequuntur voluptatibus fugiat nobis cumque.
       required:
         - value
     MfaOtpRequestRequestBody:
@@ -2657,10 +2673,9 @@ components:
           publicKey: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
           publicKeyAlgorithm: -8
           transports:
-            - ble
-            - cable
-            - hybrid
-            - cable
+            - usb
+            - internal
+            - nfc
       required:
         - creationResult
     MfaThirdPartyAuthVerifyRequestBody:
@@ -2714,7 +2729,7 @@ components:
       example:
         aaguid: fbfc3007-154e-4ecc-8c0b-6e020557d7bd
         createdAt: 2023-06-15 13:29:41 EDT
-        credentialSynced: true
+        credentialSynced: false
         id: 861ee00b-b40d-493a-a10b-457a0d527b48
         lastUsedAt: '2025-01-02T16:40:44Z'
         lastUsedFromDevice:
@@ -2778,10 +2793,14 @@ components:
           description: Flag to allow conditional creation
           default: false
           example: true
+        securityKey:
+          type: boolean
+          description: Whether the authenticator is a security key
+          default: false
+          example: false
       example:
         conditionalCreate: false
-      required:
-        - conditionalCreate
+        securityKey: false
     PasskeyRenameRequestBody:
       type: object
       properties:
@@ -2824,7 +2843,6 @@ components:
           example:
             - internal
             - internal
-            - internal
         type:
           type: string
           description: The valid credential types.
@@ -2836,7 +2854,9 @@ components:
         transports:
           - internal
           - internal
-        type: Nulla tenetur temporibus quae adipisci.
+          - internal
+          - internal
+        type: Laudantium voluptatem.
       required:
         - type
         - id
@@ -2924,7 +2944,7 @@ components:
         user:
           $ref: '#/components/schemas/PublicKeyCredentialUserEntity'
       example:
-        attestation: Odio qui totam exercitationem.
+        attestation: Repudiandae maxime quas numquam quia porro.
         authenticatorSelection:
           authenticatorAttachment: platform
           requireResidentKey: true
@@ -2972,7 +2992,7 @@ components:
             generated,
 
             e.g., RSA or Elliptic Curve.
-          example: -7
+          example: -257
           enum:
             - -7
             - -35
@@ -2988,8 +3008,8 @@ components:
             - public-key
       description: Additional parameters when creating a new credential.
       example:
-        alg: -35
-        type: Nulla tenetur temporibus quae adipisci.
+        alg: -7
+        type: Laudantium voluptatem.
     PublicKeyCredentialRequestOptions:
       type: object
       properties:
@@ -3145,10 +3165,9 @@ components:
           publicKey: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
           publicKeyAlgorithm: -8
           transports:
-            - ble
-            - cable
-            - hybrid
-            - cable
+            - usb
+            - internal
+            - nfc
         session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
       required:
         - session
@@ -3177,7 +3196,7 @@ components:
       example:
         action: proceed
         registrationRequestOptions:
-          attestation: Odio qui totam exercitationem.
+          attestation: Repudiandae maxime quas numquam quia porro.
           authenticatorSelection:
             authenticatorAttachment: platform
             requireResidentKey: true
@@ -3230,7 +3249,7 @@ components:
             wallet: NlPsJDfILKo0nCxuu2lrv6q9SBqgKLvpIuqSI4izk9k=
           additionalProperties:
             type: string
-            example: Quis harum cupiditate facilis aliquam earum.
+            example: Aut nulla est enim.
         user:
           $ref: '#/components/schemas/User'
       example:
@@ -3249,6 +3268,7 @@ components:
           screenWidth: 1920
         passkeyOptions:
           conditionalCreate: false
+          securityKey: false
         trustItems:
           auth: DqjUIcwnq7edyyeMGCxWNqs1cNBrEjBXlB2mVxfja8s=
           merchant: gpOLtpZWhxkKgwEJyYzB2ckXn9IXDID7jjiaYFYTfS4=

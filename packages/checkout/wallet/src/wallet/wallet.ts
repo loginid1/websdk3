@@ -2,6 +2,7 @@
 
 import {
   LoginIDConfig,
+  MfaBeginOptions,
   MfaFactorName,
   MfaSessionResult,
 } from "@loginid/core/controllers";
@@ -10,8 +11,11 @@ import {
   CheckoutPerformActionOptions,
 } from "../types";
 import { DiscoverResult, EmbeddedContextData } from "@loginid/checkout-commons";
+import { CheckoutIdLocalStorage } from "@loginid/core/store";
+import { randomUUID } from "@loginid/core/utils/crypto";
 import { createWalletCommunicator } from "../creators";
 import { WalletCommunicator } from "../communicators";
+import { LoginIDError } from "@loginid/core/errors";
 import { CheckoutDiscovery } from "../discovery";
 import { LoginIDMfa } from "@loginid/core/mfa";
 
@@ -82,10 +86,14 @@ class LoginIDWalletAuth {
       await this.communicator.retrievePotentialData<EmbeddedContextData>(
         "EMBEDDED_CONTEXT",
       );
-    const opts = {
+    const opts: MfaBeginOptions = {
       checkoutId: options.checkoutId || eData?.checkoutId,
       txPayload: options.txPayload,
     };
+
+    // NOTE: Remove me after
+    CheckoutIdLocalStorage.persistCheckoutId(options.checkoutId || "");
+
     return await this.mfa.beginFlow(options.username || "", opts);
   }
 
@@ -111,6 +119,41 @@ class LoginIDWalletAuth {
     factorName: MfaFactorName,
     options: CheckoutPerformActionOptions = {},
   ): Promise<MfaSessionResult> {
+    // NOTE: Remove me after
+    if (factorName === "passkey:tx" && options.payload) {
+      const checkoutId = CheckoutIdLocalStorage.getCheckoutId();
+      const opts: MfaBeginOptions = {
+        checkoutId: checkoutId,
+        txPayload: options.payload,
+      };
+
+      await this.mfa.beginFlow("", opts);
+    }
+
+    // NOTE: Remove me after
+    if (factorName === "passkey:reg" && options.authzToken) {
+      const checkoutId = CheckoutIdLocalStorage.getCheckoutId();
+      const opts: MfaBeginOptions = {
+        //authzToken: options.authzToken,
+        checkoutId: checkoutId,
+        // NOTE: This is questionable
+        txPayload: randomUUID(),
+      };
+
+      const result = await this.mfa.beginFlow(options.username || "", opts);
+      if (result.nextAction !== "external") {
+        throw new LoginIDError(
+          "User cannot create a passkey without external authentication",
+        );
+      }
+
+      await this.mfa.performAction("external", { payload: options.authzToken });
+
+      await this.mfa.beginFlow(options.username || "", opts);
+
+      options = { ...options, authzToken: "" };
+    }
+
     const result = await this.mfa.performAction(factorName, options);
     if (result.payloadSignature || result.accessToken) {
       const callback = async () => ({});

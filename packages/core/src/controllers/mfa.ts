@@ -81,6 +81,7 @@ export class MFA extends LoginIDBase {
 
     const mfaNextResult = await this.service.mfa.mfaMfaBegin({
       requestBody: mfaBeginRequestBody,
+      ...(opts.authzToken && { authorization: opts.authzToken }),
     });
 
     const mfaInfo = toMfaInfo(mfaNextResult, username);
