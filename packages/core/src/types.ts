@@ -5,6 +5,7 @@ import { CreationResult } from "./api";
 export type Transports = CreationResult["transports"];
 
 export interface GetNavigatorCredentialOptions {
+  autoFill?: boolean;
   abortController?: AbortController;
 }
 
