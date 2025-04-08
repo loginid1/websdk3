@@ -12,10 +12,8 @@ import {
 } from "../types";
 import { DiscoverResult, EmbeddedContextData } from "@loginid/checkout-commons";
 import { CheckoutIdLocalStorage } from "@loginid/core/store";
-import { randomUUID } from "@loginid/core/utils/crypto";
 import { createWalletCommunicator } from "../creators";
 import { WalletCommunicator } from "../communicators";
-import { LoginIDError } from "@loginid/core/errors";
 import { CheckoutDiscovery } from "../discovery";
 import { LoginIDMfa } from "@loginid/core/mfa";
 
@@ -119,7 +117,7 @@ class LoginIDWalletAuth {
     factorName: MfaFactorName,
     options: CheckoutPerformActionOptions = {},
   ): Promise<MfaSessionResult> {
-    // NOTE: Remove me after
+    // NOTE: This may be a temporary fix
     if (factorName === "passkey:tx" && options.payload) {
       const checkoutId = CheckoutIdLocalStorage.getCheckoutId();
       const opts: MfaBeginOptions = {
@@ -128,34 +126,6 @@ class LoginIDWalletAuth {
       };
 
       await this.mfa.beginFlow("", opts);
-    }
-
-    // NOTE: Remove me after
-    if (factorName === "passkey:reg" && options.authzToken) {
-      const checkoutId = CheckoutIdLocalStorage.getCheckoutId();
-      const opts: MfaBeginOptions = {
-        checkoutId: checkoutId,
-        // NOTE: This is questionable
-        txPayload: randomUUID(),
-      };
-
-      const { nextAction } = await this.mfa.beginFlow(
-        options.username || "",
-        opts,
-      );
-      if (nextAction !== "external") {
-        throw new LoginIDError(
-          "User cannot create a passkey without external authentication",
-        );
-      }
-
-      const { accessToken } = await this.mfa.performAction("external", {
-        payload: options.authzToken,
-      });
-
-      await this.mfa.beginFlow(options.username || "", opts);
-
-      options = { ...options, authzToken: accessToken };
     }
 
     const result = await this.mfa.performAction(factorName, options);
