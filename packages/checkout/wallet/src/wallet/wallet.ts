@@ -84,13 +84,13 @@ class LoginIDWalletAuth {
       await this.communicator.retrievePotentialData<EmbeddedContextData>(
         "EMBEDDED_CONTEXT",
       );
+    const checkoutId = options.checkoutId || eData?.checkoutId;
     const opts: MfaBeginOptions = {
-      checkoutId: options.checkoutId || eData?.checkoutId,
+      checkoutId: checkoutId,
       txPayload: options.txPayload,
     };
 
-    // NOTE: Remove me after
-    CheckoutIdLocalStorage.persistCheckoutId(options.checkoutId || "");
+    CheckoutIdLocalStorage.persistCheckoutId(checkoutId || "");
 
     return await this.mfa.beginFlow(options.username || "", opts);
   }
@@ -118,11 +118,11 @@ class LoginIDWalletAuth {
     options: CheckoutPerformActionOptions = {},
   ): Promise<MfaSessionResult> {
     // NOTE: This may be a temporary fix
-    if (factorName === "passkey:tx" && options.payload) {
+    if (factorName === "passkey:tx" && options.txPayload) {
       const checkoutId = CheckoutIdLocalStorage.getCheckoutId();
       const opts: MfaBeginOptions = {
         checkoutId: checkoutId,
-        txPayload: options.payload,
+        txPayload: options.txPayload,
       };
 
       await this.mfa.beginFlow("", opts);
