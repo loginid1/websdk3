@@ -42,7 +42,7 @@
     "payments",
     "wallet"
   ],
-  "dependencies": {
+  "devDependencies": {
     "@loginid/core": "*",
     "@loginid/checkout-commons": "*"
   }
