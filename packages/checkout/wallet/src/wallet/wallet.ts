@@ -2,6 +2,7 @@
 
 import {
   LoginIDConfig,
+  MfaBeginOptions,
   MfaFactorName,
   MfaSessionResult,
 } from "@loginid/core/controllers";
@@ -10,6 +11,7 @@ import {
   CheckoutPerformActionOptions,
 } from "../types";
 import { DiscoverResult, EmbeddedContextData } from "@loginid/checkout-commons";
+import { CheckoutIdLocalStorage } from "@loginid/core/store";
 import { createWalletCommunicator } from "../creators";
 import { WalletCommunicator } from "../communicators";
 import { CheckoutDiscovery } from "../discovery";
@@ -82,10 +84,14 @@ class LoginIDWalletAuth {
       await this.communicator.retrievePotentialData<EmbeddedContextData>(
         "EMBEDDED_CONTEXT",
       );
-    const opts = {
-      checkoutId: options.checkoutId || eData?.checkoutId,
+    const checkoutId = options.checkoutId || eData?.checkoutId;
+    const opts: MfaBeginOptions = {
+      checkoutId: checkoutId,
       txPayload: options.txPayload,
     };
+
+    CheckoutIdLocalStorage.persistCheckoutId(checkoutId || "");
+
     return await this.mfa.beginFlow(options.username || "", opts);
   }
 
@@ -111,6 +117,17 @@ class LoginIDWalletAuth {
     factorName: MfaFactorName,
     options: CheckoutPerformActionOptions = {},
   ): Promise<MfaSessionResult> {
+    // NOTE: This may be a temporary fix
+    if (factorName === "passkey:tx" && options.txPayload) {
+      const checkoutId = CheckoutIdLocalStorage.getCheckoutId();
+      const opts: MfaBeginOptions = {
+        checkoutId: checkoutId,
+        txPayload: options.txPayload,
+      };
+
+      await this.mfa.beginFlow("", opts);
+    }
+
     const result = await this.mfa.performAction(factorName, options);
     if (result.payloadSignature || result.accessToken) {
       const callback = async () => ({});

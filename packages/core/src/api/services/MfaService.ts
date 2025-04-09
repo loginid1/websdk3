@@ -10,6 +10,7 @@ import type { MfaOtpRequestRequestBody } from "../models/MfaOtpRequestRequestBod
 import type { MfaPasskeyRegRequestBody } from "../models/MfaPasskeyRegRequestBody";
 import type { MfaOtpVerifyRequestBody } from "../models/MfaOtpVerifyRequestBody";
 import type { MfaBeginRequestBody } from "../models/MfaBeginRequestBody";
+import type { MfaErrorRequestBody } from "../models/MfaErrorRequestBody";
 import type { CancelablePromise } from "../core/CancelablePromise";
 import type { BaseHttpRequest } from "../core/BaseHttpRequest";
 import type { MfaNext } from "../models/MfaNext";
@@ -44,6 +45,37 @@ export class MfaService {
         400: `bad_request: Bad Request response.`,
         403: `forbidden: Forbidden response.`,
         404: `not_found: Not Found response.`,
+        500: `internal_error: Internal Server Error response.`,
+      },
+    });
+  }
+  /**
+   * Verify auth token created by a third party via management API.
+   * Report a client error. It does not change state of the flow.
+   * @returns void
+   * @throws ApiError
+   */
+  public mfaMfaError({
+    requestBody,
+    authorization,
+  }: {
+    requestBody: MfaErrorRequestBody;
+    /**
+     * JWT Authorization header
+     */
+    authorization?: string;
+  }): CancelablePromise<void> {
+    return this.httpRequest.request({
+      method: "POST",
+      url: "/fido2/v2/mfa/error",
+      headers: {
+        Authorization: authorization,
+      },
+      body: requestBody,
+      mediaType: "application/json",
+      errors: {
+        400: `bad_request: Bad Request response.`,
+        401: `unauthorized: Unauthorized response.`,
         500: `internal_error: Internal Server Error response.`,
       },
     });

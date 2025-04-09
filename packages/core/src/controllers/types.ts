@@ -108,6 +108,11 @@ export interface MfaPerformActionOptions {
    * This typically contains user input or challenge-response data.
    */
   payload?: string;
+
+  /**
+   * Enables passkey support in browser autofill suggestions (conditional UI), if supported.
+   */
+  autoFill?: boolean;
 }
 
 /**
