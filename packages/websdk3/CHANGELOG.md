@@ -1,3 +1,9 @@
+## @loginid/websdk3 [3.2.2](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/websdk3@3.2.1...@loginid/websdk3@3.2.2) (2025-04-09)
+
+### Bug Fixes
+
+* **websdk3:** fixed passkey autofill issues ([46688a3](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/46688a389837c267329e7325303b6dac495f9f4d))
+
 ## @loginid/websdk3 [3.2.0](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/websdk3@3.1.1...@loginid/websdk3@3.2.0) (2025-04-02)
 
 ### Features
