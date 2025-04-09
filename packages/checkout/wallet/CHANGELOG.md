@@ -1,3 +1,9 @@
+## @loginid/checkout-wallet [1.1.1](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/checkout-wallet@1.1.0...@loginid/checkout-wallet@1.1.1) (2025-04-09)
+
+### Bug Fixes
+
+* **checkout-wallet:** fix broken dependency ([ee1bb24](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/ee1bb247081539c3ef523c799d9b43a44daae6b3))
+
 ## @loginid/checkout-wallet [1.1.0](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/checkout-wallet@1.0.0...@loginid/checkout-wallet@1.1.0) (2025-04-09)
 
 ### Features
