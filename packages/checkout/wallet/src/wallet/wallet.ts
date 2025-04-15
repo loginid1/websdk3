@@ -10,8 +10,11 @@ import {
   CheckoutBeginFlowOptions,
   CheckoutPerformActionOptions,
 } from "../types";
+import {
+  CheckoutIdLocalStorage,
+  WalletTrustIdStore,
+} from "@loginid/core/store";
 import { DiscoverResult, EmbeddedContextData } from "@loginid/checkout-commons";
-import { CheckoutIdLocalStorage } from "@loginid/core/store";
 import { createWalletCommunicator } from "../creators";
 import { WalletCommunicator } from "../communicators";
 import { CheckoutDiscovery } from "../discovery";
@@ -133,6 +136,11 @@ class LoginIDWalletAuth {
       const callback = async () => ({});
 
       this.communicator.sendData("EMBEDDED_CONTEXT", callback, {});
+
+      if (factorName === "passkey:reg" || factorName === "passkey:auth") {
+        const store = new WalletTrustIdStore();
+        store.markCheckoutIdAsValid();
+      }
     }
 
     return result;
