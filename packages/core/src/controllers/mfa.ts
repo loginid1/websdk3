@@ -162,6 +162,10 @@ export class MFA extends LoginIDBase {
         }
 
         if ("rp" in requestOptions) {
+          if (options.displayName) {
+            requestOptions.user.displayName = options.displayName;
+          }
+
           const regCompleteRequestBody =
             await WebAuthnHelper.createNavigatorCredential({
               action: "proceed",
