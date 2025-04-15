@@ -2,6 +2,7 @@
 
 import {
   LoginIDConfig,
+  MfaBeginOptions,
   MfaFactorName,
   MfaSessionResult,
 } from "@loginid/core/controllers";
@@ -9,6 +10,10 @@ import {
   CheckoutBeginFlowOptions,
   CheckoutPerformActionOptions,
 } from "../types";
+import {
+  CheckoutIdLocalStorage,
+  WalletTrustIdStore,
+} from "@loginid/core/store";
 import { DiscoverResult, EmbeddedContextData } from "@loginid/checkout-commons";
 import { createWalletCommunicator } from "../creators";
 import { WalletCommunicator } from "../communicators";
@@ -82,10 +87,14 @@ class LoginIDWalletAuth {
       await this.communicator.retrievePotentialData<EmbeddedContextData>(
         "EMBEDDED_CONTEXT",
       );
-    const opts = {
-      checkoutId: options.checkoutId || eData?.checkoutId,
+    const checkoutId = options.checkoutId || eData?.checkoutId;
+    const opts: MfaBeginOptions = {
+      checkoutId: checkoutId,
       txPayload: options.txPayload,
     };
+
+    CheckoutIdLocalStorage.persistCheckoutId(checkoutId || "");
+
     return await this.mfa.beginFlow(options.username || "", opts);
   }
 
@@ -111,11 +120,27 @@ class LoginIDWalletAuth {
     factorName: MfaFactorName,
     options: CheckoutPerformActionOptions = {},
   ): Promise<MfaSessionResult> {
+    // NOTE: This may be a temporary fix
+    if (factorName === "passkey:tx" && options.txPayload) {
+      const checkoutId = CheckoutIdLocalStorage.getCheckoutId();
+      const opts: MfaBeginOptions = {
+        checkoutId: checkoutId,
+        txPayload: options.txPayload,
+      };
+
+      await this.mfa.beginFlow("", opts);
+    }
+
     const result = await this.mfa.performAction(factorName, options);
     if (result.payloadSignature || result.accessToken) {
       const callback = async () => ({});
 
       this.communicator.sendData("EMBEDDED_CONTEXT", callback, {});
+
+      if (factorName === "passkey:reg" || factorName === "passkey:auth") {
+        const store = new WalletTrustIdStore();
+        store.markCheckoutIdAsValid();
+      }
     }
 
     return result;

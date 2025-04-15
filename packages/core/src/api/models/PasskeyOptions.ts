@@ -7,5 +7,9 @@ export type PasskeyOptions = {
   /**
    * Flag to allow conditional creation
    */
-  conditionalCreate: boolean;
+  conditionalCreate?: boolean;
+  /**
+   * Whether the authenticator is a security key
+   */
+  securityKey?: boolean;
 };

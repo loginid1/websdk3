@@ -15,5 +15,5 @@ export type MfaBeginRequestBody = {
    * TrustIDs provided with the request
    */
   trustItems?: Record<string, string>;
-  user: User;
+  user?: User;
 };

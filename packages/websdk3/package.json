@@ -1,6 +1,6 @@
 {
   "name": "@loginid/websdk3",
-  "version": "3.2.0",
+  "version": "3.2.3",
   "description": "",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -46,7 +46,7 @@
       "path": "./node_modules/cz-conventional-changelog"
     }
   },
-  "dependencies": {
+  "devDependencies": {
     "@loginid/core": "*"
   }
 }

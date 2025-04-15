@@ -5,6 +5,7 @@ import { CreationResult } from "./api";
 export type Transports = CreationResult["transports"];
 
 export interface GetNavigatorCredentialOptions {
+  autoFill?: boolean;
   abortController?: AbortController;
 }
 
@@ -45,6 +46,11 @@ export interface CheckoutIDRecord {
    * Cryptographic key pair used for signing and verification.
    */
   keyPair: CryptoKeyPair;
+
+  /**
+   * Indicates if the checkout ID has successfully been completed.
+   */
+  valid: boolean;
 }
 
 /**

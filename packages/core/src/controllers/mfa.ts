@@ -129,13 +129,16 @@ export class MFA extends LoginIDBase {
 
         if ("rpId" in requestOptions) {
           const authCompleteRequestBody =
-            await WebAuthnHelper.getNavigatorCredential({
-              action: "proceed",
-              assertionOptions: requestOptions,
-              crossAuthMethods: [],
-              fallbackMethods: [],
-              session: session,
-            });
+            await WebAuthnHelper.getNavigatorCredential(
+              {
+                action: "proceed",
+                assertionOptions: requestOptions,
+                crossAuthMethods: [],
+                fallbackMethods: [],
+                session: session,
+              },
+              { ...(options.autoFill && { autoFill: options.autoFill }) },
+            );
 
           if (factorName === "passkey:tx") {
             return await this.invokeMfaApi(appId, info?.username, async () => {
@@ -159,6 +162,10 @@ export class MFA extends LoginIDBase {
         }
 
         if ("rp" in requestOptions) {
+          if (options.displayName) {
+            requestOptions.user.displayName = options.displayName;
+          }
+
           const regCompleteRequestBody =
             await WebAuthnHelper.createNavigatorCredential({
               action: "proceed",
