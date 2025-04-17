@@ -134,6 +134,10 @@ class Passkeys extends OTP {
     const regCompleteRequestBody =
       await WebAuthnHelper.createNavigatorCredential(regInitResponseBody);
 
+    if (options.passkeyName) {
+      regCompleteRequestBody.passkeyName = options.passkeyName;
+    }
+
     const regCompleteResponse = await this.service.reg.regRegComplete({
       requestBody: regCompleteRequestBody,
     });

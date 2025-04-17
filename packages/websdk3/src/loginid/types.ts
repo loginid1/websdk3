@@ -113,6 +113,12 @@ export interface CreatePasskeyOptions extends MainPasskeyOptions {
    * A human-palatable name for the user account, intended only for display on your passkeys and modals.
    */
   displayName?: string;
+
+  /**
+   * A custom label or nickname for the passkey itself, used to help users distinguish between multiple passkeys.
+   * If not provided, a default name may be auto-generated based on the device and/or user-agent.
+   */
+  passkeyName?: string;
 }
 
 /**
