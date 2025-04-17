@@ -49,7 +49,7 @@ export class MFA extends LoginIDBase {
   ): Promise<MfaSessionResult> {
     const appId = this.config.getAppId();
     const deviceId = DeviceStore.getDeviceId(appId);
-    const deviceInfo = defaultDeviceInfo(deviceId);
+    const deviceInfo = await defaultDeviceInfo(deviceId);
     const opts = mfaOptions(username, options);
 
     let walletTrustId = "";
