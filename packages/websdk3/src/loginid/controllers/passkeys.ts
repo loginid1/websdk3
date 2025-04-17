@@ -98,7 +98,7 @@ class Passkeys extends OTP {
   ): Promise<AuthResult> {
     const appId = this.config.getAppId();
     const deviceId = DeviceStore.getDeviceId(appId);
-    const deviceInfo = defaultDeviceInfo(deviceId);
+    const deviceInfo = await defaultDeviceInfo(deviceId);
     const trustStore = new TrustStore(appId);
     const opts = passkeyOptions(username, authzToken, options);
 
@@ -197,7 +197,7 @@ class Passkeys extends OTP {
     options: AuthenticateWithPasskeysOptions = {},
   ): Promise<AuthResult> {
     const appId = this.config.getAppId();
-    const deviceInfo = defaultDeviceInfo(DeviceStore.getDeviceId(appId));
+    const deviceInfo = await defaultDeviceInfo(DeviceStore.getDeviceId(appId));
     const trustStore = new TrustStore(appId);
     const opts = passkeyOptions(username, "", options);
 
