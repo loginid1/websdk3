@@ -101,12 +101,25 @@ paths:
                 clientType: browser
                 clientVersion: 120.0.0.0
                 deviceId: 2a363a42-a397-4af0-b089-0935fc223017
+                hasBluetooth: true
                 lastUsedAt: '2025-01-02T16:40:44Z'
                 osArch: aarch64
                 osName: iOS
                 osVersion: 14.2.1
                 screenHeight: 1080
                 screenWidth: 1920
+                webauthnCapabilities: |-
+                  {
+                    "conditionalCreate": true,
+                    "conditionalGet": true,
+                    "hybridTransport": true,
+                    "passkeyPlatformAuthenticator": true,
+                    "userVerifyingPlatformAuthenticator": true,
+                    "relatedOrigins": true,
+                    "signalAllAcceptedCredentials": true,
+                    "signalCurrentUserDetails": true,
+                    "signalUnknownCredential": true
+                  }
               trustItems:
                 auth: DqjUIcwnq7edyyeMGCxWNqs1cNBrEjBXlB2mVxfja8s=
                 merchant: gpOLtpZWhxkKgwEJyYzB2ckXn9IXDID7jjiaYFYTfS4=
@@ -415,6 +428,75 @@ paths:
               example:
                 msg: Internal error
                 msgCode: internal_error
+  /fido2/v2/client-errors/submit:
+    post:
+      tags:
+        - client-errors
+      summary: Report a client side error.
+      description: Report a client error. It does not change state of the flow.
+      operationId: client-errors#submit
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmitRequestBody'
+            example:
+              error: ERROR_DISCOVERABLE_CREDENTIALS_UNSUPPORTED
+      responses:
+        '200':
+          description: OK response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Session'
+              example:
+                session: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
+        '400':
+          description: 'bad_request: Bad Request response.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppError'
+              example:
+                msg: Internal error
+                msgCode: internal_error
+        '401':
+          description: 'unauthorized: Unauthorized response.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppError'
+              example:
+                msg: Internal error
+                msgCode: internal_error
+        '404':
+          description: 'not_found: Not Found response.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppError'
+              example:
+                msg: Internal error
+                msgCode: internal_error
+        '500':
+          description: 'internal_error: Internal Server Error response.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppError'
+              example:
+                msg: Internal error
+                msgCode: internal_error
+      security:
+        - sessionAuth_header_Authorization: []
+      parameters:
+        - name: Authorization
+          in: header
+          description: JWT Authorization header
+          required: false
+          schema:
+            type: string
   /fido2/v2/mfa/begin:
     post:
       tags:
@@ -449,12 +531,25 @@ paths:
                 clientType: browser
                 clientVersion: 120.0.0.0
                 deviceId: 2a363a42-a397-4af0-b089-0935fc223017
+                hasBluetooth: true
                 lastUsedAt: '2025-01-02T16:40:44Z'
                 osArch: aarch64
                 osName: iOS
                 osVersion: 14.2.1
                 screenHeight: 1080
                 screenWidth: 1920
+                webauthnCapabilities: |-
+                  {
+                    "conditionalCreate": true,
+                    "conditionalGet": true,
+                    "hybridTransport": true,
+                    "passkeyPlatformAuthenticator": true,
+                    "userVerifyingPlatformAuthenticator": true,
+                    "relatedOrigins": true,
+                    "signalAllAcceptedCredentials": true,
+                    "signalCurrentUserDetails": true,
+                    "signalUnknownCredential": true
+                  }
               payload: ak4BXFgauyDtsRvnXWfaTW1DyetX7fTViGY9DRQGQ+g=
               trustItems:
                 auth: DqjUIcwnq7edyyeMGCxWNqs1cNBrEjBXlB2mVxfja8s=
@@ -546,60 +641,6 @@ paths:
               example:
                 msg: Internal error
                 msgCode: internal_error
-  /fido2/v2/mfa/error:
-    post:
-      tags:
-        - mfa
-      summary: Verify auth token created by a third party via management API.
-      description: Report a client error. It does not change state of the flow.
-      operationId: mfa#mfaError
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/MfaErrorRequestBody'
-            example:
-              error: ERROR_DISCOVERABLE_CREDENTIALS_UNSUPPORTED
-      responses:
-        '204':
-          description: No Content response.
-        '400':
-          description: 'bad_request: Bad Request response.'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AppError'
-              example:
-                msg: Internal error
-                msgCode: internal_error
-        '401':
-          description: 'unauthorized: Unauthorized response.'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AppError'
-              example:
-                msg: Internal error
-                msgCode: internal_error
-        '500':
-          description: 'internal_error: Internal Server Error response.'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AppError'
-              example:
-                msg: Internal error
-                msgCode: internal_error
-      security:
-        - mfaSession_header_Authorization: []
-      parameters:
-        - name: Authorization
-          in: header
-          description: JWT Authorization header
-          required: false
-          schema:
-            type: string
   /fido2/v2/mfa/otp/request:
     post:
       tags:
@@ -653,7 +694,7 @@ paths:
                 msg: Internal error
                 msgCode: internal_error
       security:
-        - mfaSession_header_Authorization: []
+        - sessionAuth_header_Authorization: []
       parameters:
         - name: Authorization
           in: header
@@ -755,7 +796,7 @@ paths:
                 msg: Internal error
                 msgCode: internal_error
       security:
-        - mfaSession_header_Authorization: []
+        - sessionAuth_header_Authorization: []
       parameters:
         - name: Authorization
           in: header
@@ -862,7 +903,7 @@ paths:
                 msg: Internal error
                 msgCode: internal_error
       security:
-        - mfaSession_header_Authorization: []
+        - sessionAuth_header_Authorization: []
       parameters:
         - name: Authorization
           in: header
@@ -938,7 +979,7 @@ paths:
                 msg: Internal error
                 msgCode: internal_error
       security:
-        - mfaSession_header_Authorization: []
+        - sessionAuth_header_Authorization: []
       parameters:
         - name: Authorization
           in: header
@@ -1009,7 +1050,7 @@ paths:
                 msg: Internal error
                 msgCode: internal_error
       security:
-        - mfaSession_header_Authorization: []
+        - sessionAuth_header_Authorization: []
       parameters:
         - name: Authorization
           in: header
@@ -1112,7 +1153,7 @@ paths:
                 msg: Internal error
                 msgCode: internal_error
       security:
-        - mfaSession_header_Authorization: []
+        - sessionAuth_header_Authorization: []
       parameters:
         - name: Authorization
           in: header
@@ -1473,6 +1514,7 @@ paths:
                   - internal
                   - internal
                   - usb
+              passkeyName: Windows Hello (Win11,Chrome) - 2025-04-07 20:46
               session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
       responses:
         '200':
@@ -1553,12 +1595,25 @@ paths:
                 clientType: browser
                 clientVersion: 120.0.0.0
                 deviceId: 2a363a42-a397-4af0-b089-0935fc223017
+                hasBluetooth: true
                 lastUsedAt: '2025-01-02T16:40:44Z'
                 osArch: aarch64
                 osName: iOS
                 osVersion: 14.2.1
                 screenHeight: 1080
                 screenWidth: 1920
+                webauthnCapabilities: |-
+                  {
+                    "conditionalCreate": true,
+                    "conditionalGet": true,
+                    "hybridTransport": true,
+                    "passkeyPlatformAuthenticator": true,
+                    "userVerifyingPlatformAuthenticator": true,
+                    "relatedOrigins": true,
+                    "signalAllAcceptedCredentials": true,
+                    "signalCurrentUserDetails": true,
+                    "signalUnknownCredential": true
+                  }
               passkeyOptions:
                 conditionalCreate: false
                 securityKey: false
@@ -1580,7 +1635,7 @@ paths:
               example:
                 action: proceed
                 registrationRequestOptions:
-                  attestation: direct
+                  attestation: enterprise
                   authenticatorSelection:
                     authenticatorAttachment: platform
                     requireResidentKey: true
@@ -1955,7 +2010,7 @@ components:
           type: array
           items:
             type: string
-            example: otp
+            example: otp:sms
             enum:
               - otp
               - otp:sms
@@ -2017,7 +2072,7 @@ components:
             appid: https://loalhost:8443
           rpId: https://localhost:8443/
           timeout: 5000
-          userVerification: Aspernatur quod qui rerum totam asperiores.
+          userVerification: Laudantium molestiae est.
         crossAuthMethods:
           - otp
           - otp:sms
@@ -2048,7 +2103,7 @@ components:
             wallet: NlPsJDfILKo0nCxuu2lrv6q9SBqgKLvpIuqSI4izk9k=
           additionalProperties:
             type: string
-            example: Repellat aut quis harum cupiditate.
+            example: Temporibus cumque rerum natus aut alias similique.
         user:
           $ref: '#/components/schemas/UserLogin'
       example:
@@ -2059,12 +2114,25 @@ components:
           clientType: browser
           clientVersion: 120.0.0.0
           deviceId: 2a363a42-a397-4af0-b089-0935fc223017
+          hasBluetooth: true
           lastUsedAt: '2025-01-02T16:40:44Z'
           osArch: aarch64
           osName: iOS
           osVersion: 14.2.1
           screenHeight: 1080
           screenWidth: 1920
+          webauthnCapabilities: |-
+            {
+              "conditionalCreate": true,
+              "conditionalGet": true,
+              "hybridTransport": true,
+              "passkeyPlatformAuthenticator": true,
+              "userVerifyingPlatformAuthenticator": true,
+              "relatedOrigins": true,
+              "signalAllAcceptedCredentials": true,
+              "signalCurrentUserDetails": true,
+              "signalUnknownCredential": true
+            }
         trustItems:
           auth: DqjUIcwnq7edyyeMGCxWNqs1cNBrEjBXlB2mVxfja8s=
           merchant: gpOLtpZWhxkKgwEJyYzB2ckXn9IXDID7jjiaYFYTfS4=
@@ -2085,7 +2153,7 @@ components:
             bindings
 
             made by the authenticator.
-          example: Dolores ea consequuntur eos blanditiis voluptatem.
+          example: Amet architecto.
         clientDataJSON:
           type: string
           description: >-
@@ -2141,11 +2209,11 @@ components:
           type: boolean
           description: Resident key requirement
           default: false
-          example: false
+          example: true
         residentKey:
           type: string
           description: Resident key requirement
-          example: discouraged
+          example: preferred
           enum:
             - discouraged
             - preferred
@@ -2153,16 +2221,16 @@ components:
         userVerification:
           type: string
           description: User verification requirement
-          example: preferred
+          example: required
           enum:
             - required
             - preferred
             - discouraged
       example:
-        authenticatorAttachment: cross-platform
+        authenticatorAttachment: platform
         requireResidentKey: true
-        residentKey: discouraged
-        userVerification: Aspernatur quod qui rerum totam asperiores.
+        residentKey: preferred
+        userVerification: Laudantium molestiae est.
     CreationResult:
       type: object
       properties:
@@ -2181,7 +2249,7 @@ components:
             bindings
 
             made by the authenticator.
-          example: Velit quo cupiditate voluptatibus.
+          example: Ut dicta assumenda exercitationem.
         clientDataJSON:
           type: string
           description: >-
@@ -2253,7 +2321,6 @@ components:
         transports:
           - internal
           - internal
-          - internal
       required:
         - clientDataJSON
         - attestationObject
@@ -2283,6 +2350,11 @@ components:
           type: string
           description: An unique device identifier
           example: 2a363a42-a397-4af0-b089-0935fc223017
+        hasBluetooth:
+          type: boolean
+          description: Whether the client browser has access to bluetooth.
+          default: false
+          example: true
         lastUsedAt:
           type: string
           description: Last use timestamp in rfc3339 format
@@ -2314,6 +2386,21 @@ components:
           default: 0
           example: 1920
           format: int64
+        webauthnCapabilities:
+          type: string
+          description: JSON string containing client webauthn capabilities.
+          example: |-
+            {
+              "conditionalCreate": true,
+              "conditionalGet": true,
+              "hybridTransport": true,
+              "passkeyPlatformAuthenticator": true,
+              "userVerifyingPlatformAuthenticator": true,
+              "relatedOrigins": true,
+              "signalAllAcceptedCredentials": true,
+              "signalCurrentUserDetails": true,
+              "signalUnknownCredential": true
+            }
       description: >-
         Information about the device. All of these attributes are optional and
         should
@@ -2326,12 +2413,25 @@ components:
         clientType: browser
         clientVersion: 120.0.0.0
         deviceId: 2a363a42-a397-4af0-b089-0935fc223017
+        hasBluetooth: true
         lastUsedAt: '2025-01-02T16:40:44Z'
         osArch: aarch64
         osName: iOS
         osVersion: 14.2.1
         screenHeight: 1080
         screenWidth: 1920
+        webauthnCapabilities: |-
+          {
+            "conditionalCreate": true,
+            "conditionalGet": true,
+            "hybridTransport": true,
+            "passkeyPlatformAuthenticator": true,
+            "userVerifyingPlatformAuthenticator": true,
+            "relatedOrigins": true,
+            "signalAllAcceptedCredentials": true,
+            "signalCurrentUserDetails": true,
+            "signalUnknownCredential": true
+          }
     JWT:
       type: object
       properties:
@@ -2420,11 +2520,11 @@ components:
             desc:
               type: string
               description: Action description
-              example: Nihil id ea temporibus.
+              example: Quae aut consequuntur voluptatibus fugiat nobis cumque.
             label:
               type: string
               description: Human readable action label
-              example: Qui ea qui.
+              example: Aut vel ducimus ratione quidem ut.
             name:
               type: string
               description: Next Action to be performed.
@@ -2438,8 +2538,8 @@ components:
                 - otp:verify
                 - external
           example:
-            desc: Nihil dolor aperiam corrupti.
-            label: Ut voluptatem quia aliquid non.
+            desc: Nihil id ea temporibus.
+            label: Qui ea qui.
             name: passkey
           required:
             - name
@@ -2457,8 +2557,8 @@ components:
       description: Next Action to be performed.
       example:
         action:
-          desc: Excepturi iste nulla tenetur.
-          label: Aut eveniet nobis error id et.
+          desc: Nihil dolor aperiam corrupti.
+          label: Ut voluptatem quia aliquid non.
           name: passkey
         options:
           - label: primary@example.com
@@ -2485,7 +2585,7 @@ components:
             wallet: NlPsJDfILKo0nCxuu2lrv6q9SBqgKLvpIuqSI4izk9k=
           additionalProperties:
             type: string
-            example: Aliquam earum minima.
+            example: Architecto alias repellat.
         user:
           $ref: '#/components/schemas/User'
       example:
@@ -2494,12 +2594,25 @@ components:
           clientType: browser
           clientVersion: 120.0.0.0
           deviceId: 2a363a42-a397-4af0-b089-0935fc223017
+          hasBluetooth: true
           lastUsedAt: '2025-01-02T16:40:44Z'
           osArch: aarch64
           osName: iOS
           osVersion: 14.2.1
           screenHeight: 1080
           screenWidth: 1920
+          webauthnCapabilities: |-
+            {
+              "conditionalCreate": true,
+              "conditionalGet": true,
+              "hybridTransport": true,
+              "passkeyPlatformAuthenticator": true,
+              "userVerifyingPlatformAuthenticator": true,
+              "relatedOrigins": true,
+              "signalAllAcceptedCredentials": true,
+              "signalCurrentUserDetails": true,
+              "signalUnknownCredential": true
+            }
         payload: ak4BXFgauyDtsRvnXWfaTW1DyetX7fTViGY9DRQGQ+g=
         trustItems:
           auth: DqjUIcwnq7edyyeMGCxWNqs1cNBrEjBXlB2mVxfja8s=
@@ -2509,18 +2622,6 @@ components:
           displayName: System Administrator
           username: admin@example.com
           usernameType: email
-    MfaErrorRequestBody:
-      type: object
-      properties:
-        error:
-          type: string
-          description: Client side error code.
-          example: ERROR_DISCOVERABLE_CREDENTIALS_UNSUPPORTED
-          pattern: ^ERROR_
-      example:
-        error: ERROR_DISCOVERABLE_CREDENTIALS_UNSUPPORTED
-      required:
-        - error
     MfaNext:
       type: object
       properties:
@@ -2634,19 +2735,19 @@ components:
         label:
           type: string
           description: Human readable label
-          example: Repudiandae nulla nihil nulla animi voluptatum.
+          example: Facilis ex eos quisquam ducimus.
         name:
           type: string
           description: Option name
-          example: Ducimus aut voluptatem impedit quos dolor quis.
+          example: Aut quos commodi inventore beatae hic.
         value:
           type: string
           description: Option value to be used in the next request
-          example: Magnam in dolorem voluptas non.
+          example: Voluptatem impedit quos dolor quis.
       example:
-        label: Aut vel ducimus ratione quidem ut.
-        name: Voluptate temporibus.
-        value: Quae aut consequuntur voluptatibus fugiat nobis cumque.
+        label: Magnam in dolorem voluptas non.
+        name: Repudiandae nulla nihil nulla animi voluptatum.
+        value: Voluptate temporibus.
       required:
         - value
     MfaOtpRequestRequestBody:
@@ -2777,7 +2878,7 @@ components:
       example:
         aaguid: fbfc3007-154e-4ecc-8c0b-6e020557d7bd
         createdAt: 2023-06-15 13:29:41 EDT
-        credentialSynced: false
+        credentialSynced: true
         id: 861ee00b-b40d-493a-a10b-457a0d527b48
         lastUsedAt: '2025-01-02T16:40:44Z'
         lastUsedFromDevice:
@@ -2891,6 +2992,7 @@ components:
           example:
             - internal
             - internal
+            - internal
         type:
           type: string
           description: The valid credential types.
@@ -2902,9 +3004,7 @@ components:
         transports:
           - internal
           - internal
-          - internal
-          - internal
-        type: Laudantium voluptatem.
+        type: Nulla tenetur temporibus quae adipisci.
       required:
         - type
         - id
@@ -2992,7 +3092,7 @@ components:
         user:
           $ref: '#/components/schemas/PublicKeyCredentialUserEntity'
       example:
-        attestation: Repudiandae maxime quas numquam quia porro.
+        attestation: Odio qui totam exercitationem.
         authenticatorSelection:
           authenticatorAttachment: platform
           requireResidentKey: true
@@ -3040,7 +3140,7 @@ components:
             generated,
 
             e.g., RSA or Elliptic Curve.
-          example: -257
+          example: -7
           enum:
             - -7
             - -35
@@ -3056,8 +3156,8 @@ components:
             - public-key
       description: Additional parameters when creating a new credential.
       example:
-        alg: -7
-        type: Laudantium voluptatem.
+        alg: -35
+        type: Nulla tenetur temporibus quae adipisci.
     PublicKeyCredentialRequestOptions:
       type: object
       properties:
@@ -3149,7 +3249,7 @@ components:
           appid: https://loalhost:8443
         rpId: https://localhost:8443/
         timeout: 5000
-        userVerification: Aspernatur quod qui rerum totam asperiores.
+        userVerification: Laudantium molestiae est.
       required:
         - challenge
     PublicKeyCredentialRpEntity:
@@ -3199,6 +3299,10 @@ components:
       properties:
         creationResult:
           $ref: '#/components/schemas/CreationResult'
+        passkeyName:
+          type: string
+          description: Passkey name that will be shown to the user in passkey list.
+          example: Windows Hello (Win11,Chrome) - 2025-04-07 20:46
         session:
           type: string
           description: An opaque object containing session data.
@@ -3216,6 +3320,7 @@ components:
             - internal
             - internal
             - usb
+        passkeyName: Windows Hello (Win11,Chrome) - 2025-04-07 20:46
         session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
       required:
         - session
@@ -3244,7 +3349,7 @@ components:
       example:
         action: proceed
         registrationRequestOptions:
-          attestation: Repudiandae maxime quas numquam quia porro.
+          attestation: Odio qui totam exercitationem.
           authenticatorSelection:
             authenticatorAttachment: platform
             requireResidentKey: true
@@ -3297,7 +3402,7 @@ components:
             wallet: NlPsJDfILKo0nCxuu2lrv6q9SBqgKLvpIuqSI4izk9k=
           additionalProperties:
             type: string
-            example: Aut nulla est enim.
+            example: Quis harum cupiditate facilis aliquam earum.
         user:
           $ref: '#/components/schemas/User'
       example:
@@ -3308,12 +3413,25 @@ components:
           clientType: browser
           clientVersion: 120.0.0.0
           deviceId: 2a363a42-a397-4af0-b089-0935fc223017
+          hasBluetooth: true
           lastUsedAt: '2025-01-02T16:40:44Z'
           osArch: aarch64
           osName: iOS
           osVersion: 14.2.1
           screenHeight: 1080
           screenWidth: 1920
+          webauthnCapabilities: |-
+            {
+              "conditionalCreate": true,
+              "conditionalGet": true,
+              "hybridTransport": true,
+              "passkeyPlatformAuthenticator": true,
+              "userVerifyingPlatformAuthenticator": true,
+              "relatedOrigins": true,
+              "signalAllAcceptedCredentials": true,
+              "signalCurrentUserDetails": true,
+              "signalUnknownCredential": true
+            }
         passkeyOptions:
           conditionalCreate: false
           securityKey: false
@@ -3328,6 +3446,32 @@ components:
       required:
         - app
         - deviceInfo
+    Session:
+      type: object
+      properties:
+        session:
+          type: string
+          description: >-
+            An opaque "session" object that shall be used with any subsequent
+            calls.
+          example: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
+      description: >-
+        Authentication response will contain authzToken on success of list of
+        available options for the next step.
+      example:
+        session: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
+    SubmitRequestBody:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Client side error code.
+          example: ERROR_DISCOVERABLE_CREDENTIALS_UNSUPPORTED
+          pattern: ^ERROR_
+      example:
+        error: ERROR_DISCOVERABLE_CREDENTIALS_UNSUPPORTED
+      required:
+        - error
     TxComplete:
       type: object
       properties:
@@ -3433,7 +3577,7 @@ components:
             appid: https://loalhost:8443
           rpId: https://localhost:8443/
           timeout: 5000
-          userVerification: Aspernatur quod qui rerum totam asperiores.
+          userVerification: Laudantium molestiae est.
         session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
         txId: 2a363a42-a397-4af0-b089-0935fc223017
       required:
@@ -3526,12 +3670,14 @@ components:
     jwt_header_Authorization:
       type: http
       scheme: bearer
-    mfaSession_header_Authorization:
+    sessionAuth_header_Authorization:
       type: apiKey
       description: Secures endpoint by requiring a session object.
       name: Authorization
       in: header
 tags:
+  - name: client-errors
+    description: Error reporting endpoint
   - name: tx
     description: FIDO2 transaction confirmation flow
   - name: auth

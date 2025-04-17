@@ -3,6 +3,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 
+import { ClientErrorsService } from "./services/ClientErrorsService";
 import type { BaseHttpRequest } from "./core/BaseHttpRequest";
 import { PasskeysService } from "./services/PasskeysService";
 import { FetchHttpRequest } from "./core/FetchHttpRequest";
@@ -14,6 +15,7 @@ import { TxService } from "./services/TxService";
 type HttpRequestConstructor = new (config: OpenAPIConfig) => BaseHttpRequest;
 export class LoginIDService {
   public readonly auth: AuthService;
+  public readonly clientErrors: ClientErrorsService;
   public readonly mfa: MfaService;
   public readonly passkeys: PasskeysService;
   public readonly reg: RegService;
@@ -35,6 +37,7 @@ export class LoginIDService {
       ENCODE_PATH: config?.ENCODE_PATH,
     });
     this.auth = new AuthService(this.request);
+    this.clientErrors = new ClientErrorsService(this.request);
     this.mfa = new MfaService(this.request);
     this.passkeys = new PasskeysService(this.request);
     this.reg = new RegService(this.request);
