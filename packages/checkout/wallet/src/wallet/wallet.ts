@@ -137,7 +137,12 @@ class LoginIDWalletAuth {
 
       this.communicator.sendData("EMBEDDED_CONTEXT", callback, {});
 
-      if (factorName === "passkey:reg" || factorName === "passkey:auth") {
+      const passkeyFactors = new Set([
+        "passkey:reg",
+        "passkey:auth",
+        "passkey:tx",
+      ]);
+      if (passkeyFactors.has(factorName)) {
         const store = new WalletTrustIdStore();
         store.markCheckoutIdAsValid();
       }
