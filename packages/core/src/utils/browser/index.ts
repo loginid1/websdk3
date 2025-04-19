@@ -8,7 +8,14 @@ import { DeviceInfo } from "../../api";
  * such as browser name, version, operating system, and architecture.
  * It constructs a deviceInfoRequestBody object containing this information and returns it.
  */
-export const defaultDeviceInfo = (deviceId?: string): DeviceInfo => {
+export const defaultDeviceInfo = async (
+  deviceId?: string,
+): Promise<DeviceInfo> => {
+  const webauthnClientCapabilities = JSON.stringify(
+    await getClientCapabilities(),
+  );
+  const bluetooth = await isBluetoothAvailable();
+
   const device: DeviceInfo = {
     clientType: "browser",
     screenWidth: window.screen.width,
@@ -19,6 +26,8 @@ export const defaultDeviceInfo = (deviceId?: string): DeviceInfo => {
     osName: "",
     osVersion: "",
     osArch: "",
+    hasBluetooth: bluetooth,
+    webauthnCapabilities: webauthnClientCapabilities,
   };
 
   if (deviceId) {
@@ -57,6 +66,59 @@ export const isConditionalUIAvailable = async (): Promise<boolean> => {
       return false;
     }
     return await window.PublicKeyCredential.isConditionalMediationAvailable();
+  } catch {
+    return false;
+  }
+};
+
+/**
+ * Returns WebAuthn client capabilities, using the native API if available.
+ * Falls back to basic checks if `getClientCapabilities()` is not supported.
+ *
+ * @returns {Promise<Record<string, boolean> | null>}
+ * @see https://w3c.github.io/webauthn/#sctn-getClientCapabilities
+ */
+export const getClientCapabilities = async (): Promise<
+  Record<string, boolean>
+> => {
+  try {
+    if (!window.PublicKeyCredential) {
+      return {};
+    }
+
+    if (!window.PublicKeyCredential.getClientCapabilities) {
+      const iuvpaa = await isPlatformAuthenticatorAvailable();
+      const icma = await isConditionalUIAvailable();
+
+      const capabilities = {
+        userVerifyingPlatformAuthenticator: iuvpaa,
+        conditionalGet: icma,
+      };
+
+      return capabilities;
+    }
+
+    return await window.PublicKeyCredential.getClientCapabilities();
+  } catch {
+    return {};
+  }
+};
+
+/**
+ * Checks if Bluetooth is available on the device.
+ * Note: Availability does not guarantee permission or successful connection.
+ *
+ * @returns {Promise<boolean>}
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/Bluetooth/getAvailability
+ */
+export const isBluetoothAvailable = async (): Promise<boolean> => {
+  try {
+    //@ts-expect-error: Not found in offical TypeScript types
+    if (!navigator.bluetooth) {
+      return false;
+    }
+    //@ts-expect-error: Not found in offical TypeScript types
+    return await navigator.bluetooth.getAvailability();
   } catch {
     return false;
   }

@@ -3,7 +3,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 
-export type MfaErrorRequestBody = {
+export type SubmitRequestBody = {
   /**
    * Client side error code.
    */
