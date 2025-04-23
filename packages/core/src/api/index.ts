@@ -59,7 +59,7 @@ export type { User } from "./models/User";
 export type { UserLogin } from "./models/UserLogin";
 
 export { AuthService } from "./services/AuthService";
-export { ClientErrorsService } from "./services/ClientErrorsService";
+export { ClientEventsService } from "./services/ClientEventsService";
 export { MfaService } from "./services/MfaService";
 export { PasskeysService } from "./services/PasskeysService";
 export { RegService } from "./services/RegService";

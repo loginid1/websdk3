@@ -49,7 +49,7 @@ export const identifyCreateError = (
   if (name === "NotAllowedError") {
     return new PasskeyError(
       "Passkey creation has failed",
-      "ERROR_GENERAL_ERROR_SEE_CAUSE_FIELD",
+      "ERROR_GENERAL_ERROR",
       error,
     );
   }
@@ -113,7 +113,7 @@ export const identifyGetError = (
   if (name === "NotAllowedError") {
     return new PasskeyError(
       "Passkey authentication has failed",
-      "ERROR_GENERAL_ERROR_SEE_CAUSE_FIELD",
+      "ERROR_GENERAL_ERROR",
       error,
     );
   }

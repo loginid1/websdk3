@@ -428,13 +428,13 @@ paths:
               example:
                 msg: Internal error
                 msgCode: internal_error
-  /fido2/v2/client-errors/submit:
+  /fido2/v2/client-events/submit:
     post:
       tags:
-        - client-errors
-      summary: Report a client side error.
-      description: Report a client error. It does not change state of the flow.
-      operationId: client-errors#submit
+        - client-events
+      summary: Report a client side event.
+      description: Report a client event. It does not change state of the flow.
+      operationId: client-events#submit
       requestBody:
         required: true
         content:
@@ -442,7 +442,8 @@ paths:
             schema:
               $ref: '#/components/schemas/SubmitRequestBody'
             example:
-              error: ERROR_DISCOVERABLE_CREDENTIALS_UNSUPPORTED
+              event: ERROR_DISCOVERABLE_CREDENTIALS_UNSUPPORTED
+              isError: true
       responses:
         '200':
           description: OK response.
@@ -3463,15 +3464,20 @@ components:
     SubmitRequestBody:
       type: object
       properties:
-        error:
+        event:
           type: string
-          description: Client side error code.
+          description: Client side event.
           example: ERROR_DISCOVERABLE_CREDENTIALS_UNSUPPORTED
-          pattern: ^ERROR_
+        isError:
+          type: boolean
+          description: Whether the event is a result of an error.
+          default: false
+          example: true
       example:
-        error: ERROR_DISCOVERABLE_CREDENTIALS_UNSUPPORTED
+        event: ERROR_DISCOVERABLE_CREDENTIALS_UNSUPPORTED
+        isError: true
       required:
-        - error
+        - event
     TxComplete:
       type: object
       properties:
@@ -3676,7 +3682,7 @@ components:
       name: Authorization
       in: header
 tags:
-  - name: client-errors
+  - name: client-events
     description: Error reporting endpoint
   - name: tx
     description: FIDO2 transaction confirmation flow
