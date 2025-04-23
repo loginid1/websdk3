@@ -46,6 +46,11 @@ export interface CheckoutIDRecord {
    * Cryptographic key pair used for signing and verification.
    */
   keyPair: CryptoKeyPair;
+
+  /**
+   * Indicates if the checkout ID has successfully been completed.
+   */
+  valid: boolean;
 }
 
 /**

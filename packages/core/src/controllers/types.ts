@@ -113,6 +113,11 @@ export interface MfaPerformActionOptions {
    * Enables passkey support in browser autofill suggestions (conditional UI), if supported.
    */
   autoFill?: boolean;
+
+  /**
+   * A human-palatable name for the user account, intended only for display on your passkeys..
+   */
+  displayName?: string;
 }
 
 /**

@@ -13,4 +13,5 @@ export type PasskeyErrorCode =
 export type StorageErrorCode =
   | "ERROR_STORAGE_NOT_FOUND"
   | "ERROR_STORAGE_FAILED"
-  | "ERROR_STORAGE_FAILED_TO_OPEN";
+  | "ERROR_STORAGE_FAILED_TO_OPEN"
+  | "ERROR_STORAGE_UPDATE_FAILED";
