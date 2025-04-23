@@ -35,4 +35,12 @@ export class LoginIDConfigValidator {
       throw new Error("Invalid LoginID base URL. App ID not found.");
     }
   }
+
+  /**
+   * Retrieves the original LoginID configuration object.
+   * @returns {LoginIDConfig} The configuration object.
+   */
+  getConfig(): LoginIDConfig {
+    return this.config;
+  }
 }

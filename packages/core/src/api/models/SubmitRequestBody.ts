@@ -5,7 +5,11 @@
 
 export type SubmitRequestBody = {
   /**
-   * Client side error code.
+   * Client side event.
    */
-  error: string;
+  event: string;
+  /**
+   * Whether the event is a result of an error.
+   */
+  isError?: boolean;
 };

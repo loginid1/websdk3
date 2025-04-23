@@ -7,15 +7,15 @@ import type { SubmitRequestBody } from "../models/SubmitRequestBody";
 import type { CancelablePromise } from "../core/CancelablePromise";
 import type { BaseHttpRequest } from "../core/BaseHttpRequest";
 import type { Session } from "../models/Session";
-export class ClientErrorsService {
+export class ClientEventsService {
   constructor(public readonly httpRequest: BaseHttpRequest) {}
   /**
-   * Report a client side error.
-   * Report a client error. It does not change state of the flow.
+   * Report a client side event.
+   * Report a client event. It does not change state of the flow.
    * @returns Session OK response.
    * @throws ApiError
    */
-  public clientErrorsSubmit({
+  public clientEventsSubmit({
     requestBody,
     authorization,
   }: {
@@ -27,7 +27,7 @@ export class ClientErrorsService {
   }): CancelablePromise<Session> {
     return this.httpRequest.request({
       method: "POST",
-      url: "/fido2/v2/client-errors/submit",
+      url: "/fido2/v2/client-events/submit",
       headers: {
         Authorization: authorization,
       },
