@@ -119,6 +119,11 @@ export interface CreatePasskeyOptions extends MainPasskeyOptions {
    * If not provided, a default name may be auto-generated based on the device and/or user-agent.
    */
   passkeyName?: string;
+
+  /**
+   * Indicates that the credential should be a cross-platform FIDO credential (e.g., a hardware security key or a hybrid passkey).
+   */
+  crossPlatform?: boolean;
 }
 
 /**
