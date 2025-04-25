@@ -2,6 +2,7 @@
 
 import { LoginIDBase, LoginIDConfig } from "../controllers";
 import { PasskeyError } from "../errors";
+import { Session } from "../api";
 
 /**
  * Handles client-side events reporting for LoginID services.
@@ -29,6 +30,11 @@ export class ClientEvents extends LoginIDBase {
    * @param {Error} error - The error to report. Only `PasskeyError` instances are submitted.
    */
   public async reportError(session: string, error: Error) {
+    const { disableAnalytics } = this.config.getConfig();
+    if (disableAnalytics) {
+      return { session: "" } as Session;
+    }
+
     if (error instanceof PasskeyError) {
       const originalError = error.cause as Error;
       const message = `${error.code} - ${error.message} - ${originalError.name} - ${originalError.message}`;

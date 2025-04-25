@@ -30,6 +30,11 @@ export interface LoginIDConfig {
    * The optional app ID for specific application.
    */
   appId?: string;
+
+  /**
+   * If true, disables sending analytics/events to LoginID. Defaults to false.
+   */
+  disableAnalytics?: boolean;
 }
 
 /**
