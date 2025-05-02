@@ -56,7 +56,7 @@ class LoginIDMerchantCheckout {
     const checkoutId = await store.setOrSignWithCheckoutId();
     const discoveryResult = await discovery.discover();
 
-    if (discoveryResult.flow === "EMBEDDED_CONTEXT") {
+    if (discoveryResult.flow === "EMBED") {
       const communicator = createMerchantCommunicator(params);
       const data = {
         checkoutId: checkoutId,
@@ -64,7 +64,7 @@ class LoginIDMerchantCheckout {
       const result = await communicator.receiveData<
         EmbeddedContextData,
         EmbeddedContextResult
-      >("EMBEDDED_CONTEXT", data);
+      >("EMBED", data);
 
       if (result.error) {
         await params.errorCallback?.(result.error);
