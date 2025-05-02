@@ -37,7 +37,7 @@ export class WalletToMerchant implements WalletCommunicator {
    * Retrieves any pending request data sent from the parent to the iframe, based on the given receiver type.
    *
    * @template T - The expected type of the retrieved data.
-   * @param {ReceiverType} type - The type of communication context (e.g., "EMBEDDED_CONTEXT").
+   * @param {ReceiverType} type - The type of communication context (e.g., "EMBED").
    * @returns {T | void} - The retrieved data if available, or `void` if no matching request is found or not in an iframe.
    * @throws {Error} Throws if the receiver type is invalid.
    */
@@ -47,7 +47,7 @@ export class WalletToMerchant implements WalletCommunicator {
     }
 
     switch (type) {
-      case "EMBEDDED_CONTEXT": {
+      case "EMBED": {
         const getPendingRequests =
           await this.childIframeApi.getPendingRequests();
 
@@ -73,7 +73,7 @@ export class WalletToMerchant implements WalletCommunicator {
    *
    * @template T - The type of the expected incoming data.
    * @template U - The type of the data to be returned by the callback.
-   * @param {ReceiverType} type - The communication flow type (e.g., "DISCOVER", "EMBEDDED_CONTEXT").
+   * @param {ReceiverType} type - The communication flow type (e.g., "DISCOVER", "EMBED").
    * @param {ResultCallback<T, U>} callback - A function to handle the received data and return a response.
    * @param {SendDataOptions} options - Options to control behavior such as redirection fallback.
    * @throws {Error} Throws if the receiver type is invalid.
@@ -97,7 +97,7 @@ export class WalletToMerchant implements WalletCommunicator {
         break;
       }
 
-      case "EMBEDDED_CONTEXT": {
+      case "EMBED": {
         this.childIframeApi.addMethod("sign_transaction", callback);
         break;
       }

@@ -85,7 +85,7 @@ class LoginIDWalletAuth {
   ): Promise<MfaSessionResult> {
     const eData =
       await this.communicator.retrievePotentialData<EmbeddedContextData>(
-        "EMBEDDED_CONTEXT",
+        "EMBED",
       );
     const checkoutId = options.checkoutId || eData?.checkoutId;
     const opts: MfaBeginOptions = {
@@ -135,7 +135,7 @@ class LoginIDWalletAuth {
     if (result.payloadSignature || result.accessToken) {
       const callback = async () => ({});
 
-      this.communicator.sendData("EMBEDDED_CONTEXT", callback, {});
+      this.communicator.sendData("EMBED", callback, {});
 
       const passkeyFactors = new Set([
         "passkey:reg",
