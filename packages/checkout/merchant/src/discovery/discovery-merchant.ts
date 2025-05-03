@@ -28,7 +28,7 @@ export class CheckoutDiscoveryMerchant implements DiscoverStrategy {
    * Performs discovery by embedding a hidden iframe and requesting context from the wallet.
    *
    * The wallet responds with a `DiscoverResult`, which includes:
-   * - `flow`: Whether to continue with an `"EMBEDDED_CONTEXT"` or switch to `"REDIRECT"`.
+   * - `flow`: Whether to continue with an `"EMBED"` or switch to `"REDIRECT"`.
    *
    * After the discovery request completes, the hidden iframe is removed from the DOM.
    *
@@ -38,7 +38,7 @@ export class CheckoutDiscoveryMerchant implements DiscoverStrategy {
   async discover(): Promise<DiscoverResult> {
     const hasHadEmbedded = LocalStorageFlagger.isStamped(LID_CHECKOUT_KEY);
     if (hasHadEmbedded) {
-      return { flow: "EMBEDDED_CONTEXT" };
+      return { flow: "EMBED" };
     }
 
     const { communicator, iframe } = createMerchantCommunicatorHidden(

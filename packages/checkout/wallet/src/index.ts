@@ -1,7 +1,8 @@
 // Copyright (C) LoginID
 
 import LoginIDWalletAuth from "./wallet/wallet";
+import { ChildMessages } from "./messages";
 
-export { LoginIDWalletAuth };
+export { ChildMessages, LoginIDWalletAuth };
 
 export * from "./types";

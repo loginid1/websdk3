@@ -4,9 +4,9 @@
  * Represents the communication flow type used during checkout.
  *
  * - `"REDIRECT"`: Indicates that the wallet should be opened in a new tab or window via full-page redirect.
- * - `"EMBEDDED_CONTEXT"`: Indicates that the wallet is loaded in an iframe embedded on the merchant's page.
+ * - `"EMBED"`: Indicates that the wallet is loaded in an iframe embedded on the merchant's page.
  */
-export type Flow = "REDIRECT" | "EMBEDDED_CONTEXT";
+export type Flow = "REDIRECT" | "EMBED";
 
 /**
  * The result of a discovery call from the wallet, used by the merchant to determine
@@ -19,7 +19,7 @@ export interface DiscoverResult {
 
 /**
  * The type of receiver which determines how data is communicated.
- * It can be a specific flow like "REDIRECT" or "EMBEDDED_CONTEXT", or a "DISCOVER" operation.
+ * It can be a specific flow like "REDIRECT" or "EMBED", or a "DISCOVER" operation.
  */
 export type ReceiverType = Flow | "DISCOVER";
 
