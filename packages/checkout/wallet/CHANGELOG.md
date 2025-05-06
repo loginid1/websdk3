@@ -1,3 +1,16 @@
+## @loginid/checkout-wallet [1.2.0](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/checkout-wallet@1.1.1...@loginid/checkout-wallet@1.2.0) (2025-05-06)
+
+### Features
+
+* **checkout-wallet:** added `ChildMessages` API ([93d625a](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/93d625ad498e25001d00750cef88d3dffa9be25c))
+
+### Bug Fixes
+
+* **checkout-wallet:** Added `displayName` option to perfrom action ([99e1c15](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/99e1c15a1c3d7c1945bde09c771b096e93d27702))
+* **checkout-wallet:** added `valid` check to wallet trust ID ([ce1c93b](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/ce1c93b0227425ab08e1d2bbfb9bd038ed46ba22))
+* **checkout-wallet:** rename enum `EMBEDDED_CONTEXT` to `EMBED` ([179abce](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/179abce219161338d3e7cf642b07be5d4733a33e))
+* **checkout-wallet:** wallet trust ID is now valid after `passkey:tx` ([8a5ff10](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/8a5ff10bf36349eabff3f0756ac6d7a359784e9b))
+
 ## @loginid/checkout-wallet [1.1.1](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/checkout-wallet@1.1.0...@loginid/checkout-wallet@1.1.1) (2025-04-09)
 
 ### Bug Fixes
