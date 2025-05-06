@@ -68,11 +68,13 @@ export class Utils extends LoginIDBase {
     }
 
     try {
+      const deviceInfo = await defaultDeviceInfo();
+
       const requestBody: AuthInitRequestBody = {
         app: {
           id: this.config.getAppId(),
         },
-        deviceInfo: defaultDeviceInfo(),
+        deviceInfo: deviceInfo,
         user: {
           username: "",
           usernameType: "other",

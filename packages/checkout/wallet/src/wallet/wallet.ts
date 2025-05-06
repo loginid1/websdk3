@@ -10,8 +10,11 @@ import {
   CheckoutBeginFlowOptions,
   CheckoutPerformActionOptions,
 } from "../types";
+import {
+  CheckoutIdLocalStorage,
+  WalletTrustIdStore,
+} from "@loginid/core/store";
 import { DiscoverResult, EmbeddedContextData } from "@loginid/checkout-commons";
-import { CheckoutIdLocalStorage } from "@loginid/core/store";
 import { createWalletCommunicator } from "../creators";
 import { WalletCommunicator } from "../communicators";
 import { CheckoutDiscovery } from "../discovery";
@@ -82,7 +85,7 @@ class LoginIDWalletAuth {
   ): Promise<MfaSessionResult> {
     const eData =
       await this.communicator.retrievePotentialData<EmbeddedContextData>(
-        "EMBEDDED_CONTEXT",
+        "EMBED",
       );
     const checkoutId = options.checkoutId || eData?.checkoutId;
     const opts: MfaBeginOptions = {
@@ -132,7 +135,17 @@ class LoginIDWalletAuth {
     if (result.payloadSignature || result.accessToken) {
       const callback = async () => ({});
 
-      this.communicator.sendData("EMBEDDED_CONTEXT", callback, {});
+      this.communicator.sendData("EMBED", callback, {});
+
+      const passkeyFactors = new Set([
+        "passkey:reg",
+        "passkey:auth",
+        "passkey:tx",
+      ]);
+      if (passkeyFactors.has(factorName)) {
+        const store = new WalletTrustIdStore();
+        store.markCheckoutIdAsValid();
+      }
     }
 
     return result;

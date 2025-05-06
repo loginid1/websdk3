@@ -12,18 +12,18 @@ export class CheckoutDiscovery implements DiscoverStrategy {
    * Determines the appropriate authentication flow based on available user information.
    *
    * It attempts to retrieve the only available wallet checkout ID from the checkout ID store.
-   * If found, the method returns `EMBEDDED_CONTEXT`.
-   * If not found, it defaults to `REDIRECT`.
+   * If found and is valid, the method returns `EMBED`.
+   * If not found or is invalid, it defaults to `REDIRECT`.
    *
    * @returns {Promise<DiscoverResult>} A promise resolving to the discovery result,
-   * indicating the appropriate flow (`EMBEDDED_CONTEXT` or `REDIRECT`).
+   * indicating the appropriate flow (`EMBED` or `REDIRECT`).
    */
   async discover(): Promise<DiscoverResult> {
     // Attempt to find the first one trust ID
     const store = new WalletTrustIdStore();
-    const hasCheckoutId = await store.getCheckoutId();
-    if (hasCheckoutId) {
-      return { flow: "EMBEDDED_CONTEXT" };
+    const hasValidTrustId = await store.isCheckoutIdValid();
+    if (hasValidTrustId) {
+      return { flow: "EMBED" };
     } else {
       return { flow: "REDIRECT" };
     }

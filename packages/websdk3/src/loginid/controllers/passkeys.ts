@@ -26,6 +26,7 @@ import {
 import { NO_LOGIN_OPTIONS_ERROR, WebAuthnHelper } from "@loginid/core/webauthn";
 import { defaultDeviceInfo } from "@loginid/core/utils/browser";
 import { DeviceStore, TrustStore } from "@loginid/core/store";
+import { ClientEvents } from "@loginid/core/client-events";
 import { LoginIDConfig } from "@loginid/core/controllers";
 import { parseJwt } from "@loginid/core/utils/crypto";
 import { mergeFallbackOptions } from "../lib/utils";
@@ -98,7 +99,7 @@ class Passkeys extends OTP {
   ): Promise<AuthResult> {
     const appId = this.config.getAppId();
     const deviceId = DeviceStore.getDeviceId(appId);
-    const deviceInfo = defaultDeviceInfo(deviceId);
+    const deviceInfo = await defaultDeviceInfo(deviceId);
     const trustStore = new TrustStore(appId);
     const opts = passkeyOptions(username, authzToken, options);
 
@@ -123,6 +124,7 @@ class Passkeys extends OTP {
         usernameType: opts.usernameType,
         displayName: opts.displayName,
       },
+      passkeyOptions: { ...(options.crossPlatform && { securityKey: true }) },
       ...(trustInfo && { trustItems: { auth: trustInfo } }),
     };
 
@@ -131,22 +133,31 @@ class Passkeys extends OTP {
       ...(opts.authzToken && { authorization: opts.authzToken }),
     });
 
-    const regCompleteRequestBody =
-      await WebAuthnHelper.createNavigatorCredential(regInitResponseBody);
+    return await this.invokePasskeyApi(
+      regInitResponseBody.session,
+      async () => {
+        const regCompleteRequestBody =
+          await WebAuthnHelper.createNavigatorCredential(regInitResponseBody);
 
-    const regCompleteResponse = await this.service.reg.regRegComplete({
-      requestBody: regCompleteRequestBody,
-    });
+        if (options.passkeyName) {
+          regCompleteRequestBody.passkeyName = options.passkeyName;
+        }
 
-    const result: AuthResult = toAuthResult(regCompleteResponse);
+        const regCompleteResponse = await this.service.reg.regRegComplete({
+          requestBody: regCompleteRequestBody,
+        });
 
-    this.session.setJwtCookie(regCompleteResponse.jwtAccess);
-    DeviceStore.persistDeviceId(
-      appId,
-      deviceId || regCompleteResponse.deviceId,
+        const result: AuthResult = toAuthResult(regCompleteResponse);
+
+        this.session.setJwtCookie(regCompleteResponse.jwtAccess);
+        DeviceStore.persistDeviceId(
+          appId,
+          deviceId || regCompleteResponse.deviceId,
+        );
+
+        return result;
+      },
     );
-
-    return result;
   }
 
   /**
@@ -197,7 +208,7 @@ class Passkeys extends OTP {
     options: AuthenticateWithPasskeysOptions = {},
   ): Promise<AuthResult> {
     const appId = this.config.getAppId();
-    const deviceInfo = defaultDeviceInfo(DeviceStore.getDeviceId(appId));
+    const deviceInfo = await defaultDeviceInfo(DeviceStore.getDeviceId(appId));
     const trustStore = new TrustStore(appId);
     const opts = passkeyOptions(username, "", options);
 
@@ -224,27 +235,33 @@ class Passkeys extends OTP {
     switch (authInitResponseBody.action) {
       case "proceed": {
         // We can send original options here because WebAuthn options currently don't need to be defaulted
-        const authCompleteRequestBody =
-          await WebAuthnHelper.getNavigatorCredential(
-            authInitResponseBody,
-            options,
-          );
+        return await this.invokePasskeyApi(
+          authInitResponseBody.session,
+          async () => {
+            const authCompleteRequestBody =
+              await WebAuthnHelper.getNavigatorCredential(
+                authInitResponseBody,
+                options,
+              );
 
-        const authCompleteResponse = await this.service.auth.authAuthComplete({
-          requestBody: authCompleteRequestBody,
-        });
+            const authCompleteResponse =
+              await this.service.auth.authAuthComplete({
+                requestBody: authCompleteRequestBody,
+              });
 
-        const result = toAuthResult(authCompleteResponse);
+            const result = toAuthResult(authCompleteResponse);
 
-        this.session.setJwtCookie(result.token);
+            this.session.setJwtCookie(result.token);
 
-        DeviceStore.persistDeviceId(appId, authCompleteResponse.deviceId);
+            DeviceStore.persistDeviceId(appId, authCompleteResponse.deviceId);
 
-        if (opts?.callbacks?.onSuccess) {
-          await opts.callbacks.onSuccess(result);
-        }
+            if (opts?.callbacks?.onSuccess) {
+              await opts.callbacks.onSuccess(result);
+            }
 
-        return result;
+            return result;
+          },
+        );
       }
 
       case "crossAuth":
@@ -461,22 +478,51 @@ class Passkeys extends OTP {
       session: session,
     };
 
-    const { assertionResult } =
-      await WebAuthnHelper.getNavigatorCredential(authInitResponseBody);
+    return await this.invokePasskeyApi(
+      authInitResponseBody.session,
+      async () => {
+        const { assertionResult } =
+          await WebAuthnHelper.getNavigatorCredential(authInitResponseBody);
 
-    const txCompleteRequestBody: TxCompleteRequestBody = {
-      authenticatorData: assertionResult.authenticatorData,
-      clientData: assertionResult.clientDataJSON,
-      keyHandle: assertionResult.credentialId,
-      session: session,
-      signature: assertionResult.signature,
-    };
+        const txCompleteRequestBody: TxCompleteRequestBody = {
+          authenticatorData: assertionResult.authenticatorData,
+          clientData: assertionResult.clientDataJSON,
+          keyHandle: assertionResult.credentialId,
+          session: session,
+          signature: assertionResult.signature,
+        };
 
-    const result = await this.service.tx.txTxComplete({
-      requestBody: txCompleteRequestBody,
-    });
+        const result = await this.service.tx.txTxComplete({
+          requestBody: txCompleteRequestBody,
+        });
 
-    return result;
+        return result;
+      },
+    );
+  }
+
+  /**
+   * Internal helper method that executes a provided asynchronous function related to passkey flows
+   * and reports any errors to the LoginID event tracking service if an exception occurs.
+   *
+   * @template T The return type of the asynchronous function passed in.
+   * @param {string} session The current encrypted session associated with the operation being performed.
+   * @param {() => Promise<T>} fn The asynchronous function to invoke.
+   * @returns {Promise<T>} The result of the invoked function if it succeeds.
+   */
+  private async invokePasskeyApi<T>(
+    session: string,
+    fn: () => Promise<T>,
+  ): Promise<T> {
+    try {
+      return await fn();
+    } catch (error) {
+      if (error instanceof Error) {
+        const service = new ClientEvents(this.config.getConfig());
+        service.reportError(session, error);
+      }
+      throw error;
+    }
   }
 }
 

@@ -14,6 +14,10 @@
       "import": "./dist/controllers/index.js",
       "types": "./dist/controllers/index.d.ts"
     },
+    "./client-events": {
+      "import": "./dist/client-events/index.js",
+      "types": "./dist/client-events/index.d.ts"
+    },
     "./utils/browser": {
       "import": "./dist/utils/browser/index.js",
       "types": "./dist/utils/browser/index.d.ts"

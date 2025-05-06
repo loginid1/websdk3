@@ -30,6 +30,11 @@ export interface LoginIDConfig {
    * The optional app ID for specific application.
    */
   appId?: string;
+
+  /**
+   * If true, disables sending analytics/events to LoginID. Defaults to false.
+   */
+  disableAnalytics?: boolean;
 }
 
 /**
@@ -113,6 +118,11 @@ export interface MfaPerformActionOptions {
    * Enables passkey support in browser autofill suggestions (conditional UI), if supported.
    */
   autoFill?: boolean;
+
+  /**
+   * A human-palatable name for the user account, intended only for display on your passkeys..
+   */
+  displayName?: string;
 }
 
 /**

@@ -49,6 +49,7 @@ export class BaseCheckoutStore extends IndexedDBWrapper {
 
     await this.putRecord({
       id: token.id,
+      valid: false,
       keyPair,
     });
 
@@ -118,6 +119,49 @@ export class BaseCheckoutStore extends IndexedDBWrapper {
       }
       console.log("IndexDB error: " + error);
       return "";
+    }
+  }
+
+  /**
+   * Marks the first checkout ID in storage as valid.
+   *
+   * @returns {Promise<void>} A promise that resolves when the record is updated.
+   * @throws {StorageError} If no record is found or the update fails.
+   */
+  public async markCheckoutIdAsValid(): Promise<void> {
+    try {
+      const record = await this.getFirstRecord<CheckoutIDRecord>();
+      record.valid = true;
+      await this.putRecord(record);
+    } catch {
+      throw new StorageError(
+        "Failed to mark checkout ID as valid.",
+        "ERROR_STORAGE_UPDATE_FAILED",
+      );
+    }
+  }
+
+  /**
+   * Checks whether the stored checkout ID is marked as valid.
+   *
+   * @returns {Promise<boolean>} True if the checkout ID is valid, false otherwise.
+   * @throws {StorageError} If no record is found or access fails.
+   */
+  public async isCheckoutIdValid(): Promise<boolean> {
+    try {
+      const record = await this.getFirstRecord<CheckoutIDRecord>();
+      return record && record.valid === true;
+    } catch (error) {
+      if (
+        error instanceof StorageError &&
+        error.code === "ERROR_STORAGE_NOT_FOUND"
+      ) {
+        return false;
+      }
+      throw new StorageError(
+        "Failed to check checkout ID validity.",
+        "ERROR_STORAGE_FAILED",
+      );
     }
   }
 }

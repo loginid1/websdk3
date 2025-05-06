@@ -28,7 +28,6 @@ export type { JWT } from "./models/JWT";
 export type { Mfa } from "./models/Mfa";
 export type { MfaAction } from "./models/MfaAction";
 export type { MfaBeginRequestBody } from "./models/MfaBeginRequestBody";
-export type { MfaErrorRequestBody } from "./models/MfaErrorRequestBody";
 export type { MfaNext } from "./models/MfaNext";
 export type { MfaOption } from "./models/MfaOption";
 export type { MfaOtpRequestRequestBody } from "./models/MfaOtpRequestRequestBody";
@@ -50,6 +49,8 @@ export type { PublicKeyCredentialUserEntity } from "./models/PublicKeyCredential
 export type { RegCompleteRequestBody } from "./models/RegCompleteRequestBody";
 export type { RegInit } from "./models/RegInit";
 export type { RegInitRequestBody } from "./models/RegInitRequestBody";
+export type { Session } from "./models/Session";
+export type { SubmitRequestBody } from "./models/SubmitRequestBody";
 export type { TxComplete } from "./models/TxComplete";
 export type { TxCompleteRequestBody } from "./models/TxCompleteRequestBody";
 export type { TxInit } from "./models/TxInit";
@@ -58,6 +59,7 @@ export type { User } from "./models/User";
 export type { UserLogin } from "./models/UserLogin";
 
 export { AuthService } from "./services/AuthService";
+export { ClientEventsService } from "./services/ClientEventsService";
 export { MfaService } from "./services/MfaService";
 export { PasskeysService } from "./services/PasskeysService";
 export { RegService } from "./services/RegService";

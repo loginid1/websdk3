@@ -15,6 +15,7 @@ import {
 } from "../store";
 import { mfaOptions, toMfaInfo, toMfaSessionDetails } from "../defaults";
 import { ApiError, Mfa, MfaBeginRequestBody, MfaNext } from "../api";
+import { ClientEvents } from "../client-events/client-events";
 import { LoginIDParamValidator } from "../validators";
 import { defaultDeviceInfo } from "../utils/browser";
 import { WebAuthnHelper } from "../webauthn";
@@ -26,7 +27,6 @@ export class MFA extends LoginIDBase {
    * Initializes a new MFA instance with the provided configuration.
    *
    * @param {LoginIDMfaConfig} config Configuration object for LoginID services.
-   *
    */
   constructor(config: LoginIDMfaConfig) {
     super(config);
@@ -49,7 +49,7 @@ export class MFA extends LoginIDBase {
   ): Promise<MfaSessionResult> {
     const appId = this.config.getAppId();
     const deviceId = DeviceStore.getDeviceId(appId);
-    const deviceInfo = defaultDeviceInfo(deviceId);
+    const deviceInfo = await defaultDeviceInfo(deviceId);
     const opts = mfaOptions(username, options);
 
     let walletTrustId = "";
@@ -128,30 +128,28 @@ export class MFA extends LoginIDBase {
           LoginIDParamValidator.validatePasskeyPayload(payload);
 
         if ("rpId" in requestOptions) {
-          const authCompleteRequestBody =
-            await WebAuthnHelper.getNavigatorCredential(
-              {
-                action: "proceed",
-                assertionOptions: requestOptions,
-                crossAuthMethods: [],
-                fallbackMethods: [],
-                session: session,
-              },
-              { ...(options.autoFill && { autoFill: options.autoFill }) },
-            );
+          return await this.invokeMfaApi(appId, info?.username, async () => {
+            const authCompleteRequestBody =
+              await WebAuthnHelper.getNavigatorCredential(
+                {
+                  action: "proceed",
+                  assertionOptions: requestOptions,
+                  crossAuthMethods: [],
+                  fallbackMethods: [],
+                  session: session,
+                },
+                { ...(options.autoFill && { autoFill: options.autoFill }) },
+              );
 
-          if (factorName === "passkey:tx") {
-            return await this.invokeMfaApi(appId, info?.username, async () => {
+            if (factorName === "passkey:tx") {
               return await this.service.mfa.mfaMfaPasskeyTx({
                 authorization: session,
                 requestBody: {
                   assertionResult: authCompleteRequestBody.assertionResult,
                 },
               });
-            });
-          }
+            }
 
-          return await this.invokeMfaApi(appId, info?.username, async () => {
             return await this.service.mfa.mfaMfaPasskeyAuth({
               authorization: session,
               requestBody: {
@@ -162,14 +160,18 @@ export class MFA extends LoginIDBase {
         }
 
         if ("rp" in requestOptions) {
-          const regCompleteRequestBody =
-            await WebAuthnHelper.createNavigatorCredential({
-              action: "proceed",
-              registrationRequestOptions: requestOptions,
-              session: session,
-            });
-
           return await this.invokeMfaApi(appId, info?.username, async () => {
+            if (options.displayName) {
+              requestOptions.user.displayName = options.displayName;
+            }
+
+            const regCompleteRequestBody =
+              await WebAuthnHelper.createNavigatorCredential({
+                action: "proceed",
+                registrationRequestOptions: requestOptions,
+                session: session,
+              });
+
             return await this.service.mfa.mfaMfaPasskeyReg({
               authorization: session,
               requestBody: {
@@ -285,6 +287,21 @@ export class MFA extends LoginIDBase {
           MfaStore.persistInfo(appId, mfaInfo);
 
           return toMfaSessionDetails(mfaInfo);
+        }
+      }
+
+      if (error instanceof Error) {
+        const service = new ClientEvents(this.config.getConfig());
+        const appId = this.config.getAppId();
+        const mfaInfo = MfaStore.getInfo(appId);
+
+        if (mfaInfo?.session) {
+          // no need for async
+          service.reportError(mfaInfo.session, error).then((result) => {
+            if (result?.session) {
+              MfaStore.updateSession(appId, result.session);
+            }
+          });
         }
       }
 

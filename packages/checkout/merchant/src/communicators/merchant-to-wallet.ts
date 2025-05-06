@@ -33,13 +33,13 @@ export class MerchantToWallet implements MerchantCommunicator {
    * Sends a request to the wallet depending on the communication method (`ReceiverType`).
    *
    * - If using `"DISCOVER"`, it sends a discovery request to the embedded wallet.
-   * - If using `"EMBEDDED_CONTEXT"`, it sends transaction data for signing.
+   * - If using `"EMBED"`, it sends transaction data for signing.
    * - If using `"REDIRECT"`, it builds a URL and redirects the user to the wallet page with query parameters.
    *
    * @template T - The type of the payload being sent to the wallet.
    * @template U - The expected response type from the wallet.
    *
-   * @param {ReceiverType} type - The communication type to use ("DISCOVER", "EMBEDDED_CONTEXT", or "REDIRECT").
+   * @param {ReceiverType} type - The communication type to use ("DISCOVER", "EMBEDM", or "REDIRECT").
    * @param {T} [payload] - Optional data to send (e.g., transaction or user info).
    * @returns {Promise<U>} - A promise resolving with the wallet's response, or `undefined` in the case of redirect.
    *
@@ -52,7 +52,7 @@ export class MerchantToWallet implements MerchantCommunicator {
         return data as U;
       }
 
-      case "EMBEDDED_CONTEXT": {
+      case "EMBED": {
         const data = await this.parentIframeApi.sendMessage(
           "sign_transaction",
           { ...payload },

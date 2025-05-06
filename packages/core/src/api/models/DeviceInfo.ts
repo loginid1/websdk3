@@ -26,6 +26,10 @@ export type DeviceInfo = {
    */
   deviceId?: string;
   /**
+   * Whether the client browser has access to bluetooth.
+   */
+  hasBluetooth?: boolean;
+  /**
    * Last use timestamp in rfc3339 format
    */
   lastUsedAt?: string;
@@ -49,4 +53,8 @@ export type DeviceInfo = {
    * Screen width in pixels
    */
   screenWidth?: number;
+  /**
+   * JSON string containing client webauthn capabilities.
+   */
+  webauthnCapabilities?: string;
 };
