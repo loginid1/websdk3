@@ -1,3 +1,15 @@
+## @loginid/websdk3 [3.3.0](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/websdk3@3.2.3...@loginid/websdk3@3.3.0) (2025-05-06)
+
+### Features
+
+* **websdk3:** add client events errors for `Passkey` controller ([13bf38e](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/13bf38e18d1193dcc0c13b098900149eea8d26f8))
+* **websdk3:** added `crossPlatform` to `CreatePasskeyOptions` ([e30e741](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/e30e7419bf917fc6e61bb56b294c3c45f530afb4))
+* **websdk3:** added `passkeyName` option to `createPasskey` ([39a2367](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/39a23672dc0c1df79abbd30ffed2dd7d6ac0201f))
+
+### Bug Fixes
+
+* **websdk3:** updated deivce info for client capabilities ([4a6c9c0](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/4a6c9c0c6eab72e0492e0ca0d3e250fe4eb54674))
+
 ## @loginid/websdk3 [3.2.3](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/websdk3@3.2.2...@loginid/websdk3@3.2.3) (2025-04-09)
 
 ### Bug Fixes
