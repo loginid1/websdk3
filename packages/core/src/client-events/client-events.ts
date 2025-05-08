@@ -1,8 +1,20 @@
 // Copyright (C) LoginID
 
 import { LoginIDBase, LoginIDConfig } from "../controllers";
-import { PasskeyError } from "../errors";
+import { PasskeyError, PasskeyErrorCode } from "../errors";
 import { Session } from "../api";
+
+/**
+ * Set of passkey error codes that should be excluded from client-side error reporting.
+ *
+ * These error codes are considered non-critical or expected, and thus are not reported
+ * to the backend analytics system.
+ *
+ * @constant
+ */
+const ERROR_CODE_BLACKLIST = new Set<PasskeyErrorCode>([
+  "ERROR_PASSKEY_ABORTED",
+]);
 
 /**
  * Handles client-side events reporting for LoginID services.
@@ -36,6 +48,10 @@ export class ClientEvents extends LoginIDBase {
     }
 
     if (error instanceof PasskeyError) {
+      if (ERROR_CODE_BLACKLIST.has(error.code)) {
+        return { session: "" } as Session;
+      }
+
       const originalError = error.cause as Error;
       const message = `${error.code} - ${error.message} - ${originalError.name} - ${originalError.message}`;
       return await this.service.clientEvents.clientEventsSubmit({
