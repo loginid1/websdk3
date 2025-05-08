@@ -1,3 +1,9 @@
+## @loginid/checkout-wallet [1.2.1](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/checkout-wallet@1.2.0...@loginid/checkout-wallet@1.2.1) (2025-05-08)
+
+### Bug Fixes
+
+* **checkout-wallet:** add denylist for LoginID passkey-related error codes ([6d9c8a2](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/6d9c8a2759530629622b8f572072a50da9f59a25))
+
 ## @loginid/checkout-wallet [1.2.0](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/checkout-wallet@1.1.1...@loginid/checkout-wallet@1.2.0) (2025-05-06)
 
 ### Features
