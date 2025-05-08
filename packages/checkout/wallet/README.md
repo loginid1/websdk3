@@ -28,7 +28,6 @@ To integrate the LoginID Checkout Wallet SDK into your project, run:
 
 For detailed integration instructions and example implementations, refer to the [Wallet Setup Guide](https://docs.dev.loginid.io/user-scenario/checkout/wallet/).
 
-
 ## Contact and Support
 
 - **Email**: support@loginid.io
