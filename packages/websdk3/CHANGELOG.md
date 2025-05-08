@@ -1,3 +1,9 @@
+## @loginid/websdk3 [3.3.1](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/websdk3@3.3.0...@loginid/websdk3@3.3.1) (2025-05-08)
+
+### Bug Fixes
+
+* **core:** add denylist for LoginID passkey-related error codes ([f146abf](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/f146abf1704e53dd5525ecb166d77f3213741faf))
+
 ## @loginid/websdk3 [3.3.0](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/websdk3@3.2.3...@loginid/websdk3@3.3.0) (2025-05-06)
 
 ### Features
