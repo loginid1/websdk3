@@ -159,7 +159,7 @@ export class ChildMessages implements ChildMessagesAPI {
       const timeout = setTimeout(() => {
         cleanup();
         resolve([]);
-      }, 500);
+      }, 3000);
 
       const interval = setInterval(() => {
         if (ChildMessages.pendingRequests.length > 0) {

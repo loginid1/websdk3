@@ -194,7 +194,7 @@ describe("ChildMessages", () => {
 
     expect(pending).toEqual([]);
     expect(elapsed).toBeGreaterThanOrEqual(490); // allow small variation
-    expect(elapsed).toBeLessThanOrEqual(600);
+    expect(elapsed).toBeLessThanOrEqual(3100);
   });
 
   it("should wait and return pending requests if they arrive before timeout", async () => {
