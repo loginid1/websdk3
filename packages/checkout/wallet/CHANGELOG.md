@@ -1,3 +1,10 @@
+## @loginid/checkout-wallet [1.2.2](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/checkout-wallet@1.2.1...@loginid/checkout-wallet@1.2.2) (2025-05-29)
+
+### Bug Fixes
+
+* **checkout-wallet:** add `exp` claim to CheckoutID and WalletID tokens ([eb12ff1](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/eb12ff1f3421d17f7d6ea235d58c77d54443fd1c))
+* **checkout-wallet:** increase `ParentApi` pending request timeout to 3s ([3d46a77](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/3d46a77039b129767556ecda347cd2a8007f3a25))
+
 ## @loginid/checkout-wallet [1.2.1](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/checkout-wallet@1.2.0...@loginid/checkout-wallet@1.2.1) (2025-05-08)
 
 ### Bug Fixes
