@@ -28,24 +28,18 @@ export const applyMixins = (derivedCtor: any, constructors: any[]) => {
 
 /**
  * Creates a Trust ID payload with the given parameters.
- * @param {string} appId - The app ID.
- * @param {string} username - The username for the trust ID.
  * @param {string} [id] - The ID for the trust ID.
  * @returns {TrustIDClaims} The Trust ID payload.
  */
-export const toTrustIDPayload = (
-  appId: string,
-  username: string,
-  id?: string,
-): TrustIDClaims => {
+export const toTrustIDPayload = (id?: string): TrustIDClaims => {
   if (!id) {
     id = generateRandomId();
   }
 
   const payload: TrustIDClaims = {
     id: id,
-    username: username,
-    aud: appId,
+    // 1 min exp
+    exp: Math.floor(Date.now() / 1000) + 60,
   };
 
   return payload;

@@ -41,7 +41,7 @@ export class TrustStore extends IndexedDBWrapper {
   public async setTrustId(username: string): Promise<string> {
     const keyPair = await generateES256KeyPair();
     const publicKey = await exportPublicKeyJwk(keyPair);
-    const token = toTrustIDPayload(this.appId, username);
+    const token = toTrustIDPayload();
     const trustId = await signJwtWithJwk(token, publicKey, keyPair.privateKey);
 
     await this.putRecord({
@@ -65,7 +65,7 @@ export class TrustStore extends IndexedDBWrapper {
       [this.appId, username],
     );
     const publicKey = await exportPublicKeyJwk(record.keyPair);
-    const token = toTrustIDPayload(this.appId, username, record.id);
+    const token = toTrustIDPayload(record.id);
     const trustId = await signJwtWithJwk(
       token,
       publicKey,

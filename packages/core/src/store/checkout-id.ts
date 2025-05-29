@@ -1,12 +1,8 @@
 // Copyright (C) LoginID
 
-import {
-  exportPublicKeyJwk,
-  generateES256KeyPair,
-  randomUUID,
-} from "../utils/crypto";
+import { exportPublicKeyJwk, generateES256KeyPair } from "../utils/crypto";
+import { signJwtWithJwk, toTrustIDPayload } from "../helpers";
 import { IndexedDBWrapper } from "./indexdb";
-import { signJwtWithJwk } from "../helpers";
 import { CheckoutIDRecord } from "../types";
 import { StorageError } from "../errors";
 
@@ -40,7 +36,7 @@ export class BaseCheckoutStore extends IndexedDBWrapper {
   public async setCheckoutId(): Promise<string> {
     const keyPair = await generateES256KeyPair();
     const publicKey = await exportPublicKeyJwk(keyPair);
-    const token = { id: randomUUID() };
+    const token = toTrustIDPayload();
     const checkoutId = await signJwtWithJwk(
       token,
       publicKey,
@@ -92,7 +88,7 @@ export class BaseCheckoutStore extends IndexedDBWrapper {
   public async signWithCheckoutId(): Promise<string> {
     const record = await this.getFirstRecord<CheckoutIDRecord>();
     const publicKey = await exportPublicKeyJwk(record.keyPair);
-    const token = { id: record.id };
+    const token = toTrustIDPayload(record.id);
     const trustId = await signJwtWithJwk(
       token,
       publicKey,
