@@ -1,3 +1,9 @@
+## @loginid/checkout-merchant [1.1.1](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/checkout-merchant@1.1.0...@loginid/checkout-merchant@1.1.1) (2025-05-29)
+
+### Bug Fixes
+
+* **checkout-merchant:** increase `ParentApi` pending request timeout to 3s ([53862f6](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/53862f6781a44adba03d14871e01bae2c4cfe895))
+
 ## @loginid/checkout-merchant [1.1.0](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/checkout-merchant@1.0.1...@loginid/checkout-merchant@1.1.0) (2025-05-06)
 
 ### Features
