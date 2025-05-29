@@ -1,3 +1,9 @@
+## @loginid/websdk3 [3.3.2](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/websdk3@3.3.1...@loginid/websdk3@3.3.2) (2025-05-29)
+
+### Bug Fixes
+
+* **websdk3:** add `exp` claim to CheckoutID and WalletID tokens ([66e4431](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/66e443132df02f21da126d6827e45f8531276160))
+
 ## @loginid/websdk3 [3.3.1](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/websdk3@3.3.0...@loginid/websdk3@3.3.1) (2025-05-08)
 
 ### Bug Fixes
