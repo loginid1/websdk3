@@ -100,9 +100,8 @@ unit-tests:
     - npm run lint:$PACKAGE
     - npm run test:$PACKAGE
 
-chrome-checkout-test:
+.e2e-test-template:
   stage: test
-  allow_failure: true
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       when: never
@@ -111,22 +110,16 @@ chrome-checkout-test:
     - when: always
   variables:
     BRANCH: $CI_COMMIT_REF_NAME
+
+chrome-checkout-test:
+  extends: .e2e-test-template
   trigger:
     project: loginid/software/testing-tools/loginid-checkout-e2e
-    branch: feat/child-pipeline
     strategy: depend
 
-chrome-test:
-  stage: test
+chrome-websdk-test:
+  extends: .e2e-test-template
   allow_failure: true
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-      when: never
-    - if: '$CI_COMMIT_TAG'
-      when: never
-    - when: always
-  variables:
-    BRANCH: $CI_COMMIT_REF_NAME
   trigger:
     project: loginid/software/testing-tools/auto-directweb
     strategy: depend
