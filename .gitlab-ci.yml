@@ -115,6 +115,7 @@ chrome-checkout-test:
   extends: .e2e-test-template
   trigger:
     project: loginid/software/testing-tools/loginid-checkout-e2e
+    branch: main
     strategy: depend
 
 chrome-websdk-test:
