@@ -46,16 +46,18 @@ build-websdk:
 
     - npm run build:websdk3
     - npm run delete-maps:websdk3
-    # Note this is needed for e2e tests
     - npm pack --workspace=@loginid/websdk3
 
     - npm run build:checkout-commons
+    - npm pack --workspace=@loginid/checkout-commons
 
     - npm run build:checkout-merchant
     - npm run delete-maps:checkout-merchant
+    - npm pack --workspace=@loginid/checkout-merchant
 
     - npm run build:checkout-wallet
     - npm run delete-maps:checkout-wallet
+    - npm pack --workspace=@loginid/checkout-wallet
   artifacts:
     expire_in: 3 hours
     when: on_success
@@ -98,9 +100,8 @@ unit-tests:
     - npm run lint:$PACKAGE
     - npm run test:$PACKAGE
 
-chrome-test:
+.e2e-test-template:
   stage: test
-  allow_failure: true
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       when: never
@@ -109,6 +110,17 @@ chrome-test:
     - when: always
   variables:
     BRANCH: $CI_COMMIT_REF_NAME
+
+chrome-checkout-test:
+  extends: .e2e-test-template
+  trigger:
+    project: loginid/software/testing-tools/loginid-checkout-e2e
+    branch: main
+    strategy: depend
+
+chrome-websdk-test:
+  extends: .e2e-test-template
+  allow_failure: true
   trigger:
     project: loginid/software/testing-tools/auto-directweb
     strategy: depend
