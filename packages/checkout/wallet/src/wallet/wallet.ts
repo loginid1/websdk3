@@ -15,6 +15,7 @@ import {
   WalletTrustIdStore,
 } from "@loginid/core/store";
 import { DiscoverResult, EmbeddedContextData } from "@loginid/checkout-commons";
+import { ValidationError } from "@loginid/core/errors";
 import { createWalletCommunicator } from "../creators";
 import { WalletCommunicator } from "../communicators";
 import { CheckoutDiscovery } from "../discovery";
@@ -88,9 +89,27 @@ class LoginIDWalletAuth {
         "EMBED",
       );
     const checkoutId = options.checkoutId || eData?.checkoutId;
+    const txPayload = options.txPayload;
+
+    if (!checkoutId) {
+      throw new ValidationError(
+        "`checkoutId is required",
+        "ERROR_VALIDATION_EMPTY_INPUT",
+        "checkoutId",
+      );
+    }
+
+    if (!txPayload) {
+      throw new ValidationError(
+        "`txPayload` is required",
+        "ERROR_VALIDATION_EMPTY_INPUT",
+        "txPayload",
+      );
+    }
+
     const opts: MfaBeginOptions = {
       checkoutId: checkoutId,
-      txPayload: options.txPayload,
+      txPayload: txPayload,
     };
 
     CheckoutIdLocalStorage.persistCheckoutId(checkoutId || "");
