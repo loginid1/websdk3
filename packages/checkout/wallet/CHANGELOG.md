@@ -1,3 +1,9 @@
+## @loginid/checkout-wallet [1.2.3](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/checkout-wallet@1.2.2...@loginid/checkout-wallet@1.2.3) (2025-07-21)
+
+### Bug Fixes
+
+* **checkout-wallet:** validate input parameters in `beginFlow` ([7926211](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/7926211fe220901160031686a84197edd5666bb3))
+
 ## @loginid/checkout-wallet [1.2.2](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/checkout-wallet@1.2.1...@loginid/checkout-wallet@1.2.2) (2025-05-29)
 
 ### Bug Fixes
