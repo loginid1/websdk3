@@ -95,12 +95,12 @@ export const toMfaSessionDetails = (
     }) || [];
 
   const factorPriority: MfaFactorName[] = [
+    "passkey:reg",
     "passkey:auth",
     "passkey:tx",
     "otp:sms",
     "otp:email",
     "external",
-    "passkey:reg",
   ];
 
   const nextAction = factorPriority.find((name) =>
