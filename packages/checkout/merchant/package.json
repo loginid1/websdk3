@@ -27,7 +27,8 @@
     "delete-map-files": "find ./dist -name '*.map' -delete",
     "delete-references-to-map-files": "find ./dist -name '*.js' -or -name '*.mjs' -exec sed -i -e 's/sourceMappingURL=[^ ]*.map//g' {} +",
     "lint": "eslint \"src/**/*.ts?(x)\"",
-    "test": "jest"
+    "test": "jest",
+    "docs": "typedoc"
   },
   "author": "LoginID Inc.",
   "license": "ISC",
