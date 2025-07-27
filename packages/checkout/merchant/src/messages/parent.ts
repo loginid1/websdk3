@@ -138,7 +138,7 @@ export class ParentMessages implements ParentMessagesAPI {
 
   /**
    * Sends a message to the child.
-   * @param {string} method - The method name.
+   * @param {IframeMethod} method - The method name.
    * @param {any} [params={}] - The parameters for the method.
    */
   public async sendMessage(method: IframeMethod, params: any = {}) {

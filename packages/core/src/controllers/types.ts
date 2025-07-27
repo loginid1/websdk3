@@ -19,6 +19,8 @@ export interface MfaInfo {
 
 /**
  * Configuration for LoginID FIDO service.
+ *
+ * @expand
  */
 export interface LoginIDConfig {
   /**
@@ -172,6 +174,8 @@ export interface RemainingFactor {
  * Represents the result of a Multi-Factor Authentication (MFA) session.
  * This interface is used to track the status of an ongoing MFA process, including
  * remaining factors, user details, and issued authentication tokens.
+ *
+ * @expand
  */
 export interface MfaSessionResult {
   /**

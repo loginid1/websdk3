@@ -70,21 +70,29 @@ export interface PasskeyManagementOptions {
 
 /**
  * List passkeys options.
+ *
+ * @expand
  */
 export interface ListPasskeysOptions extends PasskeyManagementOptions {}
 
 /**
  * Rename passkeys options.
+ *
+ * @expand
  */
 export interface RenamePasskeyOptions extends PasskeyManagementOptions {}
 
 /**
  * Delete passkeys options.
+ *
+ * @expand
  */
 export interface DeletePasskeyOptions extends PasskeyManagementOptions {}
 
 /**
  * Authenticate with passkeys options.
+ *
+ * @expand
  */
 export interface AuthenticateWithPasskeysOptions extends MainPasskeyOptions {
   /**
@@ -101,12 +109,16 @@ export interface AuthenticateWithPasskeysOptions extends MainPasskeyOptions {
 
 /**
  * Authenticate with passkey autofill options.
+ *
+ * @expand
  */
 export interface AuthenticateWithPasskeyAutofillOptions
   extends AuthenticateWithPasskeysOptions {}
 
 /**
  * Create passkeys options interface.
+ *
+ * @expand
  */
 export interface CreatePasskeyOptions extends MainPasskeyOptions {
   /**
@@ -128,6 +140,8 @@ export interface CreatePasskeyOptions extends MainPasskeyOptions {
 
 /**
  * Confirm transaction options.
+ *
+ * @expand
  */
 export interface ConfirmTransactionOptions extends MainPasskeyOptions {
   /**
@@ -143,6 +157,8 @@ export interface ConfirmTransactionOptions extends MainPasskeyOptions {
 
 /**
  * Request and send OTP options.
+ *
+ * @expand
  */
 export interface RequestAndSendOtpOptions {
   /**
@@ -153,12 +169,16 @@ export interface RequestAndSendOtpOptions {
 
 /**
  * Request OTP options.
+ *
+ * @expand
  */
 export interface RequestOtpOptions
   extends AuthenticateWithPasskeyAutofillOptions {}
 
 /**
  * Validate OTP options.
+ *
+ * @expand
  */
 export interface ValidateOtpOptions extends RequestAndSendOtpOptions {}
 

@@ -18,8 +18,11 @@ export type AnyAsyncFunction = (...args: any[]) => Promise<any>;
  * @returns {Promise<U>} A promise that resolves with the result of type `U`.
  */
 export type ResultCallback<T, U> = (param: T) => Promise<U>;
+
 /**
  * Options used to initiate the checkout-specific MFA authentication flow.
+ *
+ * @expand
  */
 export interface CheckoutBeginFlowOptions {
   /**
@@ -44,6 +47,12 @@ export interface CheckoutBeginFlowOptions {
   username?: string;
 }
 
+/**
+ * Options used when performing a user action during the checkout-specific MFA authentication flow.
+ * This is typically used after `beginFlow` has initiated the process, and the user is completing an authentication step.
+ *
+ * @expand
+ */
 export interface CheckoutPerformActionOptions {
   /**
    * The payload required for completing the authentication factor.

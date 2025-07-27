@@ -11,9 +11,23 @@ export type Flow = "REDIRECT" | "EMBED";
 /**
  * The result of a discovery call from the wallet, used by the merchant to determine
  * how to proceed with the checkout authentication flow.
+ *
+ * @expand
  */
 export interface DiscoverResult {
+  /**
+   * The username associated with the current wallet session, if known.
+   *
+   * @type {string | undefined}
+   */
   username?: string;
+
+  /**
+   * The communication flow recommended by the wallet for proceeding with checkout.
+   * This will either be `"REDIRECT"` or `"EMBED"` and informs the merchant how to load the wallet UI.
+   *
+   * @type {Flow}
+   */
   flow: Flow;
 }
 
@@ -84,6 +98,8 @@ export interface MessageData {
 
 /**
  * Represents the method names that can be used in an iframe.
+ *
+ * @expand
  * @type {string}
  */
 export type IframeMethod = "discover" | "sign_transaction";

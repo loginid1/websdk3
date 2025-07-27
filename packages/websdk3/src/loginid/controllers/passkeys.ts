@@ -289,7 +289,7 @@ class Passkeys extends OTP {
    * @param {AuthenticateWithPasskeyAutofillOptions} options Additional authentication options.
    * @returns {Promise<AuthResult>} Result of the passkey authentication operation.
    * @example
-   * * import { isConditionalUIAvailable, LoginIDWebSDK } from "@loginid/websdk3";
+   * import { isConditionalUIAvailable, LoginIDWebSDK } from "@loginid/websdk3";
    *
    * // Obtain credentials from LoginID
    * const BASE_URL = process.env.BASE_URL;
@@ -395,7 +395,7 @@ class Passkeys extends OTP {
    * or changes to sensitive account information, ensuring that the transaction is being authorized
    * by the rightful owner of the passkey.
    *
-   * For a more detailed guide click [here](https://docs.loginid.io/scenarios/transaction-confirmation).
+   * For a more detailed guide click [here](https://docs.loginid.io/user-scenario/authentication/step-up/transaction-confirmation/).
    *
    * @param {string} username The username of the user confirming the transaction.
    * @param {string} txPayload The transaction-specific payload, which could include details
