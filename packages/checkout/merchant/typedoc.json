@@ -1,0 +1,13 @@
+{
+  "entryPoints": [
+    "./src/merchant/merchant.ts",
+    "./src/messages/parent.ts"
+  ],
+  "plugin": [
+    "typedoc-plugin-rename-defaults",
+    "typedoc-plugin-missing-exports"
+  ],
+  "out": "docs",
+  "internalModule": "Internal Modules",
+  "exclude": ["./src/api"]
+}
