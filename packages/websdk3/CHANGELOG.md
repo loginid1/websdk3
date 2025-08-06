@@ -1,3 +1,9 @@
+## @loginid/websdk3 [3.4.0](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/websdk3@3.3.2...@loginid/websdk3@3.4.0) (2025-08-06)
+
+### Features
+
+* **websdk3:** add traceId option to MFA SDK for enhanced request tracing ([10b793f](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/10b793fda49f47ec2f5dc8443ed05e670a772208))
+
 ## @loginid/websdk3 [3.3.2](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/websdk3@3.3.1...@loginid/websdk3@3.3.2) (2025-05-29)
 
 ### Bug Fixes
