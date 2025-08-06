@@ -1,3 +1,9 @@
+## @loginid/checkout-wallet [1.3.0](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/checkout-wallet@1.2.3...@loginid/checkout-wallet@1.3.0) (2025-08-06)
+
+### Features
+
+* **checkout-wallet:** add traceId option to Wallet SDK for enhanced request tracing ([eef1626](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/eef1626258a5063da9ff91e2b6641950de953190))
+
 ## @loginid/checkout-wallet [1.2.3](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/checkout-wallet@1.2.2...@loginid/checkout-wallet@1.2.3) (2025-07-21)
 
 ### Bug Fixes
