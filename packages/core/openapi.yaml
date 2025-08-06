@@ -22,7 +22,7 @@ paths:
               $ref: '#/components/schemas/AuthCompleteRequestBody'
             example:
               assertionResult:
-                authenticatorData: ix523n3XniH01jM4CIuOn1z0Jw6QbRATXYOsCUyQN...
+                authenticatorData: Enim corrupti rem consequatur sapiente dolorum ut.
                 clientDataJSON: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
                 credentialId: 2aChi2dALRLdVP5i/zKr7yvMrP8FIy7MK4lbyUsjO...
                 signature: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
@@ -552,6 +552,7 @@ paths:
                     "signalUnknownCredential": true
                   }
               payload: ak4BXFgauyDtsRvnXWfaTW1DyetX7fTViGY9DRQGQ+g=
+              traceId: 6957cf6e-a86c-44fb-b25a-bd97cb9ff830
               trustItems:
                 auth: DqjUIcwnq7edyyeMGCxWNqs1cNBrEjBXlB2mVxfja8s=
                 merchant: gpOLtpZWhxkKgwEJyYzB2ckXn9IXDID7jjiaYFYTfS4=
@@ -820,7 +821,7 @@ paths:
               $ref: '#/components/schemas/MfaPasskeyAuthRequestBody'
             example:
               assertionResult:
-                authenticatorData: ix523n3XniH01jM4CIuOn1z0Jw6QbRATXYOsCUyQN...
+                authenticatorData: Enim corrupti rem consequatur sapiente dolorum ut.
                 clientDataJSON: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
                 credentialId: 2aChi2dALRLdVP5i/zKr7yvMrP8FIy7MK4lbyUsjO...
                 signature: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
@@ -928,7 +929,7 @@ paths:
             example:
               creationResult:
                 attestationObject: 5lvuZBkX1w7/0+XKcldttzA7vTwilEq3qnnXSq/a0...
-                authenticatorData: ix523n3XniH01jM4CIuOn1z0Jw6QbRATXYOsCUyQN...
+                authenticatorData: Ea eos.
                 clientDataJSON: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
                 credentialId: 2aChi2dALRLdVP5i/zKr7yvMrP8FIy7MK4lbyUsjO...
                 publicKey: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
@@ -936,7 +937,6 @@ paths:
                 transports:
                   - internal
                   - internal
-                  - usb
       responses:
         '200':
           description: OK response.
@@ -1003,7 +1003,7 @@ paths:
               $ref: '#/components/schemas/MfaPasskeyAuthRequestBody'
             example:
               assertionResult:
-                authenticatorData: ix523n3XniH01jM4CIuOn1z0Jw6QbRATXYOsCUyQN...
+                authenticatorData: Enim corrupti rem consequatur sapiente dolorum ut.
                 clientDataJSON: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
                 credentialId: 2aChi2dALRLdVP5i/zKr7yvMrP8FIy7MK4lbyUsjO...
                 signature: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
@@ -1506,7 +1506,7 @@ paths:
             example:
               creationResult:
                 attestationObject: 5lvuZBkX1w7/0+XKcldttzA7vTwilEq3qnnXSq/a0...
-                authenticatorData: ix523n3XniH01jM4CIuOn1z0Jw6QbRATXYOsCUyQN...
+                authenticatorData: Ea eos.
                 clientDataJSON: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
                 credentialId: 2aChi2dALRLdVP5i/zKr7yvMrP8FIy7MK4lbyUsjO...
                 publicKey: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
@@ -1514,7 +1514,6 @@ paths:
                 transports:
                   - internal
                   - internal
-                  - usb
               passkeyName: Windows Hello (Win11,Chrome) - 2025-04-07 20:46
               session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
       responses:
@@ -1636,7 +1635,7 @@ paths:
               example:
                 action: proceed
                 registrationRequestOptions:
-                  attestation: enterprise
+                  attestation: none
                   authenticatorSelection:
                     authenticatorAttachment: platform
                     requireResidentKey: true
@@ -1719,7 +1718,7 @@ paths:
             schema:
               $ref: '#/components/schemas/TxCompleteRequestBody'
             example:
-              authenticatorData: ix523n3XniH01jM4CIuOn1z0Jw6QbRATXYOsCUyQN...
+              authenticatorData: Error illum.
               clientData: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
               keyHandle: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
               session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
@@ -1982,7 +1981,7 @@ components:
           minLength: 16
       example:
         assertionResult:
-          authenticatorData: ix523n3XniH01jM4CIuOn1z0Jw6QbRATXYOsCUyQN...
+          authenticatorData: Enim corrupti rem consequatur sapiente dolorum ut.
           clientDataJSON: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
           credentialId: 2aChi2dALRLdVP5i/zKr7yvMrP8FIy7MK4lbyUsjO...
           signature: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
@@ -2073,7 +2072,7 @@ components:
             appid: https://loalhost:8443
           rpId: https://localhost:8443/
           timeout: 5000
-          userVerification: Laudantium molestiae est.
+          userVerification: Aut autem.
         crossAuthMethods:
           - otp
           - otp:sms
@@ -2104,7 +2103,8 @@ components:
             wallet: NlPsJDfILKo0nCxuu2lrv6q9SBqgKLvpIuqSI4izk9k=
           additionalProperties:
             type: string
-            example: Temporibus cumque rerum natus aut alias similique.
+            example: >-
+              eyJ0eXAiOiJKV1QiLA0KICJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ.dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk
         user:
           $ref: '#/components/schemas/UserLogin'
       example:
@@ -2154,7 +2154,7 @@ components:
             bindings
 
             made by the authenticator.
-          example: Amet architecto.
+          example: Voluptates reiciendis ipsum et.
         clientDataJSON:
           type: string
           description: >-
@@ -2202,7 +2202,7 @@ components:
         authenticatorAttachment:
           type: string
           description: Authenticator attachment modality
-          example: platform
+          example: cross-platform
           enum:
             - platform
             - cross-platform
@@ -2214,7 +2214,7 @@ components:
         residentKey:
           type: string
           description: Resident key requirement
-          example: preferred
+          example: discouraged
           enum:
             - discouraged
             - preferred
@@ -2222,16 +2222,16 @@ components:
         userVerification:
           type: string
           description: User verification requirement
-          example: required
+          example: discouraged
           enum:
             - required
             - preferred
             - discouraged
       example:
-        authenticatorAttachment: platform
+        authenticatorAttachment: cross-platform
         requireResidentKey: true
-        residentKey: preferred
-        userVerification: Laudantium molestiae est.
+        residentKey: discouraged
+        userVerification: Aut autem.
     CreationResult:
       type: object
       properties:
@@ -2250,7 +2250,7 @@ components:
             bindings
 
             made by the authenticator.
-          example: Ut dicta assumenda exercitationem.
+          example: Ea in soluta quia.
         clientDataJSON:
           type: string
           description: >-
@@ -2312,6 +2312,8 @@ components:
           example:
             - internal
             - internal
+            - internal
+            - internal
       example:
         attestationObject: 5lvuZBkX1w7/0+XKcldttzA7vTwilEq3qnnXSq/a0...
         authenticatorData: ix523n3XniH01jM4CIuOn1z0Jw6QbRATXYOsCUyQN...
@@ -2320,6 +2322,7 @@ components:
         publicKey: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
         publicKeyAlgorithm: -8
         transports:
+          - internal
           - internal
           - internal
       required:
@@ -2521,11 +2524,11 @@ components:
             desc:
               type: string
               description: Action description
-              example: Quae aut consequuntur voluptatibus fugiat nobis cumque.
+              example: Aut eveniet nobis error id et.
             label:
               type: string
               description: Human readable action label
-              example: Aut vel ducimus ratione quidem ut.
+              example: Nihil dolor aperiam corrupti.
             name:
               type: string
               description: Next Action to be performed.
@@ -2539,8 +2542,8 @@ components:
                 - otp:verify
                 - external
           example:
-            desc: Nihil id ea temporibus.
-            label: Qui ea qui.
+            desc: Quae adipisci veritatis.
+            label: Excepturi iste nulla tenetur.
             name: passkey
           required:
             - name
@@ -2558,8 +2561,8 @@ components:
       description: Next Action to be performed.
       example:
         action:
-          desc: Nihil dolor aperiam corrupti.
-          label: Ut voluptatem quia aliquid non.
+          desc: Laudantium voluptatem.
+          label: Ut ipsam enim illo.
           name: passkey
         options:
           - label: primary@example.com
@@ -2577,6 +2580,12 @@ components:
           type: string
           description: Payload to be signed
           example: ak4BXFgauyDtsRvnXWfaTW1DyetX7fTViGY9DRQGQ+g=
+        traceId:
+          type: string
+          description: >-
+            A unique id for tracing all events associated with an interaction. A
+            random ID will be generated by the system if not provided.
+          example: 6957cf6e-a86c-44fb-b25a-bd97cb9ff830
         trustItems:
           type: object
           description: TrustIDs provided with the request
@@ -2586,7 +2595,8 @@ components:
             wallet: NlPsJDfILKo0nCxuu2lrv6q9SBqgKLvpIuqSI4izk9k=
           additionalProperties:
             type: string
-            example: Architecto alias repellat.
+            example: >-
+              eyJ0eXAiOiJKV1QiLA0KICJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ.dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk
         user:
           $ref: '#/components/schemas/User'
       example:
@@ -2615,6 +2625,7 @@ components:
               "signalUnknownCredential": true
             }
         payload: ak4BXFgauyDtsRvnXWfaTW1DyetX7fTViGY9DRQGQ+g=
+        traceId: 6957cf6e-a86c-44fb-b25a-bd97cb9ff830
         trustItems:
           auth: DqjUIcwnq7edyyeMGCxWNqs1cNBrEjBXlB2mVxfja8s=
           merchant: gpOLtpZWhxkKgwEJyYzB2ckXn9IXDID7jjiaYFYTfS4=
@@ -2736,19 +2747,19 @@ components:
         label:
           type: string
           description: Human readable label
-          example: Facilis ex eos quisquam ducimus.
+          example: Aut vel ducimus ratione quidem ut.
         name:
           type: string
           description: Option name
-          example: Aut quos commodi inventore beatae hic.
+          example: Voluptate temporibus.
         value:
           type: string
           description: Option value to be used in the next request
-          example: Voluptatem impedit quos dolor quis.
+          example: Quae aut consequuntur voluptatibus fugiat nobis cumque.
       example:
-        label: Magnam in dolorem voluptas non.
-        name: Repudiandae nulla nihil nulla animi voluptatum.
-        value: Voluptate temporibus.
+        label: Nihil id ea temporibus.
+        name: Qui ea qui.
+        value: Ut voluptatem quia aliquid non.
       required:
         - value
     MfaOtpRequestRequestBody:
@@ -2802,7 +2813,7 @@ components:
           $ref: '#/components/schemas/AuthenticatorAssertionResponse'
       example:
         assertionResult:
-          authenticatorData: ix523n3XniH01jM4CIuOn1z0Jw6QbRATXYOsCUyQN...
+          authenticatorData: Enim corrupti rem consequatur sapiente dolorum ut.
           clientDataJSON: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
           credentialId: 2aChi2dALRLdVP5i/zKr7yvMrP8FIy7MK4lbyUsjO...
           signature: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
@@ -2817,7 +2828,7 @@ components:
       example:
         creationResult:
           attestationObject: 5lvuZBkX1w7/0+XKcldttzA7vTwilEq3qnnXSq/a0...
-          authenticatorData: ix523n3XniH01jM4CIuOn1z0Jw6QbRATXYOsCUyQN...
+          authenticatorData: Ea eos.
           clientDataJSON: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
           credentialId: 2aChi2dALRLdVP5i/zKr7yvMrP8FIy7MK4lbyUsjO...
           publicKey: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
@@ -2825,7 +2836,6 @@ components:
           transports:
             - internal
             - internal
-            - usb
       required:
         - creationResult
     MfaThirdPartyAuthVerifyRequestBody:
@@ -2993,7 +3003,6 @@ components:
           example:
             - internal
             - internal
-            - internal
         type:
           type: string
           description: The valid credential types.
@@ -3005,7 +3014,9 @@ components:
         transports:
           - internal
           - internal
-        type: Nulla tenetur temporibus quae adipisci.
+          - internal
+          - internal
+        type: Et ab provident.
       required:
         - type
         - id
@@ -3014,7 +3025,7 @@ components:
       properties:
         attestation:
           type: string
-          example: enterprise
+          example: none
           enum:
             - none
             - indirect
@@ -3093,7 +3104,7 @@ components:
         user:
           $ref: '#/components/schemas/PublicKeyCredentialUserEntity'
       example:
-        attestation: Odio qui totam exercitationem.
+        attestation: Possimus et voluptas quas dolorum.
         authenticatorSelection:
           authenticatorAttachment: platform
           requireResidentKey: true
@@ -3141,7 +3152,7 @@ components:
             generated,
 
             e.g., RSA or Elliptic Curve.
-          example: -7
+          example: -8
           enum:
             - -7
             - -35
@@ -3157,8 +3168,8 @@ components:
             - public-key
       description: Additional parameters when creating a new credential.
       example:
-        alg: -35
-        type: Nulla tenetur temporibus quae adipisci.
+        alg: -257
+        type: Et ab provident.
     PublicKeyCredentialRequestOptions:
       type: object
       properties:
@@ -3250,7 +3261,7 @@ components:
           appid: https://loalhost:8443
         rpId: https://localhost:8443/
         timeout: 5000
-        userVerification: Laudantium molestiae est.
+        userVerification: Aut autem.
       required:
         - challenge
     PublicKeyCredentialRpEntity:
@@ -3312,7 +3323,7 @@ components:
       example:
         creationResult:
           attestationObject: 5lvuZBkX1w7/0+XKcldttzA7vTwilEq3qnnXSq/a0...
-          authenticatorData: ix523n3XniH01jM4CIuOn1z0Jw6QbRATXYOsCUyQN...
+          authenticatorData: Ea eos.
           clientDataJSON: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
           credentialId: 2aChi2dALRLdVP5i/zKr7yvMrP8FIy7MK4lbyUsjO...
           publicKey: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
@@ -3320,7 +3331,6 @@ components:
           transports:
             - internal
             - internal
-            - usb
         passkeyName: Windows Hello (Win11,Chrome) - 2025-04-07 20:46
         session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
       required:
@@ -3350,7 +3360,7 @@ components:
       example:
         action: proceed
         registrationRequestOptions:
-          attestation: Odio qui totam exercitationem.
+          attestation: Possimus et voluptas quas dolorum.
           authenticatorSelection:
             authenticatorAttachment: platform
             requireResidentKey: true
@@ -3403,7 +3413,8 @@ components:
             wallet: NlPsJDfILKo0nCxuu2lrv6q9SBqgKLvpIuqSI4izk9k=
           additionalProperties:
             type: string
-            example: Quis harum cupiditate facilis aliquam earum.
+            example: >-
+              eyJ0eXAiOiJKV1QiLA0KICJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ.dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk
         user:
           $ref: '#/components/schemas/User'
       example:
@@ -3523,7 +3534,7 @@ components:
           description: >-
             This attribute contains the authenticator data returned by the
             authenticator.
-          example: ix523n3XniH01jM4CIuOn1z0Jw6QbRATXYOsCUyQN...
+          example: Aut nulla est enim.
         clientData:
           type: string
           description: "Base64 encoded byte array which is a JSON-compatible serialization of client data\n\t\t\t\t\t\t\tpassed to the authenticator by the client in order to generate this assertion.\n\t\t\t\t\t\t\tThe exact JSON serialization MUST be preserved, as the hash of the serialized\n\t\t\t\t\t\t\tclient data has been computed over it."
@@ -3542,7 +3553,7 @@ components:
           description: Base64 encoded the raw signature returned from the authenticator.
           example: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
       example:
-        authenticatorData: ix523n3XniH01jM4CIuOn1z0Jw6QbRATXYOsCUyQN...
+        authenticatorData: Consequatur ea voluptas quasi consectetur.
         clientData: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
         keyHandle: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
         session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
@@ -3583,7 +3594,7 @@ components:
             appid: https://loalhost:8443
           rpId: https://localhost:8443/
           timeout: 5000
-          userVerification: Laudantium molestiae est.
+          userVerification: Aut autem.
         session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
         txId: 2a363a42-a397-4af0-b089-0935fc223017
       required:
