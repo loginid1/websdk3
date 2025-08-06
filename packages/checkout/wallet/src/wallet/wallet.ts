@@ -10,10 +10,7 @@ import {
   CheckoutBeginFlowOptions,
   CheckoutPerformActionOptions,
 } from "../types";
-import {
-  CheckoutIdLocalStorage,
-  WalletTrustIdStore,
-} from "@loginid/core/store";
+import { MfaBeginLocalStorage, WalletTrustIdStore } from "@loginid/core/store";
 import { DiscoverResult, EmbeddedContextData } from "@loginid/checkout-commons";
 import { ValidationError } from "@loginid/core/errors";
 import { createWalletCommunicator } from "../creators";
@@ -90,6 +87,7 @@ class LoginIDWalletAuth {
       );
     const checkoutId = options.checkoutId || eData?.checkoutId;
     const txPayload = options.txPayload;
+    const traceId = options.traceId;
 
     if (!checkoutId) {
       throw new ValidationError(
@@ -110,9 +108,11 @@ class LoginIDWalletAuth {
     const opts: MfaBeginOptions = {
       checkoutId: checkoutId,
       txPayload: txPayload,
+      traceId: traceId,
     };
 
-    CheckoutIdLocalStorage.persistCheckoutId(checkoutId || "");
+    MfaBeginLocalStorage.persistCheckoutId(checkoutId || "");
+    MfaBeginLocalStorage.persistTraceId(traceId || "");
 
     return await this.mfa.beginFlow(options.username || "", opts);
   }
@@ -141,10 +141,12 @@ class LoginIDWalletAuth {
   ): Promise<MfaSessionResult> {
     // NOTE: This may be a temporary fix
     if (factorName === "passkey:tx" && options.txPayload) {
-      const checkoutId = CheckoutIdLocalStorage.getCheckoutId();
+      const checkoutId = MfaBeginLocalStorage.getCheckoutId();
+      const traceId = MfaBeginLocalStorage.getTraceId();
       const opts: MfaBeginOptions = {
         checkoutId: checkoutId,
         txPayload: options.txPayload,
+        traceId: traceId,
       };
 
       await this.mfa.beginFlow("", opts);
