@@ -66,6 +66,7 @@ export const toAuthResult = (
     userId: authResponse.userId,
     token: authResponse.jwtAccess,
     passkeyId: authResponse.passkeyId,
+    deviceId: authResponse.deviceId,
     isAuthenticated: isAuthenticated,
     isFallback: isFallback,
   };

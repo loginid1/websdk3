@@ -215,7 +215,7 @@ export interface AuthResult {
    * An identifier for the device used in the authentication process. This property helps determine if supported authentications can be proceeded,
    * allowing future authentications to identify the device correctly.
    */
-  deviceID?: string;
+  deviceId?: string;
 
   /**
    * If **`true`**, the authentication process should resort to a fallback method as specified in **`fallbackOptions`**.
