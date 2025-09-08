@@ -7,17 +7,12 @@ import {
   MfaPerformActionOptions,
   MfaSessionResult,
 } from "./types";
-import {
-  DeviceStore,
-  MfaStore,
-  TrustStore,
-  WalletTrustIdStore,
-} from "../store";
+import { defaultDeviceInfo, signalUnknownCredential } from "../utils/browser";
+import { AppStore, MfaStore, TrustStore, WalletTrustIdStore } from "../store";
 import { mfaOptions, toMfaInfo, toMfaSessionDetails } from "../defaults";
 import { ApiError, Mfa, MfaBeginRequestBody, MfaNext } from "../api";
 import { ClientEvents } from "../client-events/client-events";
 import { LoginIDParamValidator } from "../validators";
-import { defaultDeviceInfo } from "../utils/browser";
 import { WebAuthnHelper } from "../webauthn";
 import { LoginIDError } from "../errors";
 import { LoginIDBase } from "./base";
@@ -48,7 +43,7 @@ export class MFA extends LoginIDBase {
     options: MfaBeginOptions = {},
   ): Promise<MfaSessionResult> {
     const appId = this.config.getAppId();
-    const deviceId = DeviceStore.getDeviceId(appId);
+    const deviceId = AppStore.getDeviceId(appId);
     const deviceInfo = await defaultDeviceInfo(deviceId);
     const opts = mfaOptions(username, options);
 
@@ -172,12 +167,24 @@ export class MFA extends LoginIDBase {
                 session: session,
               });
 
-            return await this.service.mfa.mfaMfaPasskeyReg({
-              authorization: session,
-              requestBody: {
-                creationResult: regCompleteRequestBody.creationResult,
-              },
-            });
+            try {
+              return await this.service.mfa.mfaMfaPasskeyReg({
+                authorization: session,
+                requestBody: {
+                  creationResult: regCompleteRequestBody.creationResult,
+                },
+              });
+            } catch (error) {
+              // Potentially delete stale passkey from authenticator
+              const rpId = requestOptions.rp.id;
+              if (rpId) {
+                const credentialId =
+                  regCompleteRequestBody.creationResult.credentialId;
+                signalUnknownCredential(rpId, credentialId);
+              }
+
+              throw error;
+            }
           });
         }
 
@@ -273,7 +280,7 @@ export class MFA extends LoginIDBase {
       });
 
       this.session.setTokenSet(mfaSuccessResult);
-      DeviceStore.persistDeviceId(appId, mfaSuccessResult.deviceId);
+      AppStore.persistDeviceId(appId, mfaSuccessResult.deviceId);
 
       const newMfaInfo = MfaStore.getInfo(appId);
 

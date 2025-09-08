@@ -5,7 +5,10 @@ import {
   isBluetoothAvailable,
   isConditionalUIAvailable,
   isPlatformAuthenticatorAvailable,
+  signalAllAcceptedCredentials,
+  signalUnknownCredential,
 } from "../index";
+import { Logger } from "../../logger";
 
 import * as IndexModule from "../index";
 
@@ -245,5 +248,161 @@ describe("isBluetoothAvailable", () => {
 
     const result = await isBluetoothAvailable();
     expect(result).toBe(false);
+  });
+});
+
+describe("signalAllAcceptedCredentials", () => {
+  const rpId = "example.com";
+  const userId = "user123";
+  const credentials = ["cred1", "cred2"];
+
+  let debugMock: jest.Mock;
+
+  beforeEach(() => {
+    debugMock = jest.fn();
+
+    (Logger as any).logger = { debug: debugMock };
+
+    Object.defineProperty(window, "PublicKeyCredential", {
+      value: undefined,
+      configurable: true,
+      writable: true,
+    });
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("logs and returns if PublicKeyCredential is not available", async () => {
+    await signalAllAcceptedCredentials(rpId, userId, credentials);
+
+    expect(debugMock).toHaveBeenCalledWith(
+      "PublicKeyCredential is not available.",
+    );
+  });
+
+  it("logs and returns if signalAllAcceptedCredentials is not available", async () => {
+    Object.defineProperty(window, "PublicKeyCredential", {
+      value: {},
+      configurable: true,
+    });
+
+    await signalAllAcceptedCredentials(rpId, userId, credentials);
+
+    expect(debugMock).toHaveBeenCalledWith(
+      "signalAllAcceptedCredentials is not available.",
+    );
+  });
+
+  it("calls signalAllAcceptedCredentials successfully", async () => {
+    const mockFn = jest.fn().mockResolvedValue(undefined);
+
+    Object.defineProperty(window, "PublicKeyCredential", {
+      value: { signalAllAcceptedCredentials: mockFn },
+      configurable: true,
+    });
+
+    await signalAllAcceptedCredentials(rpId, userId, credentials);
+
+    expect(mockFn).toHaveBeenCalledWith({
+      rpId,
+      userId,
+      allAcceptedCredentialIds: credentials,
+    });
+    expect(debugMock).not.toHaveBeenCalled();
+  });
+
+  it("logs error if signalAllAcceptedCredentials throws", async () => {
+    const mockFn = jest.fn().mockRejectedValue(new Error("fail"));
+
+    Object.defineProperty(window, "PublicKeyCredential", {
+      value: { signalAllAcceptedCredentials: mockFn },
+      configurable: true,
+    });
+
+    await signalAllAcceptedCredentials(rpId, userId, credentials);
+
+    expect(debugMock).toHaveBeenCalledWith(
+      expect.stringContaining(
+        "Error at signalAllAcceptedCredentials: Error: fail",
+      ),
+    );
+  });
+});
+
+describe("signalUnknownCredential", () => {
+  const rpId = "example.com";
+  const credentialId = "cred1";
+
+  let debugMock: jest.Mock;
+
+  beforeEach(() => {
+    debugMock = jest.fn();
+
+    (Logger as any).logger = { debug: debugMock };
+
+    Object.defineProperty(window, "PublicKeyCredential", {
+      value: undefined,
+      configurable: true,
+      writable: true,
+    });
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("logs and returns if PublicKeyCredential is not available", async () => {
+    await signalUnknownCredential(rpId, credentialId);
+
+    expect(debugMock).toHaveBeenCalledWith(
+      "PublicKeyCredential is not available.",
+    );
+  });
+
+  it("logs and returns if signalUnknownCredential is not available", async () => {
+    Object.defineProperty(window, "PublicKeyCredential", {
+      value: {},
+      configurable: true,
+    });
+
+    await signalUnknownCredential(rpId, credentialId);
+
+    expect(debugMock).toHaveBeenCalledWith(
+      "signalUnknownCredential is not available.",
+    );
+  });
+
+  it("calls signalUnknownCredential successfully", async () => {
+    const mockFn = jest.fn().mockResolvedValue(undefined);
+
+    Object.defineProperty(window, "PublicKeyCredential", {
+      value: { signalUnknownCredential: mockFn },
+      configurable: true,
+    });
+
+    await signalUnknownCredential(rpId, credentialId);
+
+    expect(mockFn).toHaveBeenCalledWith({
+      rpId,
+      credentialId,
+    });
+    expect(debugMock).not.toHaveBeenCalled();
+  });
+
+  it("logs error if signalUnknownCredential throws", async () => {
+    const mockFn = jest.fn().mockRejectedValue(new Error("fail"));
+
+    Object.defineProperty(window, "PublicKeyCredential", {
+      value: { signalUnknownCredential: mockFn },
+      configurable: true,
+    });
+
+    await signalUnknownCredential(rpId, credentialId);
+
+    expect(debugMock).toHaveBeenCalledWith(
+      expect.stringContaining("Error at signalUnknownCredential: Error: fail"),
+    );
   });
 });
