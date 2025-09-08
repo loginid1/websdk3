@@ -1,7 +1,7 @@
 // Copyright (C) LoginID
 
 export * from "./local-storage-flagger";
-export * from "./local-checkout-id";
+export * from "./local-mfa-begin";
 export * from "./local-storage";
 export * from "./checkout-id";
 export * from "./trust-store";

@@ -1,6 +1,5 @@
 # LoginID Web SDK
 
-
 The LoginID Web SDK provides a comprehensive solution for integrating passkey-based authentication into web applications. This SDK leverages the Web Authentication (WebAuthn) API for creating and managing passkeys, facilitating a more secure and user-friendly authentication experience.
 
 ## Features

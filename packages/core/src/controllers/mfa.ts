@@ -72,6 +72,7 @@ export class MFA extends LoginIDBase {
         ...(options.checkoutId && { merchant: options.checkoutId }),
       },
       ...(options.txPayload && { payload: options.txPayload }),
+      ...(options.traceId && { traceId: options.traceId }),
     };
 
     const mfaNextResult = await this.service.mfa.mfaMfaBegin({
