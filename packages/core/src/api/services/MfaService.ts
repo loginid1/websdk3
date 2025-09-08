@@ -4,6 +4,7 @@
 /* tslint:disable */
 
 import type { MfaThirdPartyAuthVerifyRequestBody } from "../models/MfaThirdPartyAuthVerifyRequestBody";
+import type { MfaPayloadUpdateRequestBody } from "../models/MfaPayloadUpdateRequestBody";
 import type { MfaOtpRequestResponseBody } from "../models/MfaOtpRequestResponseBody";
 import type { MfaPasskeyAuthRequestBody } from "../models/MfaPasskeyAuthRequestBody";
 import type { MfaOtpRequestRequestBody } from "../models/MfaOtpRequestRequestBody";
@@ -199,6 +200,39 @@ export class MfaService {
       errors: {
         400: `bad_request: Bad Request response.`,
         401: `unauthorized: Unauthorized response.`,
+        500: `internal_error: Internal Server Error response.`,
+      },
+    });
+  }
+  /**
+   * Update the payload to be signed using transaction confirmation.
+   * Update the payload to be signed.
+   * @returns MfaNext OK response.
+   * @throws ApiError
+   */
+  public mfaMfaPayloadUpdate({
+    requestBody,
+    authorization,
+  }: {
+    requestBody: MfaPayloadUpdateRequestBody;
+    /**
+     * JWT Authorization header
+     */
+    authorization?: string;
+  }): CancelablePromise<MfaNext> {
+    return this.httpRequest.request({
+      method: "POST",
+      url: "/fido2/v2/mfa/payload",
+      headers: {
+        Authorization: authorization,
+      },
+      body: requestBody,
+      mediaType: "application/json",
+      errors: {
+        400: `bad_request: Bad Request response.`,
+        401: `unauthorized: Unauthorized response.`,
+        403: `forbidden: Forbidden response.`,
+        404: `not_found: Not Found response.`,
         500: `internal_error: Internal Server Error response.`,
       },
     });
