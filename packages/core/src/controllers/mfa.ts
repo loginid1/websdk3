@@ -7,12 +7,7 @@ import {
   MfaPerformActionOptions,
   MfaSessionResult,
 } from "./types";
-import {
-  DeviceStore,
-  MfaStore,
-  TrustStore,
-  WalletTrustIdStore,
-} from "../store";
+import { AppStore, MfaStore, TrustStore, WalletTrustIdStore } from "../store";
 import { mfaOptions, toMfaInfo, toMfaSessionDetails } from "../defaults";
 import { ApiError, Mfa, MfaBeginRequestBody, MfaNext } from "../api";
 import { ClientEvents } from "../client-events/client-events";
@@ -48,7 +43,7 @@ export class MFA extends LoginIDBase {
     options: MfaBeginOptions = {},
   ): Promise<MfaSessionResult> {
     const appId = this.config.getAppId();
-    const deviceId = DeviceStore.getDeviceId(appId);
+    const deviceId = AppStore.getDeviceId(appId);
     const deviceInfo = await defaultDeviceInfo(deviceId);
     const opts = mfaOptions(username, options);
 
@@ -273,7 +268,7 @@ export class MFA extends LoginIDBase {
       });
 
       this.session.setTokenSet(mfaSuccessResult);
-      DeviceStore.persistDeviceId(appId, mfaSuccessResult.deviceId);
+      AppStore.persistDeviceId(appId, mfaSuccessResult.deviceId);
 
       const newMfaInfo = MfaStore.getInfo(appId);
 
