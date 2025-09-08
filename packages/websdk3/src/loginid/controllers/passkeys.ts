@@ -23,10 +23,13 @@ import {
   passkeyOptions,
   toAuthResult,
 } from "../lib/defaults";
+import {
+  defaultDeviceInfo,
+  signalUnknownCredential,
+} from "@loginid/core/utils/browser";
 import { NO_LOGIN_OPTIONS_ERROR, WebAuthnHelper } from "@loginid/core/webauthn";
-import { defaultDeviceInfo } from "@loginid/core/utils/browser";
-import { DeviceStore, TrustStore } from "@loginid/core/store";
 import { ClientEvents } from "@loginid/core/client-events";
+import { AppStore, TrustStore } from "@loginid/core/store";
 import { LoginIDConfig } from "@loginid/core/controllers";
 import { parseJwt } from "@loginid/core/utils/crypto";
 import { mergeFallbackOptions } from "../lib/utils";
@@ -98,7 +101,7 @@ class Passkeys extends OTP {
     options: CreatePasskeyOptions = {},
   ): Promise<AuthResult> {
     const appId = this.config.getAppId();
-    const deviceId = DeviceStore.getDeviceId(appId);
+    const deviceId = AppStore.getDeviceId(appId);
     const deviceInfo = await defaultDeviceInfo(deviceId);
     const trustStore = new TrustStore(appId);
     const opts = passkeyOptions(username, authzToken, options);
@@ -143,19 +146,31 @@ class Passkeys extends OTP {
           regCompleteRequestBody.passkeyName = options.passkeyName;
         }
 
-        const regCompleteResponse = await this.service.reg.regRegComplete({
-          requestBody: regCompleteRequestBody,
-        });
+        try {
+          const regCompleteResponse = await this.service.reg.regRegComplete({
+            requestBody: regCompleteRequestBody,
+          });
 
-        const result: AuthResult = toAuthResult(regCompleteResponse);
+          const result: AuthResult = toAuthResult(regCompleteResponse);
 
-        this.session.setJwtCookie(regCompleteResponse.jwtAccess);
-        DeviceStore.persistDeviceId(
-          appId,
-          deviceId || regCompleteResponse.deviceId,
-        );
+          this.session.setJwtCookie(regCompleteResponse.jwtAccess);
+          AppStore.persistDeviceId(
+            appId,
+            deviceId || regCompleteResponse.deviceId,
+          );
 
-        return result;
+          return result;
+        } catch (error) {
+          // Potentially delete stale passkey from authenticator
+          const rpId = regInitResponseBody.registrationRequestOptions.rp.id;
+          if (rpId) {
+            const credentialId =
+              regCompleteRequestBody.creationResult.credentialId;
+            signalUnknownCredential(rpId, credentialId);
+          }
+
+          throw error;
+        }
       },
     );
   }
@@ -208,7 +223,7 @@ class Passkeys extends OTP {
     options: AuthenticateWithPasskeysOptions = {},
   ): Promise<AuthResult> {
     const appId = this.config.getAppId();
-    const deviceInfo = await defaultDeviceInfo(DeviceStore.getDeviceId(appId));
+    const deviceInfo = await defaultDeviceInfo(AppStore.getDeviceId(appId));
     const trustStore = new TrustStore(appId);
     const opts = passkeyOptions(username, "", options);
 
@@ -253,7 +268,7 @@ class Passkeys extends OTP {
 
             this.session.setJwtCookie(result.token);
 
-            DeviceStore.persistDeviceId(appId, authCompleteResponse.deviceId);
+            AppStore.persistDeviceId(appId, authCompleteResponse.deviceId);
 
             if (opts?.callbacks?.onSuccess) {
               await opts.callbacks.onSuccess(result);
