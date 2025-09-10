@@ -35,6 +35,7 @@ export type { MfaOtpRequestResponseBody } from "./models/MfaOtpRequestResponseBo
 export type { MfaOtpVerifyRequestBody } from "./models/MfaOtpVerifyRequestBody";
 export type { MfaPasskeyAuthRequestBody } from "./models/MfaPasskeyAuthRequestBody";
 export type { MfaPasskeyRegRequestBody } from "./models/MfaPasskeyRegRequestBody";
+export type { MfaPayloadUpdateRequestBody } from "./models/MfaPayloadUpdateRequestBody";
 export type { MfaThirdPartyAuthVerifyRequestBody } from "./models/MfaThirdPartyAuthVerifyRequestBody";
 export type { Passkey } from "./models/Passkey";
 export type { PasskeyCollection } from "./models/PasskeyCollection";

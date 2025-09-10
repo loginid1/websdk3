@@ -116,6 +116,24 @@ export class MFA extends LoginIDBase {
       options,
     );
 
+    // Update payload if provided
+    if (factorName === "passkey:tx" && options.txPayload) {
+      const { txPayload, ...rest } = options;
+      const mfaNextResult = await this.service.mfa.mfaMfaPayloadUpdate({
+        authorization: session,
+        requestBody: {
+          payload: txPayload,
+        },
+      });
+
+      const username = info?.username;
+      const mfaInfo = toMfaInfo(mfaNextResult, username);
+
+      MfaStore.persistInfo(appId, mfaInfo);
+
+      return await this.performAction(factorName, rest);
+    }
+
     switch (factorName) {
       case "passkey:reg":
       case "passkey:auth":

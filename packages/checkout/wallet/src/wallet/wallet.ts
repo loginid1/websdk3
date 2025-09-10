@@ -139,19 +139,6 @@ class LoginIDWalletAuth {
     factorName: MfaFactorName,
     options: CheckoutPerformActionOptions = {},
   ): Promise<MfaSessionResult> {
-    // NOTE: This may be a temporary fix
-    if (factorName === "passkey:tx" && options.txPayload) {
-      const checkoutId = MfaBeginLocalStorage.getCheckoutId();
-      const traceId = MfaBeginLocalStorage.getTraceId();
-      const opts: MfaBeginOptions = {
-        checkoutId: checkoutId,
-        txPayload: options.txPayload,
-        traceId: traceId,
-      };
-
-      await this.mfa.beginFlow("", opts);
-    }
-
     const result = await this.mfa.performAction(factorName, options);
     if (result.payloadSignature || result.accessToken) {
       const callback = async () => ({});
