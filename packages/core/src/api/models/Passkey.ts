@@ -13,6 +13,7 @@ export type Passkey = {
    * Timestamp in RFC3339 format.
    */
   createdAt: string;
+  credentialId?: string;
   /**
    * Credential available on multiple devices
    */
