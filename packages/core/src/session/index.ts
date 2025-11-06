@@ -32,7 +32,7 @@ export class SessionManager {
     if (options.authzToken) {
       return options.authzToken;
     } else {
-      const token = this.getJwtCookie();
+      const token = this.getJwtCookie() || this.retrieveToken("accessToken");
       if (token) {
         return token;
       } else {
@@ -44,7 +44,7 @@ export class SessionManager {
   /**
    * Retrieves the currently authenticated user's session information.
    *
-   * @returns {LoginIDUser | null} The currently authenticated user's information, including username and id.
+   * @returns {SessionInfo | null} The currently authenticated session information, including username, id and rpId.
    * It will return null if user is not authenticated
    */
   public getSessionInfo(): SessionInfo | null {
@@ -57,6 +57,7 @@ export class SessionManager {
     const user: SessionInfo = {
       username: data.username,
       id: data.sub,
+      rpId: data.rpId,
     };
     return user;
   }

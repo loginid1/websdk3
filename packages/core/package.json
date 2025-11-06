@@ -53,6 +53,10 @@
     "./webauthn": {
       "import": "./dist/webauthn/index.js",
       "types": "./dist//webauthn/index.d.ts"
+    },
+    "./signal": {
+      "import": "./dist/signal/index.js",
+      "types": "./dist//signal/index.d.ts"
     }
   },
   "version": "0.0.1",

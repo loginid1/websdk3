@@ -24,10 +24,11 @@ import {
   toAuthResult,
 } from "../lib/defaults";
 import {
-  defaultDeviceInfo,
-  signalUnknownCredential,
-} from "@loginid/core/utils/browser";
+  fetchAndSyncPasskeys,
+  handlePotentialStalePasskey,
+} from "@loginid/core/signal";
 import { NO_LOGIN_OPTIONS_ERROR, WebAuthnHelper } from "@loginid/core/webauthn";
+import { defaultDeviceInfo } from "@loginid/core/utils/browser";
 import { ClientEvents } from "@loginid/core/client-events";
 import { AppStore, TrustStore } from "@loginid/core/store";
 import { LoginIDConfig } from "@loginid/core/controllers";
@@ -162,12 +163,10 @@ class Passkeys extends OTP {
           return result;
         } catch (error) {
           // Potentially delete stale passkey from authenticator
-          const rpId = regInitResponseBody.registrationRequestOptions.rp.id;
-          if (rpId) {
-            const credentialId =
-              regCompleteRequestBody.creationResult.credentialId;
-            signalUnknownCredential(rpId, credentialId);
-          }
+          handlePotentialStalePasskey(
+            regCompleteRequestBody.creationResult.credentialId,
+            regInitResponseBody.registrationRequestOptions.rp.id,
+          );
 
           throw error;
         }
@@ -263,6 +262,8 @@ class Passkeys extends OTP {
               await this.service.auth.authAuthComplete({
                 requestBody: authCompleteRequestBody,
               });
+
+            fetchAndSyncPasskeys(this.service, this.session);
 
             const result = toAuthResult(authCompleteResponse);
 
@@ -510,6 +511,8 @@ class Passkeys extends OTP {
         const result = await this.service.tx.txTxComplete({
           requestBody: txCompleteRequestBody,
         });
+
+        fetchAndSyncPasskeys(this.service, this.session);
 
         return result;
       },

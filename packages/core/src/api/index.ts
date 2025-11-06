@@ -28,6 +28,7 @@ export type { JWT } from "./models/JWT";
 export type { Mfa } from "./models/Mfa";
 export type { MfaAction } from "./models/MfaAction";
 export type { MfaBeginRequestBody } from "./models/MfaBeginRequestBody";
+export type { MfaDiscoverRequestBody } from "./models/MfaDiscoverRequestBody";
 export type { MfaNext } from "./models/MfaNext";
 export type { MfaOption } from "./models/MfaOption";
 export type { MfaOtpRequestRequestBody } from "./models/MfaOtpRequestRequestBody";

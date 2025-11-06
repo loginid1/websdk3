@@ -10,6 +10,7 @@ import type { MfaPasskeyAuthRequestBody } from "../models/MfaPasskeyAuthRequestB
 import type { MfaOtpRequestRequestBody } from "../models/MfaOtpRequestRequestBody";
 import type { MfaPasskeyRegRequestBody } from "../models/MfaPasskeyRegRequestBody";
 import type { MfaOtpVerifyRequestBody } from "../models/MfaOtpVerifyRequestBody";
+import type { MfaDiscoverRequestBody } from "../models/MfaDiscoverRequestBody";
 import type { MfaBeginRequestBody } from "../models/MfaBeginRequestBody";
 import type { CancelablePromise } from "../core/CancelablePromise";
 import type { BaseHttpRequest } from "../core/BaseHttpRequest";
@@ -39,6 +40,30 @@ export class MfaService {
       headers: {
         "User-Agent": userAgent,
       },
+      body: requestBody,
+      mediaType: "application/json",
+      errors: {
+        400: `bad_request: Bad Request response.`,
+        403: `forbidden: Forbidden response.`,
+        404: `not_found: Not Found response.`,
+        500: `internal_error: Internal Server Error response.`,
+      },
+    });
+  }
+  /**
+   * Begin and appropriate flow for the provided username.
+   * Perform discovery if trustID and/or checkoutID are known to the system.
+   * @returns void
+   * @throws ApiError
+   */
+  public mfaMfaDiscover({
+    requestBody,
+  }: {
+    requestBody: MfaDiscoverRequestBody;
+  }): CancelablePromise<void> {
+    return this.httpRequest.request({
+      method: "POST",
+      url: "/fido2/v2/mfa/discover",
       body: requestBody,
       mediaType: "application/json",
       errors: {

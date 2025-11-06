@@ -22,7 +22,7 @@ paths:
               $ref: '#/components/schemas/AuthCompleteRequestBody'
             example:
               assertionResult:
-                authenticatorData: Modi doloribus.
+                authenticatorData: Id mollitia.
                 clientDataJSON: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
                 credentialId: 2aChi2dALRLdVP5i/zKr7yvMrP8FIy7MK4lbyUsjO...
                 signature: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
@@ -643,6 +643,63 @@ paths:
               example:
                 msg: Internal error
                 msgCode: internal_error
+  /fido2/v2/mfa/discover:
+    post:
+      tags:
+        - mfa
+      summary: Begin and appropriate flow for the provided username.
+      description: Perform discovery if trustID and/or checkoutID are known to the system.
+      operationId: mfa#mfaDiscover
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MfaDiscoverRequestBody'
+            example:
+              trustItems:
+                auth: DqjUIcwnq7edyyeMGCxWNqs1cNBrEjBXlB2mVxfja8s=
+                merchant: gpOLtpZWhxkKgwEJyYzB2ckXn9IXDID7jjiaYFYTfS4=
+                wallet: NlPsJDfILKo0nCxuu2lrv6q9SBqgKLvpIuqSI4izk9k=
+      responses:
+        '204':
+          description: No Content response.
+        '400':
+          description: 'bad_request: Bad Request response.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppError'
+              example:
+                msg: Internal error
+                msgCode: internal_error
+        '403':
+          description: 'forbidden: Forbidden response.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppError'
+              example:
+                msg: Internal error
+                msgCode: internal_error
+        '404':
+          description: 'not_found: Not Found response.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppError'
+              example:
+                msg: Internal error
+                msgCode: internal_error
+        '500':
+          description: 'internal_error: Internal Server Error response.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppError'
+              example:
+                msg: Internal error
+                msgCode: internal_error
   /fido2/v2/mfa/otp/request:
     post:
       tags:
@@ -821,7 +878,7 @@ paths:
               $ref: '#/components/schemas/MfaPasskeyAuthRequestBody'
             example:
               assertionResult:
-                authenticatorData: Modi doloribus.
+                authenticatorData: Id mollitia.
                 clientDataJSON: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
                 credentialId: 2aChi2dALRLdVP5i/zKr7yvMrP8FIy7MK4lbyUsjO...
                 signature: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
@@ -929,7 +986,7 @@ paths:
             example:
               creationResult:
                 attestationObject: 5lvuZBkX1w7/0+XKcldttzA7vTwilEq3qnnXSq/a0...
-                authenticatorData: Iure quisquam nesciunt.
+                authenticatorData: Dolorem culpa tempora.
                 clientDataJSON: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
                 credentialId: 2aChi2dALRLdVP5i/zKr7yvMrP8FIy7MK4lbyUsjO...
                 publicKey: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
@@ -1003,7 +1060,7 @@ paths:
               $ref: '#/components/schemas/MfaPasskeyAuthRequestBody'
             example:
               assertionResult:
-                authenticatorData: Modi doloribus.
+                authenticatorData: Id mollitia.
                 clientDataJSON: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
                 credentialId: 2aChi2dALRLdVP5i/zKr7yvMrP8FIy7MK4lbyUsjO...
                 signature: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
@@ -1292,6 +1349,7 @@ paths:
                 $ref: '#/components/schemas/PasskeyCollection'
               example:
                 - createdAt: 2023-06-15 13:29:41 EDT
+                  credentialId: YzI4MjllZmEtNGYyMC00YTYwLThlMDEtYmM4ZTJjYmRiYjA0
                   credentialSynced: false
                   id: eb385800-d35e-4108-9b49-48010731cd37
                   lastUsedAt: 2023-06-15 13:29:41 EDT
@@ -1306,6 +1364,7 @@ paths:
                     osVersion: 18.1.1
                   name: My Phone
                 - createdAt: 2023-06-15 13:29:41 EDT
+                  credentialId: KzI4MjllZmEtNGYyMC00YTYwLThlMDEtYmM4ZTJjYmRiYjA9
                   credentialSynced: true
                   id: 1b385800-d35e-4108-9b49-48010731cd37
                   lastUsedAt: 2023-06-15 13:29:41 EDT
@@ -1621,7 +1680,7 @@ paths:
             example:
               creationResult:
                 attestationObject: 5lvuZBkX1w7/0+XKcldttzA7vTwilEq3qnnXSq/a0...
-                authenticatorData: Iure quisquam nesciunt.
+                authenticatorData: Dolorem culpa tempora.
                 clientDataJSON: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
                 credentialId: 2aChi2dALRLdVP5i/zKr7yvMrP8FIy7MK4lbyUsjO...
                 publicKey: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
@@ -1750,7 +1809,7 @@ paths:
               example:
                 action: proceed
                 registrationRequestOptions:
-                  attestation: none
+                  attestation: direct
                   authenticatorSelection:
                     authenticatorAttachment: platform
                     requireResidentKey: true
@@ -1833,7 +1892,7 @@ paths:
             schema:
               $ref: '#/components/schemas/TxCompleteRequestBody'
             example:
-              authenticatorData: Sint labore temporibus incidunt libero aliquid.
+              authenticatorData: Qui dolorem quia nesciunt quos enim.
               clientData: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
               keyHandle: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
               session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
@@ -1849,6 +1908,7 @@ paths:
                 authCred:
                   aaguid: fbfc3007-154e-4ecc-8c0b-6e020557d7bd
                   createdAt: 2023-06-15 13:29:41 EDT
+                  credentialId: Dolores iste.
                   credentialSynced: false
                   id: 861ee00b-b40d-493a-a10b-457a0d527b48
                   lastUsedAt: '2025-01-02T16:40:44Z'
@@ -2096,7 +2156,7 @@ components:
           minLength: 16
       example:
         assertionResult:
-          authenticatorData: Modi doloribus.
+          authenticatorData: Id mollitia.
           clientDataJSON: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
           credentialId: 2aChi2dALRLdVP5i/zKr7yvMrP8FIy7MK4lbyUsjO...
           signature: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
@@ -2125,7 +2185,7 @@ components:
           type: array
           items:
             type: string
-            example: otp
+            example: otp:sms
             enum:
               - otp
               - otp:sms
@@ -2187,7 +2247,7 @@ components:
             appid: https://loalhost:8443
           rpId: https://localhost:8443/
           timeout: 5000
-          userVerification: Praesentium veniam sit.
+          userVerification: Et ab provident.
         crossAuthMethods:
           - otp
           - otp:sms
@@ -2269,7 +2329,7 @@ components:
             bindings
 
             made by the authenticator.
-          example: Doloribus eum consectetur esse ad.
+          example: Eaque culpa quidem optio odit.
         clientDataJSON:
           type: string
           description: >-
@@ -2317,7 +2377,7 @@ components:
         authenticatorAttachment:
           type: string
           description: Authenticator attachment modality
-          example: cross-platform
+          example: platform
           enum:
             - platform
             - cross-platform
@@ -2325,11 +2385,11 @@ components:
           type: boolean
           description: Resident key requirement
           default: false
-          example: false
+          example: true
         residentKey:
           type: string
           description: Resident key requirement
-          example: discouraged
+          example: required
           enum:
             - discouraged
             - preferred
@@ -2337,16 +2397,16 @@ components:
         userVerification:
           type: string
           description: User verification requirement
-          example: discouraged
+          example: required
           enum:
             - required
             - preferred
             - discouraged
       example:
         authenticatorAttachment: platform
-        requireResidentKey: false
+        requireResidentKey: true
         residentKey: required
-        userVerification: Praesentium veniam sit.
+        userVerification: Et ab provident.
     CreationResult:
       type: object
       properties:
@@ -2365,7 +2425,7 @@ components:
             bindings
 
             made by the authenticator.
-          example: Ad cum sint quos ipsam.
+          example: Rerum reprehenderit odit et.
         clientDataJSON:
           type: string
           description: >-
@@ -2427,8 +2487,6 @@ components:
           example:
             - internal
             - internal
-            - internal
-            - internal
       example:
         attestationObject: 5lvuZBkX1w7/0+XKcldttzA7vTwilEq3qnnXSq/a0...
         authenticatorData: ix523n3XniH01jM4CIuOn1z0Jw6QbRATXYOsCUyQN...
@@ -2437,7 +2495,6 @@ components:
         publicKey: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
         publicKeyAlgorithm: -8
         transports:
-          - internal
           - internal
           - internal
           - internal
@@ -2640,11 +2697,11 @@ components:
             desc:
               type: string
               description: Action description
-              example: Suscipit temporibus.
+              example: Temporibus dignissimos aut consequatur fugit voluptatibus.
             label:
               type: string
               description: Human readable action label
-              example: Corporis quis eum.
+              example: Libero blanditiis autem.
             name:
               type: string
               description: Next Action to be performed.
@@ -2658,8 +2715,8 @@ components:
                 - otp:verify
                 - external
           example:
-            desc: Alias similique.
-            label: Rerum natus.
+            desc: Necessitatibus sunt assumenda qui impedit.
+            label: Quibusdam fuga sed mollitia.
             name: passkey
           required:
             - name
@@ -2677,8 +2734,8 @@ components:
       description: Next Action to be performed.
       example:
         action:
-          desc: Quis harum cupiditate facilis aliquam earum.
-          label: Architecto alias repellat.
+          desc: Natus minus enim at maxime suscipit.
+          label: Occaecati earum dolorem sit voluptatem incidunt.
           name: passkey
         options:
           - label: primary@example.com
@@ -2750,6 +2807,27 @@ components:
           displayName: System Administrator
           username: admin@example.com
           usernameType: email
+    MfaDiscoverRequestBody:
+      type: object
+      properties:
+        trustItems:
+          type: object
+          description: TrustIDs provided with the request
+          example:
+            auth: DqjUIcwnq7edyyeMGCxWNqs1cNBrEjBXlB2mVxfja8s=
+            merchant: gpOLtpZWhxkKgwEJyYzB2ckXn9IXDID7jjiaYFYTfS4=
+            wallet: NlPsJDfILKo0nCxuu2lrv6q9SBqgKLvpIuqSI4izk9k=
+          additionalProperties:
+            type: string
+            example: >-
+              eyJ0eXAiOiJKV1QiLA0KICJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ.dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk
+      example:
+        trustItems:
+          auth: DqjUIcwnq7edyyeMGCxWNqs1cNBrEjBXlB2mVxfja8s=
+          merchant: gpOLtpZWhxkKgwEJyYzB2ckXn9IXDID7jjiaYFYTfS4=
+          wallet: NlPsJDfILKo0nCxuu2lrv6q9SBqgKLvpIuqSI4izk9k=
+      required:
+        - trustItems
     MfaNext:
       type: object
       properties:
@@ -2863,19 +2941,19 @@ components:
         label:
           type: string
           description: Human readable label
-          example: Temporibus dolores ea consequuntur eos blanditiis.
+          example: Doloremque recusandae et voluptatibus.
         name:
           type: string
           description: Option name
-          example: Architecto eum animi ut dicta assumenda.
+          example: Est in.
         value:
           type: string
           description: Option value to be used in the next request
-          example: Iure dolor velit quo cupiditate voluptatibus modi.
+          example: Quis dolorem ea.
       example:
-        label: Ipsum et fugit optio ea.
-        name: Autem voluptatem voluptates.
-        value: Soluta quia.
+        label: Ea sequi corporis sapiente illum tenetur harum.
+        name: Non voluptas aliquid enim praesentium consectetur dolore.
+        value: Error dolorem quis totam.
       required:
         - value
     MfaOtpRequestRequestBody:
@@ -2929,7 +3007,7 @@ components:
           $ref: '#/components/schemas/AuthenticatorAssertionResponse'
       example:
         assertionResult:
-          authenticatorData: Modi doloribus.
+          authenticatorData: Id mollitia.
           clientDataJSON: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
           credentialId: 2aChi2dALRLdVP5i/zKr7yvMrP8FIy7MK4lbyUsjO...
           signature: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
@@ -2944,7 +3022,7 @@ components:
       example:
         creationResult:
           attestationObject: 5lvuZBkX1w7/0+XKcldttzA7vTwilEq3qnnXSq/a0...
-          authenticatorData: Iure quisquam nesciunt.
+          authenticatorData: Dolorem culpa tempora.
           clientDataJSON: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
           credentialId: 2aChi2dALRLdVP5i/zKr7yvMrP8FIy7MK4lbyUsjO...
           publicKey: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
@@ -2990,6 +3068,9 @@ components:
           description: Timestamp in RFC3339 format.
           example: 2023-06-15 13:29:41 EDT
           format: date-time
+        credentialId:
+          type: string
+          example: Deleniti omnis omnis ullam quasi.
         credentialSynced:
           type: boolean
           description: Credential available on multiple devices
@@ -3016,6 +3097,7 @@ components:
       example:
         aaguid: fbfc3007-154e-4ecc-8c0b-6e020557d7bd
         createdAt: 2023-06-15 13:29:41 EDT
+        credentialId: Repellendus qui ipsum omnis dolorum tempore.
         credentialSynced: true
         id: 861ee00b-b40d-493a-a10b-457a0d527b48
         lastUsedAt: '2025-01-02T16:40:44Z'
@@ -3041,6 +3123,7 @@ components:
         $ref: '#/components/schemas/Passkey'
       example:
         - createdAt: 2023-06-15 13:29:41 EDT
+          credentialId: YzI4MjllZmEtNGYyMC00YTYwLThlMDEtYmM4ZTJjYmRiYjA0
           credentialSynced: false
           id: eb385800-d35e-4108-9b49-48010731cd37
           lastUsedAt: 2023-06-15 13:29:41 EDT
@@ -3055,6 +3138,7 @@ components:
             osVersion: 18.1.1
           name: My Phone
         - createdAt: 2023-06-15 13:29:41 EDT
+          credentialId: KzI4MjllZmEtNGYyMC00YTYwLThlMDEtYmM4ZTJjYmRiYjA9
           credentialSynced: true
           id: 1b385800-d35e-4108-9b49-48010731cd37
           lastUsedAt: 2023-06-15 13:29:41 EDT
@@ -3079,7 +3163,7 @@ components:
           type: boolean
           description: Flag to allow conditional creation
           default: false
-          example: true
+          example: false
         securityKey:
           type: boolean
           description: Whether the authenticator is a security key
@@ -3130,7 +3214,6 @@ components:
           example:
             - internal
             - internal
-            - internal
         type:
           type: string
           description: The valid credential types.
@@ -3142,9 +3225,7 @@ components:
         transports:
           - internal
           - internal
-          - internal
-          - internal
-        type: Sed est eaque.
+        type: Id beatae nulla sed.
       required:
         - type
         - id
@@ -3232,7 +3313,7 @@ components:
         user:
           $ref: '#/components/schemas/PublicKeyCredentialUserEntity'
       example:
-        attestation: Nostrum et et minus aut sunt.
+        attestation: Ea aut nulla est enim.
         authenticatorSelection:
           authenticatorAttachment: platform
           requireResidentKey: true
@@ -3280,7 +3361,7 @@ components:
             generated,
 
             e.g., RSA or Elliptic Curve.
-          example: -7
+          example: -257
           enum:
             - -7
             - -35
@@ -3297,7 +3378,7 @@ components:
       description: Additional parameters when creating a new credential.
       example:
         alg: -35
-        type: Sed est eaque.
+        type: Id beatae nulla sed.
     PublicKeyCredentialRequestOptions:
       type: object
       properties:
@@ -3389,7 +3470,7 @@ components:
           appid: https://loalhost:8443
         rpId: https://localhost:8443/
         timeout: 5000
-        userVerification: Praesentium veniam sit.
+        userVerification: Et ab provident.
       required:
         - challenge
     PublicKeyCredentialRpEntity:
@@ -3451,7 +3532,7 @@ components:
       example:
         creationResult:
           attestationObject: 5lvuZBkX1w7/0+XKcldttzA7vTwilEq3qnnXSq/a0...
-          authenticatorData: Iure quisquam nesciunt.
+          authenticatorData: Dolorem culpa tempora.
           clientDataJSON: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
           credentialId: 2aChi2dALRLdVP5i/zKr7yvMrP8FIy7MK4lbyUsjO...
           publicKey: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
@@ -3488,7 +3569,7 @@ components:
       example:
         action: proceed
         registrationRequestOptions:
-          attestation: Nostrum et et minus aut sunt.
+          attestation: Ea aut nulla est enim.
           authenticatorSelection:
             authenticatorAttachment: platform
             requireResidentKey: true
@@ -3635,6 +3716,7 @@ components:
         authCred:
           aaguid: fbfc3007-154e-4ecc-8c0b-6e020557d7bd
           createdAt: 2023-06-15 13:29:41 EDT
+          credentialId: Dolores iste.
           credentialSynced: false
           id: 861ee00b-b40d-493a-a10b-457a0d527b48
           lastUsedAt: '2025-01-02T16:40:44Z'
@@ -3662,7 +3744,7 @@ components:
           description: >-
             This attribute contains the authenticator data returned by the
             authenticator.
-          example: Molestias ad exercitationem doloribus velit assumenda aut.
+          example: Repudiandae aut minima aperiam.
         clientData:
           type: string
           description: "Base64 encoded byte array which is a JSON-compatible serialization of client data\n\t\t\t\t\t\t\tpassed to the authenticator by the client in order to generate this assertion.\n\t\t\t\t\t\t\tThe exact JSON serialization MUST be preserved, as the hash of the serialized\n\t\t\t\t\t\t\tclient data has been computed over it."
@@ -3681,7 +3763,7 @@ components:
           description: Base64 encoded the raw signature returned from the authenticator.
           example: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
       example:
-        authenticatorData: Distinctio magni.
+        authenticatorData: Quas ut sequi.
         clientData: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
         keyHandle: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
         session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
@@ -3722,7 +3804,7 @@ components:
             appid: https://loalhost:8443
           rpId: https://localhost:8443/
           timeout: 5000
-          userVerification: Praesentium veniam sit.
+          userVerification: Et ab provident.
         session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
         txId: 2a363a42-a397-4af0-b089-0935fc223017
       required:

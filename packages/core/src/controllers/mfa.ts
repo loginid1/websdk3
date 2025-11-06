@@ -7,12 +7,13 @@ import {
   MfaPerformActionOptions,
   MfaSessionResult,
 } from "./types";
-import { defaultDeviceInfo, signalUnknownCredential } from "../utils/browser";
+import { fetchAndSyncPasskeys, handlePotentialStalePasskey } from "../signal";
 import { AppStore, MfaStore, TrustStore, WalletTrustIdStore } from "../store";
 import { mfaOptions, toMfaInfo, toMfaSessionDetails } from "../defaults";
 import { ApiError, Mfa, MfaBeginRequestBody, MfaNext } from "../api";
 import { ClientEvents } from "../client-events/client-events";
 import { LoginIDParamValidator } from "../validators";
+import { defaultDeviceInfo } from "../utils/browser";
 import { WebAuthnHelper } from "../webauthn";
 import { LoginIDError } from "../errors";
 import { LoginIDBase } from "./base";
@@ -142,69 +143,77 @@ export class MFA extends LoginIDBase {
           LoginIDParamValidator.validatePasskeyPayload(payload);
 
         if ("rpId" in requestOptions) {
-          return await this.invokeMfaApi(appId, info?.username, async () => {
-            const authCompleteRequestBody =
-              await WebAuthnHelper.getNavigatorCredential(
-                {
-                  action: "proceed",
-                  assertionOptions: requestOptions,
-                  crossAuthMethods: [],
-                  fallbackMethods: [],
-                  session: session,
-                },
-                { ...(options.autoFill && { autoFill: options.autoFill }) },
-              );
+          return await this.invokeMfaApi(
+            factorName,
+            appId,
+            info?.username,
+            async () => {
+              const authCompleteRequestBody =
+                await WebAuthnHelper.getNavigatorCredential(
+                  {
+                    action: "proceed",
+                    assertionOptions: requestOptions,
+                    crossAuthMethods: [],
+                    fallbackMethods: [],
+                    session: session,
+                  },
+                  { ...(options.autoFill && { autoFill: options.autoFill }) },
+                );
 
-            if (factorName === "passkey:tx") {
-              return await this.service.mfa.mfaMfaPasskeyTx({
+              if (factorName === "passkey:tx") {
+                return await this.service.mfa.mfaMfaPasskeyTx({
+                  authorization: session,
+                  requestBody: {
+                    assertionResult: authCompleteRequestBody.assertionResult,
+                  },
+                });
+              }
+
+              return await this.service.mfa.mfaMfaPasskeyAuth({
                 authorization: session,
                 requestBody: {
                   assertionResult: authCompleteRequestBody.assertionResult,
                 },
               });
-            }
-
-            return await this.service.mfa.mfaMfaPasskeyAuth({
-              authorization: session,
-              requestBody: {
-                assertionResult: authCompleteRequestBody.assertionResult,
-              },
-            });
-          });
+            },
+          );
         }
 
         if ("rp" in requestOptions) {
-          return await this.invokeMfaApi(appId, info?.username, async () => {
-            if (options.displayName) {
-              requestOptions.user.displayName = options.displayName;
-            }
-
-            const regCompleteRequestBody =
-              await WebAuthnHelper.createNavigatorCredential({
-                action: "proceed",
-                registrationRequestOptions: requestOptions,
-                session: session,
-              });
-
-            try {
-              return await this.service.mfa.mfaMfaPasskeyReg({
-                authorization: session,
-                requestBody: {
-                  creationResult: regCompleteRequestBody.creationResult,
-                },
-              });
-            } catch (error) {
-              // Potentially delete stale passkey from authenticator
-              const rpId = requestOptions.rp.id;
-              if (rpId) {
-                const credentialId =
-                  regCompleteRequestBody.creationResult.credentialId;
-                signalUnknownCredential(rpId, credentialId);
+          return await this.invokeMfaApi(
+            factorName,
+            appId,
+            info?.username,
+            async () => {
+              if (options.displayName) {
+                requestOptions.user.displayName = options.displayName;
               }
 
-              throw error;
-            }
-          });
+              const regCompleteRequestBody =
+                await WebAuthnHelper.createNavigatorCredential({
+                  action: "proceed",
+                  registrationRequestOptions: requestOptions,
+                  session: session,
+                });
+
+              try {
+                return await this.service.mfa.mfaMfaPasskeyReg({
+                  authorization: session,
+                  requestBody: {
+                    creationResult: regCompleteRequestBody.creationResult,
+                  },
+                });
+              } catch (error) {
+                // Potentially delete stale passkey from authenticator
+                handlePotentialStalePasskey(
+                  regCompleteRequestBody.creationResult.credentialId,
+                  requestOptions.rp.id,
+                );
+
+                throw error;
+              }
+            },
+          );
         }
 
         break;
@@ -228,25 +237,35 @@ export class MFA extends LoginIDBase {
       }
 
       case "otp:verify": {
-        return await this.invokeMfaApi(appId, info?.username, async () => {
-          return await this.service.mfa.mfaMfaOtpVerify({
-            authorization: session,
-            requestBody: {
-              otp: payload,
-            },
-          });
-        });
+        return await this.invokeMfaApi(
+          factorName,
+          appId,
+          info?.username,
+          async () => {
+            return await this.service.mfa.mfaMfaOtpVerify({
+              authorization: session,
+              requestBody: {
+                otp: payload,
+              },
+            });
+          },
+        );
       }
 
       case "external": {
-        return await this.invokeMfaApi(appId, info?.username, async () => {
-          return await this.service.mfa.mfaMfaThirdPartyAuthVerify({
-            authorization: session,
-            requestBody: {
-              token: payload,
-            },
-          });
-        });
+        return await this.invokeMfaApi(
+          factorName,
+          appId,
+          info?.username,
+          async () => {
+            return await this.service.mfa.mfaMfaThirdPartyAuthVerify({
+              authorization: session,
+              requestBody: {
+                token: payload,
+              },
+            });
+          },
+        );
       }
     }
 
@@ -278,12 +297,14 @@ export class MFA extends LoginIDBase {
    * and sets authentication tokens. If the request results in an MFA challenge (401 error),
    * it processes the response and updates the session accordingly.
    *
+   * @param {MfaFactorName} factorName - The name of the MFA factor being invoked.
    * @param {string} appId - The application ID associated with the MFA session.
    * @param {string} [username=""] - The username, if available.
    * @param {() => Promise<Mfa>} fn - A function that performs the MFA API request.
    * @returns {Promise<MfaSessionResult>} - The updated MFA session result.
    */
   private async invokeMfaApi(
+    factorName: MfaFactorName,
     appId: string,
     username: string = "",
     fn: () => Promise<Mfa>,
@@ -302,6 +323,10 @@ export class MFA extends LoginIDBase {
       AppStore.persistDeviceId(appId, mfaSuccessResult.deviceId);
 
       const newMfaInfo = MfaStore.getInfo(appId);
+
+      if (factorName === "passkey:auth" || factorName === "passkey:tx") {
+        fetchAndSyncPasskeys(this.service, this.session);
+      }
 
       return toMfaSessionDetails(newMfaInfo, mfaSuccessResult);
     } catch (error) {
