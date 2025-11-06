@@ -5,6 +5,10 @@ import {
   ListPasskeysOptions,
   RenamePasskeyOptions,
 } from "../types";
+import {
+  fetchAndSyncPasskeys,
+  syncPasskeysWithAuthenticator,
+} from "@loginid/core/signal";
 import type {
   PasskeyCollection,
   PasskeyRenameRequestBody,
@@ -71,9 +75,13 @@ class PasskeyManager extends LoginIDBase {
   ): Promise<PasskeyCollection> {
     const token = this.session.getToken(options);
 
-    return await this.service.passkeys.passkeysPasskeysList({
+    const result = await this.service.passkeys.passkeysPasskeysList({
       authorization: token,
     });
+
+    syncPasskeysWithAuthenticator(result, this.session);
+
+    return result;
   }
 
   /**
@@ -180,6 +188,8 @@ class PasskeyManager extends LoginIDBase {
       authorization: token,
       id: id,
     });
+
+    fetchAndSyncPasskeys(this.service, this.session);
   }
 }
 
