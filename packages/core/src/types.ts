@@ -58,14 +58,9 @@ export interface TrustIDClaims {
   id: string;
 
   /**
-   * Username associated with the token owner.
+   * Expiration time of the Trust ID token, represented as a Unix timestamp.
    */
-  username: string;
-
-  /**
-   * Audience for which the token is intended. This is the app ID.
-   */
-  aud: string;
+  exp: number;
 }
 
 /**

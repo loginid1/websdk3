@@ -5,6 +5,7 @@ module.exports = {
   branches: [
     'main',
     { name: 'next', channel: 'next', prerelease: true },
+    { name: '3.2.x', range: '3.2.x', channel: '3.2' },
   ],
   tagFormat: "${name}-v${version}",
   plugins: [
