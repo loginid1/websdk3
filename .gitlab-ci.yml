@@ -121,6 +121,8 @@ release:
       when: never
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       when: never
+    - if: '$CI_COMMIT_BRANCH =~ /^3\.[0-9]+\.x$/'
+      when: always
     #- if: '$CI_COMMIT_BRANCH == "next"'
       #when: manual
     - if: '$CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH'
