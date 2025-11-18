@@ -89,14 +89,6 @@ class LoginIDWalletAuth {
     const txPayload = options.txPayload;
     const traceId = options.traceId;
 
-    if (!checkoutId) {
-      throw new ValidationError(
-        "`checkoutId is required",
-        "ERROR_VALIDATION_EMPTY_INPUT",
-        "checkoutId",
-      );
-    }
-
     if (!txPayload) {
       throw new ValidationError(
         "`txPayload` is required",
