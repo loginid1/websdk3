@@ -27,6 +27,7 @@ import { LoginIDMfa } from "@loginid/core/mfa";
  */
 class LoginIDWalletAuth {
   private mfa: LoginIDMfa;
+  private discovery: CheckoutDiscovery;
   private communicator: WalletCommunicator;
 
   /**
@@ -37,6 +38,7 @@ class LoginIDWalletAuth {
   constructor(config: LoginIDConfig) {
     this.communicator = createWalletCommunicator();
     this.mfa = new LoginIDMfa(config);
+    this.discovery = new CheckoutDiscovery(config);
   }
 
   /**
@@ -62,8 +64,7 @@ class LoginIDWalletAuth {
    * @returns {Promise<DiscoverResult>} - A promise that resolves with the available discovery result.
    */
   async discover(): Promise<DiscoverResult> {
-    const discovery = new CheckoutDiscovery();
-    const result = await discovery.discover();
+    const result = await this.discovery.discover();
     this.communicator.sendData("DISCOVER", async () => result);
     return result;
   }
