@@ -2,12 +2,14 @@
 
 import { DiscoverResult, DiscoverStrategy } from "@loginid/checkout-commons";
 import { WalletTrustIdStore } from "@loginid/core/store";
+import { LoginIDBase } from "@loginid/core/controllers";
+import { ApiError } from "@loginid/core/api";
 
 /**
  * Class responsible for discovering user and authentication contexts.
  * Implements the DiscoverStrategy to implement the discover method.
  */
-export class CheckoutDiscovery implements DiscoverStrategy {
+export class CheckoutDiscovery extends LoginIDBase implements DiscoverStrategy {
   /**
    * Determines the appropriate authentication flow based on available user information.
    *
@@ -21,8 +23,27 @@ export class CheckoutDiscovery implements DiscoverStrategy {
   async discover(): Promise<DiscoverResult> {
     // Attempt to find the first one trust ID
     const store = new WalletTrustIdStore();
-    const hasValidTrustId = await store.isCheckoutIdValid();
-    if (hasValidTrustId) {
+    const walletTrustId = await store.setOrSignWithCheckoutId();
+
+    let isValid: boolean | null = null;
+
+    try {
+      await this.service.mfa.mfaMfaDiscover({
+        requestBody: { trustItems: { wallet: walletTrustId } },
+      });
+      isValid = true;
+    } catch (error) {
+      if (error instanceof ApiError && error.status === 404) {
+        isValid = false;
+      }
+    }
+
+    // Fallback to client-side validation only when the result is inconclusive
+    if (isValid === null) {
+      isValid = await store.isCheckoutIdValid();
+    }
+
+    if (isValid) {
       return { flow: "EMBED" };
     } else {
       return { flow: "REDIRECT" };
