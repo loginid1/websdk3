@@ -66,6 +66,8 @@ export class MFA extends LoginIDBase {
         username: username,
         usernameType: opts.usernameType,
         displayName: opts.displayName,
+        ...(options.name && { name: options.name }),
+        ...(options.phone && { name: options.phone }),
       },
       trustItems: {
         ...(trustId && { auth: trustId }),
