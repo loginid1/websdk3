@@ -559,6 +559,8 @@ paths:
                 wallet: NlPsJDfILKo0nCxuu2lrv6q9SBqgKLvpIuqSI4izk9k=
               user:
                 displayName: System Administrator
+                name: John Doe
+                phone: '+15551234567'
                 username: admin@example.com
                 usernameType: email
       responses:
@@ -1922,7 +1924,7 @@ paths:
                     osName: iOS
                     osVersion: 18.1.1
                   name: My Phone
-                  providerName: iCloud Keychain
+                  providerName: Apple Passwords
                 credentialId: 2a363a42-a397-4af0-b089-0935fc223017
                 token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
         '400':
@@ -2329,7 +2331,7 @@ components:
             bindings
 
             made by the authenticator.
-          example: Eaque culpa quidem optio odit.
+          example: Sapiente dolores ex.
         clientDataJSON:
           type: string
           description: >-
@@ -2389,7 +2391,7 @@ components:
         residentKey:
           type: string
           description: Resident key requirement
-          example: required
+          example: discouraged
           enum:
             - discouraged
             - preferred
@@ -2397,15 +2399,15 @@ components:
         userVerification:
           type: string
           description: User verification requirement
-          example: required
+          example: discouraged
           enum:
             - required
             - preferred
             - discouraged
       example:
-        authenticatorAttachment: platform
-        requireResidentKey: true
-        residentKey: required
+        authenticatorAttachment: cross-platform
+        requireResidentKey: false
+        residentKey: preferred
         userVerification: Et ab provident.
     CreationResult:
       type: object
@@ -2425,7 +2427,7 @@ components:
             bindings
 
             made by the authenticator.
-          example: Rerum reprehenderit odit et.
+          example: Quaerat possimus eius tenetur consectetur in sit.
         clientDataJSON:
           type: string
           description: >-
@@ -2487,6 +2489,8 @@ components:
           example:
             - internal
             - internal
+            - internal
+            - internal
       example:
         attestationObject: 5lvuZBkX1w7/0+XKcldttzA7vTwilEq3qnnXSq/a0...
         authenticatorData: ix523n3XniH01jM4CIuOn1z0Jw6QbRATXYOsCUyQN...
@@ -2517,6 +2521,7 @@ components:
           example: browser
           enum:
             - browser
+            - webview
             - other
         clientVersion:
           type: string
@@ -2697,11 +2702,11 @@ components:
             desc:
               type: string
               description: Action description
-              example: Temporibus dignissimos aut consequatur fugit voluptatibus.
+              example: Corporis necessitatibus sunt assumenda qui impedit.
             label:
               type: string
               description: Human readable action label
-              example: Libero blanditiis autem.
+              example: Fugit voluptatibus repudiandae quibusdam fuga sed.
             name:
               type: string
               description: Next Action to be performed.
@@ -2715,8 +2720,8 @@ components:
                 - otp:verify
                 - external
           example:
-            desc: Necessitatibus sunt assumenda qui impedit.
-            label: Quibusdam fuga sed mollitia.
+            desc: Natus minus enim at maxime suscipit.
+            label: Occaecati earum dolorem sit voluptatem incidunt.
             name: passkey
           required:
             - name
@@ -2734,8 +2739,8 @@ components:
       description: Next Action to be performed.
       example:
         action:
-          desc: Natus minus enim at maxime suscipit.
-          label: Occaecati earum dolorem sit voluptatem incidunt.
+          desc: Et impedit dolores vitae cumque qui omnis.
+          label: Quis non assumenda vel.
           name: passkey
         options:
           - label: primary@example.com
@@ -2771,7 +2776,7 @@ components:
             example: >-
               eyJ0eXAiOiJKV1QiLA0KICJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ.dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk
         user:
-          $ref: '#/components/schemas/User'
+          $ref: '#/components/schemas/MfaUser'
       example:
         deviceInfo:
           clientName: Chrome
@@ -2805,6 +2810,8 @@ components:
           wallet: NlPsJDfILKo0nCxuu2lrv6q9SBqgKLvpIuqSI4izk9k=
         user:
           displayName: System Administrator
+          name: John Doe
+          phone: '+15551234567'
           username: admin@example.com
           usernameType: email
     MfaDiscoverRequestBody:
@@ -2941,19 +2948,19 @@ components:
         label:
           type: string
           description: Human readable label
-          example: Doloremque recusandae et voluptatibus.
+          example: Voluptas ea sequi.
         name:
           type: string
           description: Option name
-          example: Est in.
+          example: Aliquid enim praesentium consectetur.
         value:
           type: string
           description: Option value to be used in the next request
-          example: Quis dolorem ea.
+          example: Sapiente illum.
       example:
-        label: Ea sequi corporis sapiente illum tenetur harum.
-        name: Non voluptas aliquid enim praesentium consectetur dolore.
-        value: Error dolorem quis totam.
+        label: Dolorem quis totam quaerat.
+        name: Harum repellat.
+        value: Blanditiis autem voluptatum temporibus dignissimos aut.
       required:
         - value
     MfaOtpRequestRequestBody:
@@ -3056,6 +3063,36 @@ components:
           eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
       required:
         - token
+    MfaUser:
+      type: object
+      properties:
+        displayName:
+          type: string
+          description: Display Name
+          example: System Administrator
+        name:
+          type: string
+          description: Full name for SNA evaluation
+          example: John Doe
+        phone:
+          type: string
+          description: Phone number for SNA evaluation
+          example: '+15551234567'
+        username:
+          type: string
+          example: Voluptate illum et est neque tenetur.
+        usernameType:
+          type: string
+          example: Ut modi quas exercitationem.
+      example:
+        displayName: System Administrator
+        name: John Doe
+        phone: '+15551234567'
+        username: admin@example.com
+        usernameType: email
+      required:
+        - username
+        - usernameType
     Passkey:
       type: object
       properties:
@@ -3070,12 +3107,12 @@ components:
           format: date-time
         credentialId:
           type: string
-          example: Deleniti omnis omnis ullam quasi.
+          example: Voluptatem occaecati laboriosam exercitationem cum culpa voluptatem.
         credentialSynced:
           type: boolean
           description: Credential available on multiple devices
           default: false
-          example: true
+          example: false
         id:
           type: string
           description: Internal passkey ID that uniquely identifies a passkey
@@ -3093,12 +3130,12 @@ components:
         providerName:
           type: string
           description: Name of the passkey provider
-          example: iCloud Keychain
+          example: Apple Passwords
       example:
         aaguid: fbfc3007-154e-4ecc-8c0b-6e020557d7bd
         createdAt: 2023-06-15 13:29:41 EDT
-        credentialId: Repellendus qui ipsum omnis dolorum tempore.
-        credentialSynced: true
+        credentialId: Sed et a sapiente cupiditate sint.
+        credentialSynced: false
         id: 861ee00b-b40d-493a-a10b-457a0d527b48
         lastUsedAt: '2025-01-02T16:40:44Z'
         lastUsedFromDevice:
@@ -3111,7 +3148,7 @@ components:
           osName: iOS
           osVersion: 18.1.1
         name: My Phone
-        providerName: iCloud Keychain
+        providerName: Apple Passwords
       required:
         - id
         - name
@@ -3163,7 +3200,7 @@ components:
           type: boolean
           description: Flag to allow conditional creation
           default: false
-          example: false
+          example: true
         securityKey:
           type: boolean
           description: Whether the authenticator is a security key
@@ -3225,7 +3262,8 @@ components:
         transports:
           - internal
           - internal
-        type: Id beatae nulla sed.
+          - internal
+        type: Nam quia nulla magni.
       required:
         - type
         - id
@@ -3234,7 +3272,7 @@ components:
       properties:
         attestation:
           type: string
-          example: enterprise
+          example: indirect
           enum:
             - none
             - indirect
@@ -3377,8 +3415,8 @@ components:
             - public-key
       description: Additional parameters when creating a new credential.
       example:
-        alg: -35
-        type: Id beatae nulla sed.
+        alg: -7
+        type: Nam quia nulla magni.
     PublicKeyCredentialRequestOptions:
       type: object
       properties:
@@ -3730,7 +3768,7 @@ components:
             osName: iOS
             osVersion: 18.1.1
           name: My Phone
-          providerName: iCloud Keychain
+          providerName: Apple Passwords
         credentialId: 2a363a42-a397-4af0-b089-0935fc223017
         token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
       required:
@@ -3744,7 +3782,7 @@ components:
           description: >-
             This attribute contains the authenticator data returned by the
             authenticator.
-          example: Repudiandae aut minima aperiam.
+          example: Repellat sit autem.
         clientData:
           type: string
           description: "Base64 encoded byte array which is a JSON-compatible serialization of client data\n\t\t\t\t\t\t\tpassed to the authenticator by the client in order to generate this assertion.\n\t\t\t\t\t\t\tThe exact JSON serialization MUST be preserved, as the hash of the serialized\n\t\t\t\t\t\t\tclient data has been computed over it."
@@ -3763,7 +3801,7 @@ components:
           description: Base64 encoded the raw signature returned from the authenticator.
           example: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
       example:
-        authenticatorData: Quas ut sequi.
+        authenticatorData: Expedita vitae voluptas nostrum rerum modi.
         clientData: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
         keyHandle: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
         session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
