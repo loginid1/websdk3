@@ -1,3 +1,15 @@
+## @loginid/websdk3 [3.5.0](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/websdk3@3.4.0...@loginid/websdk3@3.5.0) (2026-02-10)
+
+### Features
+
+* **websdk3:** added identity options to websdk3 MFA ([bf67371](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/bf673710ec043ed2bba72b2c7138e46be8be1b2a))
+* **websdk3:** emit signal API from `createPasskey` on failure ([770b4a0](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/770b4a06eebe410e2576f04cdb854dafcf7b9559))
+* **websdk3:** integrate passkey sync flows ([82b11c4](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/82b11c4feb22572067b980891c3d90251e7f2ebf))
+
+### Bug Fixes
+
+* **websdk3:** include missing `deviceId` in `AuthResult` ([ba419a9](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/ba419a9fdbe712fe1952f821a03ec9436d7849f3))
+
 ## @loginid/websdk3 [3.4.0](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/websdk3@3.3.2...@loginid/websdk3@3.4.0) (2025-08-06)
 
 ### Features
