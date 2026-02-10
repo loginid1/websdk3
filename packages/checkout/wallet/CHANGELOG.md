@@ -1,3 +1,15 @@
+## @loginid/checkout-wallet [1.4.0](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/checkout-wallet@1.3.0...@loginid/checkout-wallet@1.4.0) (2026-02-10)
+
+### Features
+
+* **checkout-wallet:** integrate passkey sync flows ([41677df](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/41677df2ced470c45f6f470527b908903534cb3f))
+
+### Bug Fixes
+
+* **checkout-wallet:** implement tx payload update ([c6ede79](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/c6ede79e033d9313022a5428418d489f6a05f598))
+* **checkout-wallet:** remove `checkoutId` check ([ad353ff](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/ad353ffd90e79f5523e26e7ed158adac098bf6b8))
+* **checkout-wallet:** use server-side discovery with fallback to client validation ([19e04b3](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/19e04b39affaac9f43ea22a06f2f282d5bde4863))
+
 ## @loginid/checkout-wallet [1.3.0](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/checkout-wallet@1.2.3...@loginid/checkout-wallet@1.3.0) (2025-08-06)
 
 ### Features
