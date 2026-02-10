@@ -16,7 +16,7 @@ export type DeviceInfo = {
   /**
    * Client type.
    */
-  clientType?: "browser" | "other";
+  clientType?: "browser" | "webview" | "other";
   /**
    * Client version
    */

@@ -110,6 +110,34 @@ export interface MfaBeginOptions {
    * Example: `6957cf6e-a86c-44fb-b25a-bd97cb9ff830`
    */
   traceId?: string;
+
+  /**
+   * The user's full name used for identity verification during PasskeyID flows.
+   *
+   * This value is optional but may improve match accuracy when an identity
+   * provider is configured (for example, Silent Network Authentication).
+   *
+   * The name is used only for identity matching purposes and is not treated
+   * as a unique account identifier.
+   *
+   * Recommended format:
+   * - Full legal name when available (e.g., `"Jane Doe"`).
+   */
+  name?: string;
+
+  /**
+   * The user's phone number used for identity verification during PasskeyID flows.
+   *
+   * Required when using certain identity providers that rely on phone-based
+   * verification (for example, Silent Network Authentication).
+   *
+   * The phone number should be provided in E.164 international format to ensure
+   * consistent normalization across providers.
+   *
+   * Example:
+   * - `"+15551234567"`
+   */
+  phone?: string;
 }
 
 /**
