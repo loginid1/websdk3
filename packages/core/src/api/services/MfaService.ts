@@ -4,11 +4,13 @@
 /* tslint:disable */
 
 import type { MfaThirdPartyAuthVerifyRequestBody } from "../models/MfaThirdPartyAuthVerifyRequestBody";
+import type { MfaPayloadUpdateRequestBody } from "../models/MfaPayloadUpdateRequestBody";
 import type { MfaOtpRequestResponseBody } from "../models/MfaOtpRequestResponseBody";
 import type { MfaPasskeyAuthRequestBody } from "../models/MfaPasskeyAuthRequestBody";
 import type { MfaOtpRequestRequestBody } from "../models/MfaOtpRequestRequestBody";
 import type { MfaPasskeyRegRequestBody } from "../models/MfaPasskeyRegRequestBody";
 import type { MfaOtpVerifyRequestBody } from "../models/MfaOtpVerifyRequestBody";
+import type { MfaDiscoverRequestBody } from "../models/MfaDiscoverRequestBody";
 import type { MfaBeginRequestBody } from "../models/MfaBeginRequestBody";
 import type { CancelablePromise } from "../core/CancelablePromise";
 import type { BaseHttpRequest } from "../core/BaseHttpRequest";
@@ -38,6 +40,30 @@ export class MfaService {
       headers: {
         "User-Agent": userAgent,
       },
+      body: requestBody,
+      mediaType: "application/json",
+      errors: {
+        400: `bad_request: Bad Request response.`,
+        403: `forbidden: Forbidden response.`,
+        404: `not_found: Not Found response.`,
+        500: `internal_error: Internal Server Error response.`,
+      },
+    });
+  }
+  /**
+   * Begin and appropriate flow for the provided username.
+   * Perform discovery if trustID and/or checkoutID are known to the system.
+   * @returns void
+   * @throws ApiError
+   */
+  public mfaMfaDiscover({
+    requestBody,
+  }: {
+    requestBody: MfaDiscoverRequestBody;
+  }): CancelablePromise<void> {
+    return this.httpRequest.request({
+      method: "POST",
+      url: "/fido2/v2/mfa/discover",
       body: requestBody,
       mediaType: "application/json",
       errors: {
@@ -199,6 +225,39 @@ export class MfaService {
       errors: {
         400: `bad_request: Bad Request response.`,
         401: `unauthorized: Unauthorized response.`,
+        500: `internal_error: Internal Server Error response.`,
+      },
+    });
+  }
+  /**
+   * Update the payload to be signed using transaction confirmation.
+   * Update the payload to be signed.
+   * @returns MfaNext OK response.
+   * @throws ApiError
+   */
+  public mfaMfaPayloadUpdate({
+    requestBody,
+    authorization,
+  }: {
+    requestBody: MfaPayloadUpdateRequestBody;
+    /**
+     * JWT Authorization header
+     */
+    authorization?: string;
+  }): CancelablePromise<MfaNext> {
+    return this.httpRequest.request({
+      method: "POST",
+      url: "/fido2/v2/mfa/payload",
+      headers: {
+        Authorization: authorization,
+      },
+      body: requestBody,
+      mediaType: "application/json",
+      errors: {
+        400: `bad_request: Bad Request response.`,
+        401: `unauthorized: Unauthorized response.`,
+        403: `forbidden: Forbidden response.`,
+        404: `not_found: Not Found response.`,
         500: `internal_error: Internal Server Error response.`,
       },
     });

@@ -31,6 +31,11 @@ export interface SessionInfo {
    * Current authenticated user's ID.
    */
   id: string;
+
+  /**
+   * Relying party ID used typically used for passkey authentication to confirm the user has signed in under the specific domain.
+   */
+  rpId: string;
 }
 
 /**

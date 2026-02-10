@@ -10,8 +10,8 @@ import {
   CheckoutBeginFlowOptions,
   CheckoutPerformActionOptions,
 } from "../types";
-import { MfaBeginLocalStorage, WalletTrustIdStore } from "@loginid/core/store";
 import { DiscoverResult, EmbeddedContextData } from "@loginid/checkout-commons";
+import { MfaBeginLocalStorage, WalletTrustIdStore } from "@loginid/core/store";
 import { ValidationError } from "@loginid/core/errors";
 import { createWalletCommunicator } from "../creators";
 import { WalletCommunicator } from "../communicators";
@@ -27,6 +27,7 @@ import { LoginIDMfa } from "@loginid/core/mfa";
  */
 class LoginIDWalletAuth {
   private mfa: LoginIDMfa;
+  private discovery: CheckoutDiscovery;
   private communicator: WalletCommunicator;
 
   /**
@@ -37,6 +38,7 @@ class LoginIDWalletAuth {
   constructor(config: LoginIDConfig) {
     this.communicator = createWalletCommunicator();
     this.mfa = new LoginIDMfa(config);
+    this.discovery = new CheckoutDiscovery(config);
   }
 
   /**
@@ -62,8 +64,7 @@ class LoginIDWalletAuth {
    * @returns {Promise<DiscoverResult>} - A promise that resolves with the available discovery result.
    */
   async discover(): Promise<DiscoverResult> {
-    const discovery = new CheckoutDiscovery();
-    const result = await discovery.discover();
+    const result = await this.discovery.discover();
     this.communicator.sendData("DISCOVER", async () => result);
     return result;
   }
@@ -88,14 +89,6 @@ class LoginIDWalletAuth {
     const checkoutId = options.checkoutId || eData?.checkoutId;
     const txPayload = options.txPayload;
     const traceId = options.traceId;
-
-    if (!checkoutId) {
-      throw new ValidationError(
-        "`checkoutId is required",
-        "ERROR_VALIDATION_EMPTY_INPUT",
-        "checkoutId",
-      );
-    }
 
     if (!txPayload) {
       throw new ValidationError(
@@ -139,19 +132,6 @@ class LoginIDWalletAuth {
     factorName: MfaFactorName,
     options: CheckoutPerformActionOptions = {},
   ): Promise<MfaSessionResult> {
-    // NOTE: This may be a temporary fix
-    if (factorName === "passkey:tx" && options.txPayload) {
-      const checkoutId = MfaBeginLocalStorage.getCheckoutId();
-      const traceId = MfaBeginLocalStorage.getTraceId();
-      const opts: MfaBeginOptions = {
-        checkoutId: checkoutId,
-        txPayload: options.txPayload,
-        traceId: traceId,
-      };
-
-      await this.mfa.beginFlow("", opts);
-    }
-
     const result = await this.mfa.performAction(factorName, options);
     if (result.payloadSignature || result.accessToken) {
       const callback = async () => ({});

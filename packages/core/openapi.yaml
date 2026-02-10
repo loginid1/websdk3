@@ -22,7 +22,7 @@ paths:
               $ref: '#/components/schemas/AuthCompleteRequestBody'
             example:
               assertionResult:
-                authenticatorData: Enim corrupti rem consequatur sapiente dolorum ut.
+                authenticatorData: Id mollitia.
                 clientDataJSON: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
                 credentialId: 2aChi2dALRLdVP5i/zKr7yvMrP8FIy7MK4lbyUsjO...
                 signature: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
@@ -150,7 +150,7 @@ paths:
                     appid: https://loalhost:8443
                   rpId: https://localhost:8443/
                   timeout: 5000
-                  userVerification: discouraged
+                  userVerification: required
                 crossAuthMethods:
                   - otp
                   - otp:sms
@@ -559,6 +559,8 @@ paths:
                 wallet: NlPsJDfILKo0nCxuu2lrv6q9SBqgKLvpIuqSI4izk9k=
               user:
                 displayName: System Administrator
+                name: John Doe
+                phone: '+15551234567'
                 username: admin@example.com
                 usernameType: email
       responses:
@@ -607,6 +609,63 @@ paths:
                       - label: +1(661)942-5456
                         value: 3e3092dc-eb0c-4064-9276-7687fe5cef57
                 session: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
+        '400':
+          description: 'bad_request: Bad Request response.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppError'
+              example:
+                msg: Internal error
+                msgCode: internal_error
+        '403':
+          description: 'forbidden: Forbidden response.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppError'
+              example:
+                msg: Internal error
+                msgCode: internal_error
+        '404':
+          description: 'not_found: Not Found response.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppError'
+              example:
+                msg: Internal error
+                msgCode: internal_error
+        '500':
+          description: 'internal_error: Internal Server Error response.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppError'
+              example:
+                msg: Internal error
+                msgCode: internal_error
+  /fido2/v2/mfa/discover:
+    post:
+      tags:
+        - mfa
+      summary: Begin and appropriate flow for the provided username.
+      description: Perform discovery if trustID and/or checkoutID are known to the system.
+      operationId: mfa#mfaDiscover
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MfaDiscoverRequestBody'
+            example:
+              trustItems:
+                auth: DqjUIcwnq7edyyeMGCxWNqs1cNBrEjBXlB2mVxfja8s=
+                merchant: gpOLtpZWhxkKgwEJyYzB2ckXn9IXDID7jjiaYFYTfS4=
+                wallet: NlPsJDfILKo0nCxuu2lrv6q9SBqgKLvpIuqSI4izk9k=
+      responses:
+        '204':
+          description: No Content response.
         '400':
           description: 'bad_request: Bad Request response.'
           content:
@@ -821,7 +880,7 @@ paths:
               $ref: '#/components/schemas/MfaPasskeyAuthRequestBody'
             example:
               assertionResult:
-                authenticatorData: Enim corrupti rem consequatur sapiente dolorum ut.
+                authenticatorData: Id mollitia.
                 clientDataJSON: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
                 credentialId: 2aChi2dALRLdVP5i/zKr7yvMrP8FIy7MK4lbyUsjO...
                 signature: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
@@ -929,7 +988,7 @@ paths:
             example:
               creationResult:
                 attestationObject: 5lvuZBkX1w7/0+XKcldttzA7vTwilEq3qnnXSq/a0...
-                authenticatorData: Ea eos.
+                authenticatorData: Dolorem culpa tempora.
                 clientDataJSON: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
                 credentialId: 2aChi2dALRLdVP5i/zKr7yvMrP8FIy7MK4lbyUsjO...
                 publicKey: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
@@ -1003,7 +1062,7 @@ paths:
               $ref: '#/components/schemas/MfaPasskeyAuthRequestBody'
             example:
               assertionResult:
-                authenticatorData: Enim corrupti rem consequatur sapiente dolorum ut.
+                authenticatorData: Id mollitia.
                 clientDataJSON: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
                 credentialId: 2aChi2dALRLdVP5i/zKr7yvMrP8FIy7MK4lbyUsjO...
                 signature: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
@@ -1034,6 +1093,121 @@ paths:
                 msgCode: internal_error
         '401':
           description: 'unauthorized: Unauthorized response.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppError'
+              example:
+                msg: Internal error
+                msgCode: internal_error
+        '500':
+          description: 'internal_error: Internal Server Error response.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppError'
+              example:
+                msg: Internal error
+                msgCode: internal_error
+      security:
+        - sessionAuth_header_Authorization: []
+      parameters:
+        - name: Authorization
+          in: header
+          description: JWT Authorization header
+          required: false
+          schema:
+            type: string
+  /fido2/v2/mfa/payload:
+    post:
+      tags:
+        - mfa
+      summary: Update the payload to be signed using transaction confirmation.
+      description: Update the payload to be signed.
+      operationId: mfa#mfaPayloadUpdate
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MfaPayloadUpdateRequestBody'
+            example:
+              payload: ak4BXFgauyDtsRvnXWfaTW1DyetX7fTViGY9DRQGQ+g=
+      responses:
+        '200':
+          description: OK response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MfaNext'
+              example:
+                flow: signIn
+                msg: Additional authentication is required.
+                msgCode: additional_auth_required
+                next:
+                  - action:
+                      label: Passkey
+                      name: passkey
+                    options:
+                      - name: assertionOptions
+                        value: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
+                  - action:
+                      label: External Auth
+                      name: external
+                  - action:
+                      desc: >-
+                        OTP will be sent to one of the email addresses provided
+                        by the user.
+                      label: OTP via Email
+                      name: otp:email
+                    options:
+                      - label: primary@example.com
+                        name: email:primary
+                        value: 3df8feb9-5dc0-451e-8799-ec5d7e1fe1f7
+                      - label: secondary@example.com
+                        name: email:secondary
+                        value: 9c568230-243a-43ee-8b19-7b544ba8fd9f
+                  - action:
+                      desc: >-
+                        OTP will be sent via SMS to one of the phone numbers
+                        provided by the user.
+                      label: OTP via SMS
+                      name: otp:sms
+                    options:
+                      - label: +1(631)842-0398
+                        value: ee9ce8f0-1471-47c4-b1e5-c40923aee83a
+                      - label: +1(661)942-5456
+                        value: 3e3092dc-eb0c-4064-9276-7687fe5cef57
+                session: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
+        '400':
+          description: 'bad_request: Bad Request response.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppError'
+              example:
+                msg: Internal error
+                msgCode: internal_error
+        '401':
+          description: 'unauthorized: Unauthorized response.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppError'
+              example:
+                msg: Internal error
+                msgCode: internal_error
+        '403':
+          description: 'forbidden: Forbidden response.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppError'
+              example:
+                msg: Internal error
+                msgCode: internal_error
+        '404':
+          description: 'not_found: Not Found response.'
           content:
             application/json:
               schema:
@@ -1177,6 +1351,7 @@ paths:
                 $ref: '#/components/schemas/PasskeyCollection'
               example:
                 - createdAt: 2023-06-15 13:29:41 EDT
+                  credentialId: YzI4MjllZmEtNGYyMC00YTYwLThlMDEtYmM4ZTJjYmRiYjA0
                   credentialSynced: false
                   id: eb385800-d35e-4108-9b49-48010731cd37
                   lastUsedAt: 2023-06-15 13:29:41 EDT
@@ -1191,6 +1366,7 @@ paths:
                     osVersion: 18.1.1
                   name: My Phone
                 - createdAt: 2023-06-15 13:29:41 EDT
+                  credentialId: KzI4MjllZmEtNGYyMC00YTYwLThlMDEtYmM4ZTJjYmRiYjA9
                   credentialSynced: true
                   id: 1b385800-d35e-4108-9b49-48010731cd37
                   lastUsedAt: 2023-06-15 13:29:41 EDT
@@ -1506,7 +1682,7 @@ paths:
             example:
               creationResult:
                 attestationObject: 5lvuZBkX1w7/0+XKcldttzA7vTwilEq3qnnXSq/a0...
-                authenticatorData: Ea eos.
+                authenticatorData: Dolorem culpa tempora.
                 clientDataJSON: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
                 credentialId: 2aChi2dALRLdVP5i/zKr7yvMrP8FIy7MK4lbyUsjO...
                 publicKey: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
@@ -1635,7 +1811,7 @@ paths:
               example:
                 action: proceed
                 registrationRequestOptions:
-                  attestation: none
+                  attestation: direct
                   authenticatorSelection:
                     authenticatorAttachment: platform
                     requireResidentKey: true
@@ -1718,7 +1894,7 @@ paths:
             schema:
               $ref: '#/components/schemas/TxCompleteRequestBody'
             example:
-              authenticatorData: Error illum.
+              authenticatorData: Qui dolorem quia nesciunt quos enim.
               clientData: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
               keyHandle: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
               session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
@@ -1734,6 +1910,7 @@ paths:
                 authCred:
                   aaguid: fbfc3007-154e-4ecc-8c0b-6e020557d7bd
                   createdAt: 2023-06-15 13:29:41 EDT
+                  credentialId: Dolores iste.
                   credentialSynced: false
                   id: 861ee00b-b40d-493a-a10b-457a0d527b48
                   lastUsedAt: '2025-01-02T16:40:44Z'
@@ -1747,7 +1924,7 @@ paths:
                     osName: iOS
                     osVersion: 18.1.1
                   name: My Phone
-                  providerName: iCloud Keychain
+                  providerName: Apple Passwords
                 credentialId: 2a363a42-a397-4af0-b089-0935fc223017
                 token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
         '400':
@@ -1816,7 +1993,7 @@ paths:
                     appid: https://loalhost:8443
                   rpId: https://localhost:8443/
                   timeout: 5000
-                  userVerification: discouraged
+                  userVerification: required
                 session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
                 txId: 2a363a42-a397-4af0-b089-0935fc223017
         '400':
@@ -1981,7 +2158,7 @@ components:
           minLength: 16
       example:
         assertionResult:
-          authenticatorData: Enim corrupti rem consequatur sapiente dolorum ut.
+          authenticatorData: Id mollitia.
           clientDataJSON: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
           credentialId: 2aChi2dALRLdVP5i/zKr7yvMrP8FIy7MK4lbyUsjO...
           signature: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
@@ -2072,7 +2249,7 @@ components:
             appid: https://loalhost:8443
           rpId: https://localhost:8443/
           timeout: 5000
-          userVerification: Aut autem.
+          userVerification: Et ab provident.
         crossAuthMethods:
           - otp
           - otp:sms
@@ -2154,7 +2331,7 @@ components:
             bindings
 
             made by the authenticator.
-          example: Voluptates reiciendis ipsum et.
+          example: Sapiente dolores ex.
         clientDataJSON:
           type: string
           description: >-
@@ -2202,7 +2379,7 @@ components:
         authenticatorAttachment:
           type: string
           description: Authenticator attachment modality
-          example: cross-platform
+          example: platform
           enum:
             - platform
             - cross-platform
@@ -2229,9 +2406,9 @@ components:
             - discouraged
       example:
         authenticatorAttachment: cross-platform
-        requireResidentKey: true
-        residentKey: discouraged
-        userVerification: Aut autem.
+        requireResidentKey: false
+        residentKey: preferred
+        userVerification: Et ab provident.
     CreationResult:
       type: object
       properties:
@@ -2250,7 +2427,7 @@ components:
             bindings
 
             made by the authenticator.
-          example: Ea in soluta quia.
+          example: Quaerat possimus eius tenetur consectetur in sit.
         clientDataJSON:
           type: string
           description: >-
@@ -2344,6 +2521,7 @@ components:
           example: browser
           enum:
             - browser
+            - webview
             - other
         clientVersion:
           type: string
@@ -2524,11 +2702,11 @@ components:
             desc:
               type: string
               description: Action description
-              example: Aut eveniet nobis error id et.
+              example: Corporis necessitatibus sunt assumenda qui impedit.
             label:
               type: string
               description: Human readable action label
-              example: Nihil dolor aperiam corrupti.
+              example: Fugit voluptatibus repudiandae quibusdam fuga sed.
             name:
               type: string
               description: Next Action to be performed.
@@ -2542,8 +2720,8 @@ components:
                 - otp:verify
                 - external
           example:
-            desc: Quae adipisci veritatis.
-            label: Excepturi iste nulla tenetur.
+            desc: Natus minus enim at maxime suscipit.
+            label: Occaecati earum dolorem sit voluptatem incidunt.
             name: passkey
           required:
             - name
@@ -2561,8 +2739,8 @@ components:
       description: Next Action to be performed.
       example:
         action:
-          desc: Laudantium voluptatem.
-          label: Ut ipsam enim illo.
+          desc: Et impedit dolores vitae cumque qui omnis.
+          label: Quis non assumenda vel.
           name: passkey
         options:
           - label: primary@example.com
@@ -2598,7 +2776,7 @@ components:
             example: >-
               eyJ0eXAiOiJKV1QiLA0KICJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ.dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk
         user:
-          $ref: '#/components/schemas/User'
+          $ref: '#/components/schemas/MfaUser'
       example:
         deviceInfo:
           clientName: Chrome
@@ -2632,8 +2810,31 @@ components:
           wallet: NlPsJDfILKo0nCxuu2lrv6q9SBqgKLvpIuqSI4izk9k=
         user:
           displayName: System Administrator
+          name: John Doe
+          phone: '+15551234567'
           username: admin@example.com
           usernameType: email
+    MfaDiscoverRequestBody:
+      type: object
+      properties:
+        trustItems:
+          type: object
+          description: TrustIDs provided with the request
+          example:
+            auth: DqjUIcwnq7edyyeMGCxWNqs1cNBrEjBXlB2mVxfja8s=
+            merchant: gpOLtpZWhxkKgwEJyYzB2ckXn9IXDID7jjiaYFYTfS4=
+            wallet: NlPsJDfILKo0nCxuu2lrv6q9SBqgKLvpIuqSI4izk9k=
+          additionalProperties:
+            type: string
+            example: >-
+              eyJ0eXAiOiJKV1QiLA0KICJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ.dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk
+      example:
+        trustItems:
+          auth: DqjUIcwnq7edyyeMGCxWNqs1cNBrEjBXlB2mVxfja8s=
+          merchant: gpOLtpZWhxkKgwEJyYzB2ckXn9IXDID7jjiaYFYTfS4=
+          wallet: NlPsJDfILKo0nCxuu2lrv6q9SBqgKLvpIuqSI4izk9k=
+      required:
+        - trustItems
     MfaNext:
       type: object
       properties:
@@ -2747,19 +2948,19 @@ components:
         label:
           type: string
           description: Human readable label
-          example: Aut vel ducimus ratione quidem ut.
+          example: Voluptas ea sequi.
         name:
           type: string
           description: Option name
-          example: Voluptate temporibus.
+          example: Aliquid enim praesentium consectetur.
         value:
           type: string
           description: Option value to be used in the next request
-          example: Quae aut consequuntur voluptatibus fugiat nobis cumque.
+          example: Sapiente illum.
       example:
-        label: Nihil id ea temporibus.
-        name: Qui ea qui.
-        value: Ut voluptatem quia aliquid non.
+        label: Dolorem quis totam quaerat.
+        name: Harum repellat.
+        value: Blanditiis autem voluptatum temporibus dignissimos aut.
       required:
         - value
     MfaOtpRequestRequestBody:
@@ -2813,7 +3014,7 @@ components:
           $ref: '#/components/schemas/AuthenticatorAssertionResponse'
       example:
         assertionResult:
-          authenticatorData: Enim corrupti rem consequatur sapiente dolorum ut.
+          authenticatorData: Id mollitia.
           clientDataJSON: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
           credentialId: 2aChi2dALRLdVP5i/zKr7yvMrP8FIy7MK4lbyUsjO...
           signature: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
@@ -2828,7 +3029,7 @@ components:
       example:
         creationResult:
           attestationObject: 5lvuZBkX1w7/0+XKcldttzA7vTwilEq3qnnXSq/a0...
-          authenticatorData: Ea eos.
+          authenticatorData: Dolorem culpa tempora.
           clientDataJSON: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
           credentialId: 2aChi2dALRLdVP5i/zKr7yvMrP8FIy7MK4lbyUsjO...
           publicKey: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
@@ -2838,6 +3039,17 @@ components:
             - internal
       required:
         - creationResult
+    MfaPayloadUpdateRequestBody:
+      type: object
+      properties:
+        payload:
+          type: string
+          description: Payload to be signed
+          example: ak4BXFgauyDtsRvnXWfaTW1DyetX7fTViGY9DRQGQ+g=
+      example:
+        payload: ak4BXFgauyDtsRvnXWfaTW1DyetX7fTViGY9DRQGQ+g=
+      required:
+        - payload
     MfaThirdPartyAuthVerifyRequestBody:
       type: object
       properties:
@@ -2851,6 +3063,36 @@ components:
           eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
       required:
         - token
+    MfaUser:
+      type: object
+      properties:
+        displayName:
+          type: string
+          description: Display Name
+          example: System Administrator
+        name:
+          type: string
+          description: Full name for SNA evaluation
+          example: John Doe
+        phone:
+          type: string
+          description: Phone number for SNA evaluation
+          example: '+15551234567'
+        username:
+          type: string
+          example: Voluptate illum et est neque tenetur.
+        usernameType:
+          type: string
+          example: Ut modi quas exercitationem.
+      example:
+        displayName: System Administrator
+        name: John Doe
+        phone: '+15551234567'
+        username: admin@example.com
+        usernameType: email
+      required:
+        - username
+        - usernameType
     Passkey:
       type: object
       properties:
@@ -2863,6 +3105,9 @@ components:
           description: Timestamp in RFC3339 format.
           example: 2023-06-15 13:29:41 EDT
           format: date-time
+        credentialId:
+          type: string
+          example: Voluptatem occaecati laboriosam exercitationem cum culpa voluptatem.
         credentialSynced:
           type: boolean
           description: Credential available on multiple devices
@@ -2885,11 +3130,12 @@ components:
         providerName:
           type: string
           description: Name of the passkey provider
-          example: iCloud Keychain
+          example: Apple Passwords
       example:
         aaguid: fbfc3007-154e-4ecc-8c0b-6e020557d7bd
         createdAt: 2023-06-15 13:29:41 EDT
-        credentialSynced: true
+        credentialId: Sed et a sapiente cupiditate sint.
+        credentialSynced: false
         id: 861ee00b-b40d-493a-a10b-457a0d527b48
         lastUsedAt: '2025-01-02T16:40:44Z'
         lastUsedFromDevice:
@@ -2902,7 +3148,7 @@ components:
           osName: iOS
           osVersion: 18.1.1
         name: My Phone
-        providerName: iCloud Keychain
+        providerName: Apple Passwords
       required:
         - id
         - name
@@ -2914,6 +3160,7 @@ components:
         $ref: '#/components/schemas/Passkey'
       example:
         - createdAt: 2023-06-15 13:29:41 EDT
+          credentialId: YzI4MjllZmEtNGYyMC00YTYwLThlMDEtYmM4ZTJjYmRiYjA0
           credentialSynced: false
           id: eb385800-d35e-4108-9b49-48010731cd37
           lastUsedAt: 2023-06-15 13:29:41 EDT
@@ -2928,6 +3175,7 @@ components:
             osVersion: 18.1.1
           name: My Phone
         - createdAt: 2023-06-15 13:29:41 EDT
+          credentialId: KzI4MjllZmEtNGYyMC00YTYwLThlMDEtYmM4ZTJjYmRiYjA9
           credentialSynced: true
           id: 1b385800-d35e-4108-9b49-48010731cd37
           lastUsedAt: 2023-06-15 13:29:41 EDT
@@ -3015,8 +3263,7 @@ components:
           - internal
           - internal
           - internal
-          - internal
-        type: Et ab provident.
+        type: Nam quia nulla magni.
       required:
         - type
         - id
@@ -3025,7 +3272,7 @@ components:
       properties:
         attestation:
           type: string
-          example: none
+          example: indirect
           enum:
             - none
             - indirect
@@ -3104,7 +3351,7 @@ components:
         user:
           $ref: '#/components/schemas/PublicKeyCredentialUserEntity'
       example:
-        attestation: Possimus et voluptas quas dolorum.
+        attestation: Ea aut nulla est enim.
         authenticatorSelection:
           authenticatorAttachment: platform
           requireResidentKey: true
@@ -3152,7 +3399,7 @@ components:
             generated,
 
             e.g., RSA or Elliptic Curve.
-          example: -8
+          example: -257
           enum:
             - -7
             - -35
@@ -3168,8 +3415,8 @@ components:
             - public-key
       description: Additional parameters when creating a new credential.
       example:
-        alg: -257
-        type: Et ab provident.
+        alg: -7
+        type: Nam quia nulla magni.
     PublicKeyCredentialRequestOptions:
       type: object
       properties:
@@ -3242,7 +3489,7 @@ components:
         userVerification:
           type: string
           description: User verification requirement
-          example: required
+          example: discouraged
           enum:
             - required
             - preferred
@@ -3261,7 +3508,7 @@ components:
           appid: https://loalhost:8443
         rpId: https://localhost:8443/
         timeout: 5000
-        userVerification: Aut autem.
+        userVerification: Et ab provident.
       required:
         - challenge
     PublicKeyCredentialRpEntity:
@@ -3323,7 +3570,7 @@ components:
       example:
         creationResult:
           attestationObject: 5lvuZBkX1w7/0+XKcldttzA7vTwilEq3qnnXSq/a0...
-          authenticatorData: Ea eos.
+          authenticatorData: Dolorem culpa tempora.
           clientDataJSON: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
           credentialId: 2aChi2dALRLdVP5i/zKr7yvMrP8FIy7MK4lbyUsjO...
           publicKey: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
@@ -3360,7 +3607,7 @@ components:
       example:
         action: proceed
         registrationRequestOptions:
-          attestation: Possimus et voluptas quas dolorum.
+          attestation: Ea aut nulla est enim.
           authenticatorSelection:
             authenticatorAttachment: platform
             requireResidentKey: true
@@ -3507,6 +3754,7 @@ components:
         authCred:
           aaguid: fbfc3007-154e-4ecc-8c0b-6e020557d7bd
           createdAt: 2023-06-15 13:29:41 EDT
+          credentialId: Dolores iste.
           credentialSynced: false
           id: 861ee00b-b40d-493a-a10b-457a0d527b48
           lastUsedAt: '2025-01-02T16:40:44Z'
@@ -3520,7 +3768,7 @@ components:
             osName: iOS
             osVersion: 18.1.1
           name: My Phone
-          providerName: iCloud Keychain
+          providerName: Apple Passwords
         credentialId: 2a363a42-a397-4af0-b089-0935fc223017
         token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
       required:
@@ -3534,7 +3782,7 @@ components:
           description: >-
             This attribute contains the authenticator data returned by the
             authenticator.
-          example: Aut nulla est enim.
+          example: Repellat sit autem.
         clientData:
           type: string
           description: "Base64 encoded byte array which is a JSON-compatible serialization of client data\n\t\t\t\t\t\t\tpassed to the authenticator by the client in order to generate this assertion.\n\t\t\t\t\t\t\tThe exact JSON serialization MUST be preserved, as the hash of the serialized\n\t\t\t\t\t\t\tclient data has been computed over it."
@@ -3553,7 +3801,7 @@ components:
           description: Base64 encoded the raw signature returned from the authenticator.
           example: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
       example:
-        authenticatorData: Consequatur ea voluptas quasi consectetur.
+        authenticatorData: Expedita vitae voluptas nostrum rerum modi.
         clientData: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
         keyHandle: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
         session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
@@ -3594,7 +3842,7 @@ components:
             appid: https://loalhost:8443
           rpId: https://localhost:8443/
           timeout: 5000
-          userVerification: Aut autem.
+          userVerification: Et ab provident.
         session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
         txId: 2a363a42-a397-4af0-b089-0935fc223017
       required:

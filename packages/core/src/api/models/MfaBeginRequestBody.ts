@@ -4,7 +4,7 @@
 /* tslint:disable */
 
 import type { DeviceInfo } from "./DeviceInfo";
-import type { User } from "./User";
+import type { MfaUser } from "./MfaUser";
 export type MfaBeginRequestBody = {
   deviceInfo?: DeviceInfo;
   /**
@@ -19,5 +19,5 @@ export type MfaBeginRequestBody = {
    * TrustIDs provided with the request
    */
   trustItems?: Record<string, string>;
-  user?: User;
+  user?: MfaUser;
 };

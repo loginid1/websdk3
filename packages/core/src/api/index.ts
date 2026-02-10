@@ -28,6 +28,7 @@ export type { JWT } from "./models/JWT";
 export type { Mfa } from "./models/Mfa";
 export type { MfaAction } from "./models/MfaAction";
 export type { MfaBeginRequestBody } from "./models/MfaBeginRequestBody";
+export type { MfaDiscoverRequestBody } from "./models/MfaDiscoverRequestBody";
 export type { MfaNext } from "./models/MfaNext";
 export type { MfaOption } from "./models/MfaOption";
 export type { MfaOtpRequestRequestBody } from "./models/MfaOtpRequestRequestBody";
@@ -35,7 +36,9 @@ export type { MfaOtpRequestResponseBody } from "./models/MfaOtpRequestResponseBo
 export type { MfaOtpVerifyRequestBody } from "./models/MfaOtpVerifyRequestBody";
 export type { MfaPasskeyAuthRequestBody } from "./models/MfaPasskeyAuthRequestBody";
 export type { MfaPasskeyRegRequestBody } from "./models/MfaPasskeyRegRequestBody";
+export type { MfaPayloadUpdateRequestBody } from "./models/MfaPayloadUpdateRequestBody";
 export type { MfaThirdPartyAuthVerifyRequestBody } from "./models/MfaThirdPartyAuthVerifyRequestBody";
+export type { MfaUser } from "./models/MfaUser";
 export type { Passkey } from "./models/Passkey";
 export type { PasskeyCollection } from "./models/PasskeyCollection";
 export type { PasskeyOptions } from "./models/PasskeyOptions";

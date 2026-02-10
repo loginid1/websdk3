@@ -37,6 +37,8 @@ build-websdk:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       when: never
     - when: always
+  variables:
+    NODE_ENV: production
   script:
     # Order matters
     - npm run build:core

@@ -7,12 +7,8 @@ import {
   MfaPerformActionOptions,
   MfaSessionResult,
 } from "./types";
-import {
-  DeviceStore,
-  MfaStore,
-  TrustStore,
-  WalletTrustIdStore,
-} from "../store";
+import { fetchAndSyncPasskeys, handlePotentialStalePasskey } from "../signal";
+import { AppStore, MfaStore, TrustStore, WalletTrustIdStore } from "../store";
 import { mfaOptions, toMfaInfo, toMfaSessionDetails } from "../defaults";
 import { ApiError, Mfa, MfaBeginRequestBody, MfaNext } from "../api";
 import { ClientEvents } from "../client-events/client-events";
@@ -48,7 +44,7 @@ export class MFA extends LoginIDBase {
     options: MfaBeginOptions = {},
   ): Promise<MfaSessionResult> {
     const appId = this.config.getAppId();
-    const deviceId = DeviceStore.getDeviceId(appId);
+    const deviceId = AppStore.getDeviceId(appId);
     const deviceInfo = await defaultDeviceInfo(deviceId);
     const opts = mfaOptions(username, options);
 
@@ -70,6 +66,8 @@ export class MFA extends LoginIDBase {
         username: username,
         usernameType: opts.usernameType,
         displayName: opts.displayName,
+        ...(options.name && { name: options.name }),
+        ...(options.phone && { name: options.phone }),
       },
       trustItems: {
         ...(trustId && { auth: trustId }),
@@ -121,6 +119,24 @@ export class MFA extends LoginIDBase {
       options,
     );
 
+    // Update payload if provided
+    if (factorName === "passkey:tx" && options.txPayload) {
+      const { txPayload, ...rest } = options;
+      const mfaNextResult = await this.service.mfa.mfaMfaPayloadUpdate({
+        authorization: session,
+        requestBody: {
+          payload: txPayload,
+        },
+      });
+
+      const username = info?.username;
+      const mfaInfo = toMfaInfo(mfaNextResult, username);
+
+      MfaStore.persistInfo(appId, mfaInfo);
+
+      return await this.performAction(factorName, rest);
+    }
+
     switch (factorName) {
       case "passkey:reg":
       case "passkey:auth":
@@ -129,57 +145,77 @@ export class MFA extends LoginIDBase {
           LoginIDParamValidator.validatePasskeyPayload(payload);
 
         if ("rpId" in requestOptions) {
-          return await this.invokeMfaApi(appId, info?.username, async () => {
-            const authCompleteRequestBody =
-              await WebAuthnHelper.getNavigatorCredential(
-                {
-                  action: "proceed",
-                  assertionOptions: requestOptions,
-                  crossAuthMethods: [],
-                  fallbackMethods: [],
-                  session: session,
-                },
-                { ...(options.autoFill && { autoFill: options.autoFill }) },
-              );
+          return await this.invokeMfaApi(
+            factorName,
+            appId,
+            info?.username,
+            async () => {
+              const authCompleteRequestBody =
+                await WebAuthnHelper.getNavigatorCredential(
+                  {
+                    action: "proceed",
+                    assertionOptions: requestOptions,
+                    crossAuthMethods: [],
+                    fallbackMethods: [],
+                    session: session,
+                  },
+                  { ...(options.autoFill && { autoFill: options.autoFill }) },
+                );
 
-            if (factorName === "passkey:tx") {
-              return await this.service.mfa.mfaMfaPasskeyTx({
+              if (factorName === "passkey:tx") {
+                return await this.service.mfa.mfaMfaPasskeyTx({
+                  authorization: session,
+                  requestBody: {
+                    assertionResult: authCompleteRequestBody.assertionResult,
+                  },
+                });
+              }
+
+              return await this.service.mfa.mfaMfaPasskeyAuth({
                 authorization: session,
                 requestBody: {
                   assertionResult: authCompleteRequestBody.assertionResult,
                 },
               });
-            }
-
-            return await this.service.mfa.mfaMfaPasskeyAuth({
-              authorization: session,
-              requestBody: {
-                assertionResult: authCompleteRequestBody.assertionResult,
-              },
-            });
-          });
+            },
+          );
         }
 
         if ("rp" in requestOptions) {
-          return await this.invokeMfaApi(appId, info?.username, async () => {
-            if (options.displayName) {
-              requestOptions.user.displayName = options.displayName;
-            }
+          return await this.invokeMfaApi(
+            factorName,
+            appId,
+            info?.username,
+            async () => {
+              if (options.displayName) {
+                requestOptions.user.displayName = options.displayName;
+              }
 
-            const regCompleteRequestBody =
-              await WebAuthnHelper.createNavigatorCredential({
-                action: "proceed",
-                registrationRequestOptions: requestOptions,
-                session: session,
-              });
+              const regCompleteRequestBody =
+                await WebAuthnHelper.createNavigatorCredential({
+                  action: "proceed",
+                  registrationRequestOptions: requestOptions,
+                  session: session,
+                });
 
-            return await this.service.mfa.mfaMfaPasskeyReg({
-              authorization: session,
-              requestBody: {
-                creationResult: regCompleteRequestBody.creationResult,
-              },
-            });
-          });
+              try {
+                return await this.service.mfa.mfaMfaPasskeyReg({
+                  authorization: session,
+                  requestBody: {
+                    creationResult: regCompleteRequestBody.creationResult,
+                  },
+                });
+              } catch (error) {
+                // Potentially delete stale passkey from authenticator
+                handlePotentialStalePasskey(
+                  regCompleteRequestBody.creationResult.credentialId,
+                  requestOptions.rp.id,
+                );
+
+                throw error;
+              }
+            },
+          );
         }
 
         break;
@@ -203,25 +239,35 @@ export class MFA extends LoginIDBase {
       }
 
       case "otp:verify": {
-        return await this.invokeMfaApi(appId, info?.username, async () => {
-          return await this.service.mfa.mfaMfaOtpVerify({
-            authorization: session,
-            requestBody: {
-              otp: payload,
-            },
-          });
-        });
+        return await this.invokeMfaApi(
+          factorName,
+          appId,
+          info?.username,
+          async () => {
+            return await this.service.mfa.mfaMfaOtpVerify({
+              authorization: session,
+              requestBody: {
+                otp: payload,
+              },
+            });
+          },
+        );
       }
 
       case "external": {
-        return await this.invokeMfaApi(appId, info?.username, async () => {
-          return await this.service.mfa.mfaMfaThirdPartyAuthVerify({
-            authorization: session,
-            requestBody: {
-              token: payload,
-            },
-          });
-        });
+        return await this.invokeMfaApi(
+          factorName,
+          appId,
+          info?.username,
+          async () => {
+            return await this.service.mfa.mfaMfaThirdPartyAuthVerify({
+              authorization: session,
+              requestBody: {
+                token: payload,
+              },
+            });
+          },
+        );
       }
     }
 
@@ -253,12 +299,14 @@ export class MFA extends LoginIDBase {
    * and sets authentication tokens. If the request results in an MFA challenge (401 error),
    * it processes the response and updates the session accordingly.
    *
+   * @param {MfaFactorName} factorName - The name of the MFA factor being invoked.
    * @param {string} appId - The application ID associated with the MFA session.
    * @param {string} [username=""] - The username, if available.
    * @param {() => Promise<Mfa>} fn - A function that performs the MFA API request.
    * @returns {Promise<MfaSessionResult>} - The updated MFA session result.
    */
   private async invokeMfaApi(
+    factorName: MfaFactorName,
     appId: string,
     username: string = "",
     fn: () => Promise<Mfa>,
@@ -274,9 +322,13 @@ export class MFA extends LoginIDBase {
       });
 
       this.session.setTokenSet(mfaSuccessResult);
-      DeviceStore.persistDeviceId(appId, mfaSuccessResult.deviceId);
+      AppStore.persistDeviceId(appId, mfaSuccessResult.deviceId);
 
       const newMfaInfo = MfaStore.getInfo(appId);
+
+      if (factorName === "passkey:auth" || factorName === "passkey:tx") {
+        fetchAndSyncPasskeys(this.service, this.session);
+      }
 
       return toMfaSessionDetails(newMfaInfo, mfaSuccessResult);
     } catch (error) {
