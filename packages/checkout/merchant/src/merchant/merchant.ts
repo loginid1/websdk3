@@ -1,6 +1,7 @@
 // Copyright (C) LoginID
 
 import {
+  DiscoverResult,
   EmbeddedContextData,
   LID_CHECKOUT_KEY,
 } from "@loginid/checkout-commons";
@@ -18,13 +19,37 @@ import { createMerchantCommunicator } from "../creators";
  */
 class LoginIDMerchantCheckout {
   /**
-   * Generates or retrieves a unique `checkoutId` for the current session.
+   * Generates or retrieves a unique `checkoutId`.
+   *
+   * See [What is CheckoutID?](https://docs.loginid.io/user-scenario/checkout/merchant/#what-is-checkoutid)
+   * for more information about its purpose and usage.
    *
    * @returns {Promise<string>} A promise that resolves with the `checkoutId`.
    */
   public static async getCheckoutId(): Promise<string> {
     const store = new CheckoutIdStore();
     return await store.setOrSignWithCheckoutId();
+  }
+
+  /**
+   * Performs wallet discovery using a hidden iframe.
+   *
+   * Returns a `DiscoverResult` indicating whether checkout should continue
+   * using the embedded checkout flow or a redirect flow.
+   *
+   * See [Wallet Discovery documentation](https://docs.loginid.io/user-scenario/checkout/wallet/web/#0-discovery-page---determine-flow)
+   * for details.
+   *
+   * @param discoverUrl - The wallet discovery page URL.
+   *
+   * @returns A promise resolving to the discovery result, including the
+   * recommended checkout flow (`"EMBED"` or `"REDIRECT"`).
+   */
+  public static async discoverCheckoutFlow(
+    discoverUrl: string,
+  ): Promise<DiscoverResult> {
+    const discovery = new CheckoutDiscoveryMerchant(discoverUrl);
+    return await discovery.discover();
   }
 
   /**
