@@ -45,9 +45,7 @@ class LoginIDMerchantCheckout {
    * @returns A promise resolving to the discovery result, including the
    * recommended checkout flow (`"EMBED"` or `"REDIRECT"`).
    */
-  public static async discoverCheckoutFlow(
-    discoverUrl: string,
-  ): Promise<DiscoverResult> {
+  public static async discover(discoverUrl: string): Promise<DiscoverResult> {
     const discovery = new CheckoutDiscoveryMerchant(discoverUrl);
     return await discovery.discover();
   }
