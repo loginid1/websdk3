@@ -1,3 +1,9 @@
+## @loginid/checkout-merchant [1.2.0](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/checkout-merchant@1.1.1...@loginid/checkout-merchant@1.2.0) (2026-06-01)
+
+### Features
+
+* **checkout-merchant:** add checkout wallet discovery ([b1f2e63](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/b1f2e631a959ae6e6269ba8321623d3a8c12089d))
+
 ## @loginid/checkout-merchant [1.1.1](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/checkout-merchant@1.1.0...@loginid/checkout-merchant@1.1.1) (2025-05-29)
 
 ### Bug Fixes
