@@ -55,6 +55,12 @@ export interface CheckoutBeginFlowOptions {
    * Example: `6957cf6e-a86c-44fb-b25a-bd97cb9ff830`
    */
   traceId?: string;
+
+  /**
+   * An identifier for the device used in the authentication process. This property helps determine if supported authentications can be proceeded,
+   * allowing future authentications to identify the device correctly.
+   */
+  deviceId?: string;
 }
 
 /**
