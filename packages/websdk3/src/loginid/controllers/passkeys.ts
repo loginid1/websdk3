@@ -28,9 +28,9 @@ import {
   handlePotentialStalePasskey,
 } from "@loginid/core/signal";
 import { NO_LOGIN_OPTIONS_ERROR, WebAuthnHelper } from "@loginid/core/webauthn";
+import { AppStore, WalletTrustIdStore } from "@loginid/core/store";
 import { defaultDeviceInfo } from "@loginid/core/utils/browser";
 import { ClientEvents } from "@loginid/core/client-events";
-import { AppStore, TrustStore } from "@loginid/core/store";
 import { LoginIDConfig } from "@loginid/core/controllers";
 import { parseJwt } from "@loginid/core/utils/crypto";
 import { mergeFallbackOptions } from "../lib/utils";
@@ -104,7 +104,7 @@ class Passkeys extends OTP {
     const appId = this.config.getAppId();
     const deviceId = options.deviceId || AppStore.getDeviceId(appId);
     const deviceInfo = await defaultDeviceInfo(deviceId);
-    const trustStore = new TrustStore(appId);
+    const trustStore = new WalletTrustIdStore();
     const opts = passkeyOptions(username, authzToken, options);
 
     opts.authzToken = this.session.getToken(opts);
@@ -116,7 +116,7 @@ class Passkeys extends OTP {
       }
     }
 
-    const trustInfo = await trustStore.setOrSignWithTrustId(username);
+    const trustInfo = await trustStore.setOrSignWithCheckoutId();
 
     const regInitRequestBody: RegInitRequestBody = {
       app: {
@@ -223,12 +223,10 @@ class Passkeys extends OTP {
   ): Promise<AuthResult> {
     const appId = this.config.getAppId();
     const deviceInfo = await defaultDeviceInfo(AppStore.getDeviceId(appId));
-    const trustStore = new TrustStore(appId);
+    const trustStore = new WalletTrustIdStore();
     const opts = passkeyOptions(username, "", options);
 
-    const trustInfo = await trustStore.setOrSignWithTrustId(
-      options.autoFill ? "" : username,
-    );
+    const trustInfo = await trustStore.setOrSignWithCheckoutId();
 
     const authInitRequestBody: AuthInitRequestBody = {
       app: {
