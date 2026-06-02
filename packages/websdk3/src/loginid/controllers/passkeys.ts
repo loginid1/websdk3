@@ -102,7 +102,7 @@ class Passkeys extends OTP {
     options: CreatePasskeyOptions = {},
   ): Promise<AuthResult> {
     const appId = this.config.getAppId();
-    const deviceId = AppStore.getDeviceId(appId);
+    const deviceId = options.deviceId || AppStore.getDeviceId(appId);
     const deviceInfo = await defaultDeviceInfo(deviceId);
     const trustStore = new TrustStore(appId);
     const opts = passkeyOptions(username, authzToken, options);

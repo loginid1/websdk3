@@ -136,6 +136,12 @@ export interface CreatePasskeyOptions extends MainPasskeyOptions {
    * Indicates that the credential should be a cross-platform FIDO credential (e.g., a hardware security key or a hybrid passkey).
    */
   crossPlatform?: boolean;
+
+  /**
+   * An identifier for the device used in the authentication process. This property helps determine if supported authentications can be proceeded,
+   * allowing future authentications to identify the device correctly.
+   */
+  deviceId?: string;
 }
 
 /**
