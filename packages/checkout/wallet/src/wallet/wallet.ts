@@ -89,6 +89,7 @@ class LoginIDWalletAuth {
     const checkoutId = options.checkoutId || eData?.checkoutId;
     const txPayload = options.txPayload;
     const traceId = options.traceId;
+    const deviceId = options.deviceId;
 
     if (!txPayload) {
       throw new ValidationError(
@@ -102,6 +103,7 @@ class LoginIDWalletAuth {
       checkoutId: checkoutId,
       txPayload: txPayload,
       traceId: traceId,
+      deviceId: deviceId,
     };
 
     MfaBeginLocalStorage.persistCheckoutId(checkoutId || "");

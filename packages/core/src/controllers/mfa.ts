@@ -44,7 +44,7 @@ export class MFA extends LoginIDBase {
     options: MfaBeginOptions = {},
   ): Promise<MfaSessionResult> {
     const appId = this.config.getAppId();
-    const deviceId = AppStore.getDeviceId(appId);
+    const deviceId = options.deviceId || AppStore.getDeviceId(appId);
     const deviceInfo = await defaultDeviceInfo(deviceId);
     const opts = mfaOptions(username, options);
 

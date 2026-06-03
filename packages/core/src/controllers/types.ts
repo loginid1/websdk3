@@ -138,6 +138,12 @@ export interface MfaBeginOptions {
    * - `"+15551234567"`
    */
   phone?: string;
+
+  /**
+   * An identifier for the device used in the authentication process. This property helps determine if supported authentications can be proceeded,
+   * allowing future authentications to identify the device correctly.
+   */
+  deviceId?: string;
 }
 
 /**
