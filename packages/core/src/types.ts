@@ -94,6 +94,21 @@ export interface TrustIDRecord {
 }
 
 /**
+ * A set of checkout trust tokens.
+ */
+export interface LoginIDTrustSet {
+  /**
+   * The merchant trust ID.
+   */
+  merchantTrustId?: string;
+
+  /**
+   * The wallet trust ID.
+   */
+  walletTrustId?: string;
+}
+
+/**
  * A set of tokens obtained upon login.
  */
 export interface LoginIDTokenSet {

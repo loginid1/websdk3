@@ -8,7 +8,7 @@ import {
   RemainingFactor,
   RequireProps,
 } from "../controllers/types";
-import { LoginIDTokenSet } from "../types";
+import { LoginIDTokenSet, LoginIDTrustSet } from "../types";
 import { MfaNext } from "../api";
 
 /**
@@ -58,6 +58,7 @@ export const toMfaInfo = (
 export const toMfaSessionDetails = (
   info?: MfaInfo | null,
   tokenSet?: LoginIDTokenSet,
+  trustSet?: LoginIDTrustSet,
 ): MfaSessionResult => {
   const remainingFactors: RemainingFactor[] =
     info?.next?.map((factor) => {
@@ -107,6 +108,10 @@ export const toMfaSessionDetails = (
     info?.next?.some((factor) => factor.action.name === name),
   );
 
+  const isComplete = !!tokenSet?.accessToken || !!tokenSet?.payloadSignature;
+  const merchantTrustId = isComplete ? trustSet?.merchantTrustId : undefined;
+  const walletTrustId = isComplete ? trustSet?.walletTrustId : undefined;
+
   return {
     username: info?.username,
     ...(info?.username && { username: info.username }),
@@ -114,7 +119,7 @@ export const toMfaSessionDetails = (
     ...(info?.flow && { flow: info.flow }),
     remainingFactors: remainingFactors,
     ...(nextAction && { nextAction }),
-    isComplete: !!tokenSet?.accessToken || !!tokenSet?.payloadSignature,
+    isComplete,
     ...(info?.session && { session: info.session }),
     ...(tokenSet?.idToken && { idToken: tokenSet?.idToken }),
     ...(tokenSet?.accessToken && { accessToken: tokenSet?.accessToken }),
@@ -122,5 +127,7 @@ export const toMfaSessionDetails = (
     ...(tokenSet?.payloadSignature && {
       payloadSignature: tokenSet?.payloadSignature,
     }),
+    ...(merchantTrustId && { merchantTrustId }),
+    ...(walletTrustId && { walletTrustId }),
   };
 };

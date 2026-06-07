@@ -291,6 +291,21 @@ export interface MfaSessionResult {
    * Indicates which MFA factor the user should complete next in order to proceed.
    */
   nextAction?: MfaFactorName;
+
+  /**
+   * An opaque identifier representing a trusted relationship between the merchant
+   * and the user's wallet.
+   *
+   * This value is issued by LoginId after the trust relationship has been verified.
+   */
+  merchantTrustId?: string;
+
+  /**
+   * An opaque identifier representing a trusted wallet.
+   *
+   * This value is issued by LoginId after the wallet has been verified.
+   */
+  walletTrustId?: string;
 }
 
 /**
