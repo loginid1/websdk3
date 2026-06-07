@@ -35,4 +35,10 @@ export class MfaBeginLocalStorage extends LocalStorageWrapper {
   public static getTrustSet(): LoginIDTrustSet | undefined {
     return this.getItem(trustSetStorageKey) || undefined;
   }
+
+  public static clearAll(): void {
+    localStorage.removeItem(checkoutIdStorageKey);
+    localStorage.removeItem(traceIdStorageKey);
+    localStorage.removeItem(trustSetStorageKey);
+  }
 }

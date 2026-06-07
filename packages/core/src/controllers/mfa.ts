@@ -50,7 +50,7 @@ export class MFA extends LoginIDBase {
     username: string,
     options: MfaBeginOptions = {},
   ): Promise<MfaSessionResult> {
-    MfaBeginLocalStorage.persistTrustSet();
+    MfaBeginLocalStorage.clearAll();
 
     const appId = this.config.getAppId();
     const deviceId = options.deviceId || AppStore.getDeviceId(appId);
