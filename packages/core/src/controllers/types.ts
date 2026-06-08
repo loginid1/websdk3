@@ -294,17 +294,29 @@ export interface MfaSessionResult {
   nextAction?: MfaFactorName;
 
   /**
-   * An opaque identifier representing a trusted relationship between the merchant
+   * A signed trust token representing a trusted relationship between the merchant
    * and the user's wallet.
    *
-   * This value is issued by LoginId after the trust relationship has been verified.
+   * This value is issued by LoginID after the merchant trust relationship has
+   * been successfully verified during a checkout authentication flow.
+   *
+   * The value may be verified by backend services using LoginID
+   * [token verification](https://docs.loginid.io/backend-integration/verify-token).
+   *
+   * Available only after the MFA session is complete.
    */
   merchantTrustId?: string;
 
   /**
-   * An opaque identifier representing a trusted wallet.
+   * A signed trust token representing a trusted wallet.
    *
-   * This value is issued by LoginId after the wallet has been verified.
+   * This value is issued by LoginID after the wallet trust relationship has
+   * been successfully verified during a checkout authentication flow.
+   *
+   * The value may be verified by backend services using LoginID
+   * [token verification](https://docs.loginid.io/backend-integration/verify-token).
+   *
+   * Available only after the MFA session is complete.
    */
   walletTrustId?: string;
 
