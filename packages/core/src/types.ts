@@ -1,6 +1,6 @@
 // Copyright (C) LoginID
 
-import { CreationResult } from "./api";
+import { AdditionalPasskeyInfo, CreationResult } from "./api";
 
 export type Transports = CreationResult["transports"];
 
@@ -132,4 +132,113 @@ export interface LoginIDTokenSet {
    * Ensures that the authentication data has not been tampered with.
    */
   payloadSignature?: string;
+}
+
+/**
+ * An extended set of tokens obtained upon login, with optional authentication details.
+ */
+export type MfaData = LoginIDTokenSet & {
+  authenticationDetails?: AdditionalPasskeyInfo;
+};
+
+/**
+ * Represents the result of a passkey credential creation.
+ */
+export interface PasskeyCreationResult {
+  /**
+   * Base64URL-encoded attestation object bytes.
+   */
+  attestationObject: string;
+
+  /**
+   * Base64URL-encoded authenticator data bytes.
+   */
+  authenticatorData?: string;
+
+  /**
+   * Base64URL-encoded UTF-8 JSON bytes representing the client data.
+   * Decoding yields the original clientDataJSON string.
+   */
+  clientDataJSON: string;
+
+  /**
+   * Base64URL-encoded credential ID bytes.
+   */
+  credentialId: string;
+
+  /**
+   * Base64URL-encoded DER SubjectPublicKeyInfo bytes.
+   */
+  publicKey?: string;
+
+  /**
+   * This operation returns the COSEAlgorithmIdentifier of the new credential.
+   */
+  publicKeyAlgorithm?: number;
+
+  /**
+   * These values are the transports that the authenticator is believed to support,
+   * or an empty sequence if the information is unavailable.
+   */
+  transports?: Transports;
+}
+
+/**
+ * Represents the result of a passkey assertion.
+ */
+export interface PasskeyAssertionResponse {
+  /**
+   * Base64URL-encoded authenticator data bytes.
+   */
+  authenticatorData: string;
+
+  /**
+   * Base64URL-encoded UTF-8 JSON bytes representing the client data.
+   */
+  clientDataJSON: string;
+
+  /**
+   * Base64URL-encoded credential ID bytes.
+   */
+  credentialId: string;
+
+  /**
+   * Base64URL-encoded signature bytes returned by the authenticator.
+   */
+  signature: string;
+
+  /**
+   * User handle returned from the authenticator.
+   */
+  userHandle?: string;
+}
+
+/**
+ * Represents additional information about a passkey.
+ */
+export interface PasskeyInfo {
+  /**
+   * AAGUID identifying the passkey provider/authenticator model.
+   */
+  aaguid: string;
+
+  /**
+   * The result of the passkey assertion.
+   */
+  assertionResult?: PasskeyAssertionResponse;
+
+  /**
+   * The result of the passkey creation.
+   */
+  creationResult?: PasskeyCreationResult;
+
+  /**
+   * Internal passkey ID which is used for [passkey management](https://docs.loginid.io/user-scenario/user-profile-management/passkey-management/).
+   */
+  passkeyId: string;
+
+  /**
+   * Base64URL-encoded COSE public key of the passkey's credential.
+   */
+  publicKey: string;
 }

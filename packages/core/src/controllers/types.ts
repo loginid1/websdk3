@@ -1,6 +1,7 @@
 // Copyright (C) LoginID
 
 import { User, Mfa, MfaAction } from "../api";
+import { PasskeyInfo } from "../types";
 
 export type RequireProps<T, K extends keyof T> = T & Required<Pick<T, K>>;
 
@@ -306,6 +307,14 @@ export interface MfaSessionResult {
    * This value is issued by LoginId after the wallet has been verified.
    */
   walletTrustId?: string;
+
+  /**
+   * Information about the passkey involved in this MFA session,
+   * including passkey creation or authentication results when applicable.
+   *
+   * Available only after the MFA session is complete.
+   */
+  passkeyInfo?: PasskeyInfo;
 }
 
 /**
