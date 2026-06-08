@@ -315,6 +315,14 @@ export interface MfaSessionResult {
    * Available only after the MFA session is complete.
    */
   passkeyInfo?: PasskeyInfo;
+
+  /**
+   * An identifier for the device used in the authentication process. This property helps determine if supported authentications can be proceeded,
+   * allowing future authentications to identify the device correctly.
+   *
+   * Available only after the MFA session is complete.
+   */
+  deviceId?: string;
 }
 
 /**

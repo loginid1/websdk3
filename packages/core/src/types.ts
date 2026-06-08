@@ -138,6 +138,7 @@ export interface LoginIDTokenSet {
  * An extended set of tokens obtained upon login, with optional authentication details.
  */
 export type MfaData = LoginIDTokenSet & {
+  deviceId?: string;
   authenticationDetails?: AdditionalPasskeyInfo;
 };
 

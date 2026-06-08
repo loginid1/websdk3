@@ -111,6 +111,7 @@ export const toMfaSessionDetails = (
   const isComplete = !!data?.accessToken || !!data?.payloadSignature;
   const merchantTrustId = isComplete ? trustSet?.merchantTrustId : undefined;
   const walletTrustId = isComplete ? trustSet?.walletTrustId : undefined;
+  const deviceId = isComplete ? data?.deviceId : undefined;
 
   const result: MfaSessionResult = {
     username: info?.username,
@@ -127,6 +128,7 @@ export const toMfaSessionDetails = (
     ...(data?.payloadSignature && {
       payloadSignature: data?.payloadSignature,
     }),
+    ...(deviceId && { deviceId }),
     ...(merchantTrustId && { merchantTrustId }),
     ...(walletTrustId && { walletTrustId }),
   };

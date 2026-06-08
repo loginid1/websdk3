@@ -300,9 +300,11 @@ export class MFA extends LoginIDBase {
   getMfaSessionDetails(): MfaSessionResult {
     const appId = this.config.getAppId();
     const info = MfaStore.getInfo(appId);
+    const deviceId = AppStore.getDeviceId(appId);
     const tokenSet = this.session.getTokenSet();
     const trustSet = MfaBeginLocalStorage.getTrustSet();
-    return toMfaSessionDetails(info, tokenSet, trustSet);
+
+    return toMfaSessionDetails(info, { ...tokenSet, deviceId }, trustSet);
   }
 
   /**
