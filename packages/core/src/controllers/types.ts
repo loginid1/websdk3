@@ -1,7 +1,7 @@
 // Copyright (C) LoginID
 
 import { User, Mfa, MfaAction } from "../api";
-import { PasskeyInfo } from "../types";
+import { PasskeyCredential } from "../types";
 
 export type RequireProps<T, K extends keyof T> = T & Required<Pick<T, K>>;
 
@@ -326,7 +326,7 @@ export interface MfaSessionResult {
    *
    * Available only after the MFA session is complete.
    */
-  passkeyInfo?: PasskeyInfo;
+  passkeyCredential?: PasskeyCredential;
 
   /**
    * An identifier for the device used in the authentication process. This property helps determine if supported authentications can be proceeded,
