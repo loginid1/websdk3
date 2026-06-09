@@ -63,8 +63,9 @@ export class MFA extends LoginIDBase {
       walletTrustId = await store.setOrSignWithCheckoutId();
     }
 
+    const merchantTrustId = options.merchantTrustId || options.checkoutId;
     let trustId = "";
-    if (!options.checkoutId && !walletTrustId) {
+    if (!merchantTrustId && !walletTrustId) {
       const store = new TrustStore(appId);
       trustId = await store.setOrSignWithTrustId(username);
     }
@@ -81,7 +82,7 @@ export class MFA extends LoginIDBase {
       trustItems: {
         ...(trustId && { auth: trustId }),
         ...(walletTrustId && { wallet: walletTrustId }),
-        ...(options.checkoutId && { merchant: options.checkoutId }),
+        ...(merchantTrustId && { merchant: merchantTrustId }),
       },
       ...(options.txPayload && { payload: options.txPayload }),
       ...(options.traceId && { traceId: options.traceId }),
