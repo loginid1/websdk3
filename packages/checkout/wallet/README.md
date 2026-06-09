@@ -1,5 +1,6 @@
 # LoginID Checkout SDK – Wallet
 
+
 The LoginID Checkout SDK for Wallets enables passkey-based passwordless authentication within embedded wallet experiences.
 It facilitates secure and efficient handling of authentication requests initiated from merchant sites.
 
