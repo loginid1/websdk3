@@ -790,6 +790,15 @@ paths:
                 deviceId: 8222fe14-4973-469f-843d-73b0f9e0a3a9
                 flow: signIn
                 idToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NT...
+                passkeyInfo:
+                  aaguid: fbfc3007-154e-4ecc-8c0b-6e020557d7bd
+                  assertionResult:
+                    authenticatorData: ix523n3XniH01jM4CIuOn1z0Jw6QbRATXYOsCUyQN...
+                    clientDataJSON: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
+                    credentialId: 2aChi2dALRLdVP5i/zKr7yvMrP8FIy7MK4lbyUsjO...
+                    signature: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
+                  passkeyId: 861ee00b-b40d-493a-a10b-457a0d527b48
+                  publicKey: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
                 payload: JfeMhXGH1GABxRAXRopd7vtsLEJe16f9ok3oiA8DoEADZ8TOqvgYy...
                 payloadSignature: eyJhbGciOiJIUzI1NiJ9.ew0KICAic3ViIjogIjEyMzQ1Njc4OTAiLA...
                 refreshToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NT...
@@ -885,6 +894,9 @@ paths:
                 credentialId: 2aChi2dALRLdVP5i/zKr7yvMrP8FIy7MK4lbyUsjO...
                 signature: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
                 userHandle: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
+              providerParams:
+                document: base64-encoded-image
+                verification_type: document
       responses:
         '200':
           description: OK response.
@@ -897,6 +909,15 @@ paths:
                 deviceId: 8222fe14-4973-469f-843d-73b0f9e0a3a9
                 flow: signIn
                 idToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NT...
+                passkeyInfo:
+                  aaguid: fbfc3007-154e-4ecc-8c0b-6e020557d7bd
+                  assertionResult:
+                    authenticatorData: ix523n3XniH01jM4CIuOn1z0Jw6QbRATXYOsCUyQN...
+                    clientDataJSON: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
+                    credentialId: 2aChi2dALRLdVP5i/zKr7yvMrP8FIy7MK4lbyUsjO...
+                    signature: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
+                  passkeyId: 861ee00b-b40d-493a-a10b-457a0d527b48
+                  publicKey: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
                 payload: JfeMhXGH1GABxRAXRopd7vtsLEJe16f9ok3oiA8DoEADZ8TOqvgYy...
                 payloadSignature: eyJhbGciOiJIUzI1NiJ9.ew0KICAic3ViIjogIjEyMzQ1Njc4OTAiLA...
                 refreshToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NT...
@@ -988,7 +1009,7 @@ paths:
             example:
               creationResult:
                 attestationObject: 5lvuZBkX1w7/0+XKcldttzA7vTwilEq3qnnXSq/a0...
-                authenticatorData: Dolorem culpa tempora.
+                authenticatorData: Ratione rem maxime.
                 clientDataJSON: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
                 credentialId: 2aChi2dALRLdVP5i/zKr7yvMrP8FIy7MK4lbyUsjO...
                 publicKey: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
@@ -996,6 +1017,11 @@ paths:
                 transports:
                   - internal
                   - internal
+                  - internal
+                  - internal
+              providerParams:
+                document: base64-encoded-image
+                verification_type: document
       responses:
         '200':
           description: OK response.
@@ -1008,6 +1034,15 @@ paths:
                 deviceId: 8222fe14-4973-469f-843d-73b0f9e0a3a9
                 flow: signIn
                 idToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NT...
+                passkeyInfo:
+                  aaguid: fbfc3007-154e-4ecc-8c0b-6e020557d7bd
+                  assertionResult:
+                    authenticatorData: ix523n3XniH01jM4CIuOn1z0Jw6QbRATXYOsCUyQN...
+                    clientDataJSON: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
+                    credentialId: 2aChi2dALRLdVP5i/zKr7yvMrP8FIy7MK4lbyUsjO...
+                    signature: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
+                  passkeyId: 861ee00b-b40d-493a-a10b-457a0d527b48
+                  publicKey: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
                 payload: JfeMhXGH1GABxRAXRopd7vtsLEJe16f9ok3oiA8DoEADZ8TOqvgYy...
                 payloadSignature: eyJhbGciOiJIUzI1NiJ9.ew0KICAic3ViIjogIjEyMzQ1Njc4OTAiLA...
                 refreshToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NT...
@@ -1067,6 +1102,9 @@ paths:
                 credentialId: 2aChi2dALRLdVP5i/zKr7yvMrP8FIy7MK4lbyUsjO...
                 signature: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
                 userHandle: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
+              providerParams:
+                document: base64-encoded-image
+                verification_type: document
       responses:
         '200':
           description: OK response.
@@ -1079,6 +1117,15 @@ paths:
                 deviceId: 8222fe14-4973-469f-843d-73b0f9e0a3a9
                 flow: signIn
                 idToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NT...
+                passkeyInfo:
+                  aaguid: fbfc3007-154e-4ecc-8c0b-6e020557d7bd
+                  assertionResult:
+                    authenticatorData: ix523n3XniH01jM4CIuOn1z0Jw6QbRATXYOsCUyQN...
+                    clientDataJSON: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
+                    credentialId: 2aChi2dALRLdVP5i/zKr7yvMrP8FIy7MK4lbyUsjO...
+                    signature: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
+                  passkeyId: 861ee00b-b40d-493a-a10b-457a0d527b48
+                  publicKey: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
                 payload: JfeMhXGH1GABxRAXRopd7vtsLEJe16f9ok3oiA8DoEADZ8TOqvgYy...
                 payloadSignature: eyJhbGciOiJIUzI1NiJ9.ew0KICAic3ViIjogIjEyMzQ1Njc4OTAiLA...
                 refreshToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NT...
@@ -1261,6 +1308,15 @@ paths:
                 deviceId: 8222fe14-4973-469f-843d-73b0f9e0a3a9
                 flow: signIn
                 idToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NT...
+                passkeyInfo:
+                  aaguid: fbfc3007-154e-4ecc-8c0b-6e020557d7bd
+                  assertionResult:
+                    authenticatorData: ix523n3XniH01jM4CIuOn1z0Jw6QbRATXYOsCUyQN...
+                    clientDataJSON: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
+                    credentialId: 2aChi2dALRLdVP5i/zKr7yvMrP8FIy7MK4lbyUsjO...
+                    signature: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
+                  passkeyId: 861ee00b-b40d-493a-a10b-457a0d527b48
+                  publicKey: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
                 payload: JfeMhXGH1GABxRAXRopd7vtsLEJe16f9ok3oiA8DoEADZ8TOqvgYy...
                 payloadSignature: eyJhbGciOiJIUzI1NiJ9.ew0KICAic3ViIjogIjEyMzQ1Njc4OTAiLA...
                 refreshToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NT...
@@ -1682,12 +1738,14 @@ paths:
             example:
               creationResult:
                 attestationObject: 5lvuZBkX1w7/0+XKcldttzA7vTwilEq3qnnXSq/a0...
-                authenticatorData: Dolorem culpa tempora.
+                authenticatorData: Ratione rem maxime.
                 clientDataJSON: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
                 credentialId: 2aChi2dALRLdVP5i/zKr7yvMrP8FIy7MK4lbyUsjO...
                 publicKey: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
                 publicKeyAlgorithm: -8
                 transports:
+                  - internal
+                  - internal
                   - internal
                   - internal
               passkeyName: Windows Hello (Win11,Chrome) - 2025-04-07 20:46
@@ -1811,7 +1869,7 @@ paths:
               example:
                 action: proceed
                 registrationRequestOptions:
-                  attestation: direct
+                  attestation: enterprise
                   authenticatorSelection:
                     authenticatorAttachment: platform
                     requireResidentKey: true
@@ -2058,6 +2116,39 @@ components:
         - name
         - iconLight
         - iconDark
+    AdditionalPasskeyInfo:
+      type: object
+      properties:
+        aaguid:
+          type: string
+          description: AAGUID identifying the passkey provider/authenticator model.
+          example: fbfc3007-154e-4ecc-8c0b-6e020557d7bd
+        assertionResult:
+          $ref: '#/components/schemas/AuthenticatorAssertionResponse'
+        creationResult:
+          $ref: '#/components/schemas/CreationResult'
+        passkeyId:
+          type: string
+          description: Internal passkey ID that uniquely identifies the passkey used.
+          example: 861ee00b-b40d-493a-a10b-457a0d527b48
+        publicKey:
+          type: string
+          description: Base64url encoded COSE public key of the passkey's credential.
+          example: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
+      description: Passkey information associated with the completed MFA step.
+      example:
+        aaguid: fbfc3007-154e-4ecc-8c0b-6e020557d7bd
+        assertionResult:
+          authenticatorData: ix523n3XniH01jM4CIuOn1z0Jw6QbRATXYOsCUyQN...
+          clientDataJSON: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
+          credentialId: 2aChi2dALRLdVP5i/zKr7yvMrP8FIy7MK4lbyUsjO...
+          signature: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
+        passkeyId: 861ee00b-b40d-493a-a10b-457a0d527b48
+        publicKey: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
+      required:
+        - passkeyId
+        - aaguid
+        - publicKey
     AppError:
       type: object
       properties:
@@ -2331,7 +2422,7 @@ components:
             bindings
 
             made by the authenticator.
-          example: Sapiente dolores ex.
+          example: Iusto aut odit alias labore non dolorem.
         clientDataJSON:
           type: string
           description: >-
@@ -2379,7 +2470,7 @@ components:
         authenticatorAttachment:
           type: string
           description: Authenticator attachment modality
-          example: platform
+          example: cross-platform
           enum:
             - platform
             - cross-platform
@@ -2387,11 +2478,11 @@ components:
           type: boolean
           description: Resident key requirement
           default: false
-          example: true
+          example: false
         residentKey:
           type: string
           description: Resident key requirement
-          example: discouraged
+          example: preferred
           enum:
             - discouraged
             - preferred
@@ -2399,15 +2490,15 @@ components:
         userVerification:
           type: string
           description: User verification requirement
-          example: discouraged
+          example: preferred
           enum:
             - required
             - preferred
             - discouraged
       example:
         authenticatorAttachment: cross-platform
-        requireResidentKey: false
-        residentKey: preferred
+        requireResidentKey: true
+        residentKey: discouraged
         userVerification: Et ab provident.
     CreationResult:
       type: object
@@ -2427,7 +2518,7 @@ components:
             bindings
 
             made by the authenticator.
-          example: Quaerat possimus eius tenetur consectetur in sit.
+          example: Assumenda voluptates.
         clientDataJSON:
           type: string
           description: >-
@@ -2663,6 +2754,8 @@ components:
           type: string
           description: An authorization token (JWT) confirming successful authentication.
           example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NT...
+        passkeyInfo:
+          $ref: '#/components/schemas/AdditionalPasskeyInfo'
         payload:
           type: string
           description: Base64 encoded payload object
@@ -2683,6 +2776,15 @@ components:
         deviceId: 8222fe14-4973-469f-843d-73b0f9e0a3a9
         flow: signIn
         idToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NT...
+        passkeyInfo:
+          aaguid: fbfc3007-154e-4ecc-8c0b-6e020557d7bd
+          assertionResult:
+            authenticatorData: ix523n3XniH01jM4CIuOn1z0Jw6QbRATXYOsCUyQN...
+            clientDataJSON: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
+            credentialId: 2aChi2dALRLdVP5i/zKr7yvMrP8FIy7MK4lbyUsjO...
+            signature: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
+          passkeyId: 861ee00b-b40d-493a-a10b-457a0d527b48
+          publicKey: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
         payload: JfeMhXGH1GABxRAXRopd7vtsLEJe16f9ok3oiA8DoEADZ8TOqvgYy...
         payloadSignature: eyJhbGciOiJIUzI1NiJ9.ew0KICAic3ViIjogIjEyMzQ1Njc4OTAiLA...
         refreshToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NT...
@@ -2702,11 +2804,11 @@ components:
             desc:
               type: string
               description: Action description
-              example: Corporis necessitatibus sunt assumenda qui impedit.
+              example: Quis non assumenda vel.
             label:
               type: string
               description: Human readable action label
-              example: Fugit voluptatibus repudiandae quibusdam fuga sed.
+              example: Natus minus enim at maxime suscipit.
             name:
               type: string
               description: Next Action to be performed.
@@ -2720,8 +2822,8 @@ components:
                 - otp:verify
                 - external
           example:
-            desc: Natus minus enim at maxime suscipit.
-            label: Occaecati earum dolorem sit voluptatem incidunt.
+            desc: Itaque libero.
+            label: Et impedit dolores vitae cumque qui omnis.
             name: passkey
           required:
             - name
@@ -2739,8 +2841,8 @@ components:
       description: Next Action to be performed.
       example:
         action:
-          desc: Et impedit dolores vitae cumque qui omnis.
-          label: Quis non assumenda vel.
+          desc: Perferendis dolor saepe.
+          label: Voluptas reprehenderit consequuntur est.
           name: passkey
         options:
           - label: primary@example.com
@@ -2948,19 +3050,19 @@ components:
         label:
           type: string
           description: Human readable label
-          example: Voluptas ea sequi.
+          example: Dolorem quis totam quaerat.
         name:
           type: string
           description: Option name
-          example: Aliquid enim praesentium consectetur.
+          example: Harum repellat.
         value:
           type: string
           description: Option value to be used in the next request
-          example: Sapiente illum.
+          example: Blanditiis autem voluptatum temporibus dignissimos aut.
       example:
-        label: Dolorem quis totam quaerat.
-        name: Harum repellat.
-        value: Blanditiis autem voluptatum temporibus dignissimos aut.
+        label: Corporis necessitatibus sunt assumenda qui impedit.
+        name: Fugit voluptatibus repudiandae quibusdam fuga sed.
+        value: Occaecati earum dolorem sit voluptatem incidunt.
       required:
         - value
     MfaOtpRequestRequestBody:
@@ -3012,6 +3114,15 @@ components:
       properties:
         assertionResult:
           $ref: '#/components/schemas/AuthenticatorAssertionResponse'
+        providerParams:
+          type: object
+          description: Identity provider parameters (e.g., Mitek verification data).
+          example:
+            document: base64-encoded-image
+            verification_type: document
+          additionalProperties:
+            type: string
+            example: Cupiditate exercitationem.
       example:
         assertionResult:
           authenticatorData: Id mollitia.
@@ -3019,6 +3130,9 @@ components:
           credentialId: 2aChi2dALRLdVP5i/zKr7yvMrP8FIy7MK4lbyUsjO...
           signature: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
           userHandle: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
+        providerParams:
+          document: base64-encoded-image
+          verification_type: document
       required:
         - assertionResult
     MfaPasskeyRegRequestBody:
@@ -3026,10 +3140,19 @@ components:
       properties:
         creationResult:
           $ref: '#/components/schemas/CreationResult'
+        providerParams:
+          type: object
+          description: Identity provider parameters (e.g., Mitek verification data).
+          example:
+            document: base64-encoded-image
+            verification_type: document
+          additionalProperties:
+            type: string
+            example: Impedit quo et enim qui ad.
       example:
         creationResult:
           attestationObject: 5lvuZBkX1w7/0+XKcldttzA7vTwilEq3qnnXSq/a0...
-          authenticatorData: Dolorem culpa tempora.
+          authenticatorData: Ratione rem maxime.
           clientDataJSON: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
           credentialId: 2aChi2dALRLdVP5i/zKr7yvMrP8FIy7MK4lbyUsjO...
           publicKey: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
@@ -3037,6 +3160,11 @@ components:
           transports:
             - internal
             - internal
+            - internal
+            - internal
+        providerParams:
+          document: base64-encoded-image
+          verification_type: document
       required:
         - creationResult
     MfaPayloadUpdateRequestBody:
@@ -3080,10 +3208,10 @@ components:
           example: '+15551234567'
         username:
           type: string
-          example: Voluptate illum et est neque tenetur.
+          example: Aperiam pariatur quia ut occaecati.
         usernameType:
           type: string
-          example: Ut modi quas exercitationem.
+          example: Praesentium praesentium qui et ullam aut.
       example:
         displayName: System Administrator
         name: John Doe
@@ -3107,7 +3235,7 @@ components:
           format: date-time
         credentialId:
           type: string
-          example: Voluptatem occaecati laboriosam exercitationem cum culpa voluptatem.
+          example: Mollitia ipsum praesentium labore eaque voluptatem.
         credentialSynced:
           type: boolean
           description: Credential available on multiple devices
@@ -3134,8 +3262,8 @@ components:
       example:
         aaguid: fbfc3007-154e-4ecc-8c0b-6e020557d7bd
         createdAt: 2023-06-15 13:29:41 EDT
-        credentialId: Sed et a sapiente cupiditate sint.
-        credentialSynced: false
+        credentialId: Quibusdam corporis qui sit enim qui ea.
+        credentialSynced: true
         id: 861ee00b-b40d-493a-a10b-457a0d527b48
         lastUsedAt: '2025-01-02T16:40:44Z'
         lastUsedFromDevice:
@@ -3200,7 +3328,7 @@ components:
           type: boolean
           description: Flag to allow conditional creation
           default: false
-          example: true
+          example: false
         securityKey:
           type: boolean
           description: Whether the authenticator is a security key
@@ -3262,8 +3390,7 @@ components:
         transports:
           - internal
           - internal
-          - internal
-        type: Nam quia nulla magni.
+        type: Sunt doloremque cum quasi corrupti velit.
       required:
         - type
         - id
@@ -3272,7 +3399,7 @@ components:
       properties:
         attestation:
           type: string
-          example: indirect
+          example: direct
           enum:
             - none
             - indirect
@@ -3415,8 +3542,8 @@ components:
             - public-key
       description: Additional parameters when creating a new credential.
       example:
-        alg: -7
-        type: Nam quia nulla magni.
+        alg: -35
+        type: Sunt doloremque cum quasi corrupti velit.
     PublicKeyCredentialRequestOptions:
       type: object
       properties:
@@ -3489,7 +3616,7 @@ components:
         userVerification:
           type: string
           description: User verification requirement
-          example: discouraged
+          example: preferred
           enum:
             - required
             - preferred
@@ -3570,12 +3697,14 @@ components:
       example:
         creationResult:
           attestationObject: 5lvuZBkX1w7/0+XKcldttzA7vTwilEq3qnnXSq/a0...
-          authenticatorData: Dolorem culpa tempora.
+          authenticatorData: Ratione rem maxime.
           clientDataJSON: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
           credentialId: 2aChi2dALRLdVP5i/zKr7yvMrP8FIy7MK4lbyUsjO...
           publicKey: wDUH6JkyU7SMswFPjyqEvhMB5GlhtqzS1VtfM/91Y...
           publicKeyAlgorithm: -8
           transports:
+            - internal
+            - internal
             - internal
             - internal
         passkeyName: Windows Hello (Win11,Chrome) - 2025-04-07 20:46
@@ -3782,7 +3911,7 @@ components:
           description: >-
             This attribute contains the authenticator data returned by the
             authenticator.
-          example: Repellat sit autem.
+          example: Cumque dolorum.
         clientData:
           type: string
           description: "Base64 encoded byte array which is a JSON-compatible serialization of client data\n\t\t\t\t\t\t\tpassed to the authenticator by the client in order to generate this assertion.\n\t\t\t\t\t\t\tThe exact JSON serialization MUST be preserved, as the hash of the serialized\n\t\t\t\t\t\t\tclient data has been computed over it."
@@ -3801,7 +3930,7 @@ components:
           description: Base64 encoded the raw signature returned from the authenticator.
           example: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
       example:
-        authenticatorData: Expedita vitae voluptas nostrum rerum modi.
+        authenticatorData: Est molestias eum dolore.
         clientData: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
         keyHandle: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
         session: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...

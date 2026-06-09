@@ -12,6 +12,7 @@ export { OpenAPI } from "./core/OpenAPI";
 export type { OpenAPIConfig } from "./core/OpenAPI";
 
 export type { Aaguid } from "./models/Aaguid";
+export type { AdditionalPasskeyInfo } from "./models/AdditionalPasskeyInfo";
 export type { AppError } from "./models/AppError";
 export type { Application } from "./models/Application";
 export type { AuthCode } from "./models/AuthCode";

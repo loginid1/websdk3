@@ -69,3 +69,5 @@ export const signJwtWithJwk = async (
 
   return `${unsignedToken}.${signature}`;
 };
+
+export * from "./mfa";

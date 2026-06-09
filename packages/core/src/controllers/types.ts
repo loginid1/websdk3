@@ -1,6 +1,7 @@
 // Copyright (C) LoginID
 
 import { User, Mfa, MfaAction } from "../api";
+import { PasskeyInfo } from "../types";
 
 export type RequireProps<T, K extends keyof T> = T & Required<Pick<T, K>>;
 
@@ -291,6 +292,49 @@ export interface MfaSessionResult {
    * Indicates which MFA factor the user should complete next in order to proceed.
    */
   nextAction?: MfaFactorName;
+
+  /**
+   * A signed trust token representing a trusted relationship between the merchant
+   * and the user's wallet.
+   *
+   * This value is issued by LoginID after the merchant trust relationship has
+   * been successfully verified during a checkout authentication flow.
+   *
+   * The value may be verified by backend services using LoginID
+   * [token verification](https://docs.loginid.io/backend-integration/verify-token).
+   *
+   * Available only after the MFA session is complete.
+   */
+  merchantTrustId?: string;
+
+  /**
+   * A signed trust token representing a trusted wallet.
+   *
+   * This value is issued by LoginID after the wallet trust relationship has
+   * been successfully verified during a checkout authentication flow.
+   *
+   * The value may be verified by backend services using LoginID
+   * [token verification](https://docs.loginid.io/backend-integration/verify-token).
+   *
+   * Available only after the MFA session is complete.
+   */
+  walletTrustId?: string;
+
+  /**
+   * Information about the passkey involved in this MFA session,
+   * including passkey creation or authentication results when applicable.
+   *
+   * Available only after the MFA session is complete.
+   */
+  passkeyInfo?: PasskeyInfo;
+
+  /**
+   * An identifier for the device used in the authentication process. This property helps determine if supported authentications can be proceeded,
+   * allowing future authentications to identify the device correctly.
+   *
+   * Available only after the MFA session is complete.
+   */
+  deviceId?: string;
 }
 
 /**

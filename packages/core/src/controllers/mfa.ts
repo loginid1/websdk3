@@ -7,14 +7,21 @@ import {
   MfaPerformActionOptions,
   MfaSessionResult,
 } from "./types";
+import {
+  AppStore,
+  MfaBeginLocalStorage,
+  MfaStore,
+  TrustStore,
+  WalletTrustIdStore,
+} from "../store";
 import { fetchAndSyncPasskeys, handlePotentialStalePasskey } from "../signal";
-import { AppStore, MfaStore, TrustStore, WalletTrustIdStore } from "../store";
 import { mfaOptions, toMfaInfo, toMfaSessionDetails } from "../defaults";
 import { ApiError, Mfa, MfaBeginRequestBody, MfaNext } from "../api";
 import { ClientEvents } from "../client-events/client-events";
 import { LoginIDParamValidator } from "../validators";
 import { defaultDeviceInfo } from "../utils/browser";
 import { WebAuthnHelper } from "../webauthn";
+import { findTrustTokens } from "../helpers";
 import { LoginIDError } from "../errors";
 import { LoginIDBase } from "./base";
 
@@ -43,6 +50,8 @@ export class MFA extends LoginIDBase {
     username: string,
     options: MfaBeginOptions = {},
   ): Promise<MfaSessionResult> {
+    MfaBeginLocalStorage.clearAll();
+
     const appId = this.config.getAppId();
     const deviceId = options.deviceId || AppStore.getDeviceId(appId);
     const deviceInfo = await defaultDeviceInfo(deviceId);
@@ -81,6 +90,9 @@ export class MFA extends LoginIDBase {
     const mfaNextResult = await this.service.mfa.mfaMfaBegin({
       requestBody: mfaBeginRequestBody,
     });
+
+    const trustIds = findTrustTokens(mfaNextResult);
+    MfaBeginLocalStorage.persistTrustSet(trustIds);
 
     const mfaInfo = toMfaInfo(mfaNextResult, username);
 
@@ -288,8 +300,11 @@ export class MFA extends LoginIDBase {
   getMfaSessionDetails(): MfaSessionResult {
     const appId = this.config.getAppId();
     const info = MfaStore.getInfo(appId);
+    const deviceId = AppStore.getDeviceId(appId);
     const tokenSet = this.session.getTokenSet();
-    return toMfaSessionDetails(info, tokenSet);
+    const trustSet = MfaBeginLocalStorage.getTrustSet();
+
+    return toMfaSessionDetails(info, { ...tokenSet, deviceId }, trustSet);
   }
 
   /**
@@ -314,6 +329,7 @@ export class MFA extends LoginIDBase {
     try {
       const mfaSuccessResult = await fn();
       const mfaInfo = MfaStore.getInfo(appId);
+      const trustSet = MfaBeginLocalStorage.getTrustSet();
 
       MfaStore.persistInfo(appId, {
         ...(username && { username }),
@@ -330,7 +346,11 @@ export class MFA extends LoginIDBase {
         fetchAndSyncPasskeys(this.service, this.session);
       }
 
-      return toMfaSessionDetails(newMfaInfo, mfaSuccessResult);
+      return toMfaSessionDetails(
+        newMfaInfo,
+        { ...mfaSuccessResult, ...trustSet },
+        trustSet,
+      );
     } catch (error) {
       if (error instanceof ApiError) {
         if (error.status === 401 && error.body.session) {

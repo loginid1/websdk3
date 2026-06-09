@@ -8,7 +8,7 @@ import {
   RemainingFactor,
   RequireProps,
 } from "../controllers/types";
-import { LoginIDTokenSet } from "../types";
+import { MfaData, LoginIDTrustSet } from "../types";
 import { MfaNext } from "../api";
 
 /**
@@ -52,12 +52,13 @@ export const toMfaInfo = (
  * Converts MFA information and token set into an `MfaSessionResult` object.
  *
  * @param {MfaInfo | null} [info] - The MFA session information, if available.
- * @param {LoginIDTokenSet} [tokenSet] - The token set containing authentication tokens.
+ * @param {MfaData} [data] - Extra MFA details about the current MFA session.
  * @returns {MfaSessionResult} - The structured MFA session result.
  */
 export const toMfaSessionDetails = (
   info?: MfaInfo | null,
-  tokenSet?: LoginIDTokenSet,
+  data?: MfaData,
+  trustSet?: LoginIDTrustSet,
 ): MfaSessionResult => {
   const remainingFactors: RemainingFactor[] =
     info?.next?.map((factor) => {
@@ -107,20 +108,40 @@ export const toMfaSessionDetails = (
     info?.next?.some((factor) => factor.action.name === name),
   );
 
-  return {
+  const isComplete = !!data?.accessToken || !!data?.payloadSignature;
+  const merchantTrustId = isComplete ? trustSet?.merchantTrustId : undefined;
+  const walletTrustId = isComplete ? trustSet?.walletTrustId : undefined;
+  const deviceId = isComplete ? data?.deviceId : undefined;
+
+  const result: MfaSessionResult = {
     username: info?.username,
     ...(info?.username && { username: info.username }),
     flow: info?.flow,
     ...(info?.flow && { flow: info.flow }),
     remainingFactors: remainingFactors,
     ...(nextAction && { nextAction }),
-    isComplete: !!tokenSet?.accessToken || !!tokenSet?.payloadSignature,
+    isComplete,
     ...(info?.session && { session: info.session }),
-    ...(tokenSet?.idToken && { idToken: tokenSet?.idToken }),
-    ...(tokenSet?.accessToken && { accessToken: tokenSet?.accessToken }),
-    ...(tokenSet?.refreshToken && { refreshToken: tokenSet?.refreshToken }),
-    ...(tokenSet?.payloadSignature && {
-      payloadSignature: tokenSet?.payloadSignature,
+    ...(data?.idToken && { idToken: data?.idToken }),
+    ...(data?.accessToken && { accessToken: data?.accessToken }),
+    ...(data?.refreshToken && { refreshToken: data?.refreshToken }),
+    ...(data?.payloadSignature && {
+      payloadSignature: data?.payloadSignature,
     }),
+    ...(deviceId && { deviceId }),
+    ...(merchantTrustId && { merchantTrustId }),
+    ...(walletTrustId && { walletTrustId }),
   };
+
+  if (data?.authenticationDetails) {
+    const { assertionResult, creationResult, ...rest } =
+      data.authenticationDetails;
+    result.passkeyInfo = {
+      ...rest,
+      ...(assertionResult && { assertionResult: { ...assertionResult } }),
+      ...(creationResult && { creationResult: { ...creationResult } }),
+    };
+  }
+
+  return result;
 };
