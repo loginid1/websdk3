@@ -136,7 +136,7 @@ export const toMfaSessionDetails = (
   if (data?.authenticationDetails) {
     const { assertionResult, creationResult, ...rest } =
       data.authenticationDetails;
-    result.passkeyInfo = {
+    result.passkeyCredential = {
       ...rest,
       ...(assertionResult && { assertionResult: { ...assertionResult } }),
       ...(creationResult && { creationResult: { ...creationResult } }),
