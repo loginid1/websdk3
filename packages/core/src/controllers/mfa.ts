@@ -346,7 +346,11 @@ export class MFA extends LoginIDBase {
         fetchAndSyncPasskeys(this.service, this.session);
       }
 
-      return toMfaSessionDetails(newMfaInfo, mfaSuccessResult, trustSet);
+      return toMfaSessionDetails(
+        newMfaInfo,
+        { ...mfaSuccessResult, ...trustSet },
+        trustSet,
+      );
     } catch (error) {
       if (error instanceof ApiError) {
         if (error.status === 401 && error.body.session) {
