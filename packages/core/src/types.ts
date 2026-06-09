@@ -145,7 +145,7 @@ export type MfaData = LoginIDTokenSet & {
 /**
  * Represents the result of a passkey credential creation.
  */
-export interface AuthenticatorAttestationResponse {
+export interface AttestationResponse {
   /**
    * Base64URL-encoded attestation object bytes.
    */
@@ -187,7 +187,7 @@ export interface AuthenticatorAttestationResponse {
 /**
  * Represents the result of a passkey assertion.
  */
-export interface AuthenticatorAssertionResponse {
+export interface AssertionResponse {
   /**
    * Base64URL-encoded authenticator data bytes.
    */
@@ -226,12 +226,12 @@ export interface PasskeyCredential {
   /**
    * The result of the passkey assertion.
    */
-  assertionResult?: AuthenticatorAssertionResponse;
+  assertionResult?: AssertionResponse;
 
   /**
    * The result of the passkey creation.
    */
-  creationResult?: AuthenticatorAttestationResponse;
+  creationResult?: AttestationResponse;
 
   /**
    * Internal passkey ID which is used for [passkey management](https://docs.loginid.io/user-scenario/user-profile-management/passkey-management/).
