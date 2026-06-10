@@ -1,3 +1,9 @@
+## @loginid/checkout-merchant [1.2.1](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/checkout-merchant@1.2.0...@loginid/checkout-merchant@1.2.1) (2026-06-10)
+
+### Bug Fixes
+
+* **checkout-merchant:** added `merchantTrustId` alias ([9ee4b09](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/9ee4b09afbc1dc203f594dec7602155b764cafa9))
+
 ## @loginid/checkout-merchant [1.2.0](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/checkout-merchant@1.1.1...@loginid/checkout-merchant@1.2.0) (2026-06-01)
 
 ### Features
