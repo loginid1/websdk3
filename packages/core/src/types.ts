@@ -139,7 +139,7 @@ export interface LoginIDTokenSet {
  */
 export type MfaData = LoginIDTokenSet & {
   deviceId?: string;
-  authenticationDetails?: AdditionalPasskeyInfo;
+  passkeyInfo?: AdditionalPasskeyInfo;
 };
 
 /**
