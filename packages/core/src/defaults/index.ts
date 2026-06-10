@@ -133,9 +133,8 @@ export const toMfaSessionDetails = (
     ...(walletTrustId && { walletTrustId }),
   };
 
-  if (data?.authenticationDetails) {
-    const { assertionResult, creationResult, ...rest } =
-      data.authenticationDetails;
+  if (data?.passkeyInfo) {
+    const { assertionResult, creationResult, ...rest } = data.passkeyInfo;
     result.passkeyCredential = {
       ...rest,
       ...(assertionResult && { assertionResult: { ...assertionResult } }),
