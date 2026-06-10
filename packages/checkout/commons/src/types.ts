@@ -110,7 +110,19 @@ export type IframeMethod = "discover" | "sign_transaction";
  */
 export interface EmbeddedContextData {
   /**
-   * The unique identifier for the current checkout session, used for tracking and trust-linking.
+   * A merchant-generated identifier used to retrieve trust information
+   * associated with the current transaction.
+   *
+   * This identifier is passed to the wallet to associate the transaction
+   * with wallet-issued identity data, enabling secure transaction confirmation
+   * without revealing the user's identity to the merchant.
+   */
+  merchantTrustId?: string;
+
+  /**
+   * Alias for `merchantTrustId`.
+   *
+   * Either `merchantTrustId` or `checkoutId` may be provided.
    */
   checkoutId?: string;
 }

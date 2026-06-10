@@ -1,6 +1,7 @@
 // Copyright (C) LoginID
 
 import { User, Mfa, MfaAction } from "../api";
+import { PasskeyCredential } from "../types";
 
 export type RequireProps<T, K extends keyof T> = T & Required<Pick<T, K>>;
 
@@ -93,11 +94,19 @@ export interface MfaBeginOptions {
   txPayload?: string;
 
   /**
-   * An identifier generated on the merchant side to identify the current checkout session.
-   * This identifier is used as a key to retrieve associated trust information.
+   * A merchant-generated identifier used to retrieve trust information
+   * associated with the current transaction.
    *
-   * It is passed to the wallet to link the session with wallet-issued identity data,
-   * enabling secure transaction confirmation without revealing end-user identity to the merchant.
+   * This identifier is passed to the wallet to associate the transaction
+   * with wallet-issued identity data, enabling secure transaction confirmation
+   * without revealing the user's identity to the merchant.
+   */
+  merchantTrustId?: string;
+
+  /**
+   * Alias for `merchantTrustId`.
+   *
+   * Either `merchantTrustId` or `checkoutId` may be provided.
    */
   checkoutId?: string;
 
@@ -138,6 +147,12 @@ export interface MfaBeginOptions {
    * - `"+15551234567"`
    */
   phone?: string;
+
+  /**
+   * An identifier for the device used in the authentication process. This property helps determine if supported authentications can be proceeded,
+   * allowing future authentications to identify the device correctly.
+   */
+  deviceId?: string;
 }
 
 /**
@@ -285,6 +300,49 @@ export interface MfaSessionResult {
    * Indicates which MFA factor the user should complete next in order to proceed.
    */
   nextAction?: MfaFactorName;
+
+  /**
+   * A signed trust token representing a trusted relationship between the merchant
+   * and the user's wallet.
+   *
+   * This value is issued by LoginID after the merchant trust relationship has
+   * been successfully verified during a checkout authentication flow.
+   *
+   * The value may be verified by backend services using LoginID
+   * [token verification](https://docs.loginid.io/backend-integration/verify-token).
+   *
+   * Available only after the MFA session is complete.
+   */
+  merchantTrustId?: string;
+
+  /**
+   * A signed trust token representing a trusted wallet.
+   *
+   * This value is issued by LoginID after the wallet trust relationship has
+   * been successfully verified during a checkout authentication flow.
+   *
+   * The value may be verified by backend services using LoginID
+   * [token verification](https://docs.loginid.io/backend-integration/verify-token).
+   *
+   * Available only after the MFA session is complete.
+   */
+  walletTrustId?: string;
+
+  /**
+   * Information about the passkey involved in this MFA session,
+   * including passkey creation or authentication results when applicable.
+   *
+   * Available only after the MFA session is complete.
+   */
+  passkeyCredential?: PasskeyCredential;
+
+  /**
+   * An identifier for the device used in the authentication process. This property helps determine if supported authentications can be proceeded,
+   * allowing future authentications to identify the device correctly.
+   *
+   * Available only after the MFA session is complete.
+   */
+  deviceId?: string;
 }
 
 /**

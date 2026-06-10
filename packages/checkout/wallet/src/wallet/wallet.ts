@@ -72,7 +72,7 @@ class LoginIDWalletAuth {
   /**
    * Begins the MFA authentication flow for a checkout session.
    *
-   * If executed within an embedded context, the method attempts to retrieve the `checkoutId`
+   * If executed within an embedded context, the method attempts to retrieve the `merchantTrustId`
    * from the parent message (if not already provided). It initiates the MFA session tied
    * to a specific transaction payload.
    *
@@ -86,9 +86,14 @@ class LoginIDWalletAuth {
       await this.communicator.retrievePotentialData<EmbeddedContextData>(
         "EMBED",
       );
-    const checkoutId = options.checkoutId || eData?.checkoutId;
+    const merchantTrustId =
+      options.merchantTrustId ||
+      options.checkoutId ||
+      eData?.merchantTrustId ||
+      eData?.checkoutId;
     const txPayload = options.txPayload;
     const traceId = options.traceId;
+    const deviceId = options.deviceId;
 
     if (!txPayload) {
       throw new ValidationError(
@@ -99,12 +104,13 @@ class LoginIDWalletAuth {
     }
 
     const opts: MfaBeginOptions = {
-      checkoutId: checkoutId,
+      merchantTrustId,
       txPayload: txPayload,
       traceId: traceId,
+      deviceId: deviceId,
     };
 
-    MfaBeginLocalStorage.persistCheckoutId(checkoutId || "");
+    MfaBeginLocalStorage.persistCheckoutId(merchantTrustId || "");
     MfaBeginLocalStorage.persistTraceId(traceId || "");
 
     return await this.mfa.beginFlow(options.username || "", opts);

@@ -13,22 +13,31 @@ import { createMerchantCommunicator } from "../creators";
 /**
  * Facilitates the integration of LoginID's checkout authentication flow on the merchant side.
  *
- * This class provides methods to generate a unique `checkoutId` and to initiate
+ * This class provides methods to generate a unique `merchantTrustId` and to initiate
  * the checkout process by determining the appropriate authentication flow—either embedding the
  * wallet in an iframe for a seamless experience or falling back method.
  */
 class LoginIDMerchantCheckout {
   /**
-   * Generates or retrieves a unique `checkoutId`.
+   * Generates or retrieves a unique `merchantTrustId`.
    *
    * See [What is CheckoutID?](https://docs.loginid.io/user-scenario/checkout/merchant/#what-is-checkoutid)
    * for more information about its purpose and usage.
    *
-   * @returns {Promise<string>} A promise that resolves with the `checkoutId`.
+   * @returns {Promise<string>} A promise that resolves with the `merchantTrustId`.
    */
-  public static async getCheckoutId(): Promise<string> {
+  public static async getMerchantTrustId(): Promise<string> {
     const store = new CheckoutIdStore();
     return await store.setOrSignWithCheckoutId();
+  }
+
+  /**
+   * Alias for `getMerchantTrustId`.
+   *
+   * @returns {Promise<string>} A promise that resolves with the `merchantTrustId`.
+   */
+  public static async getCheckoutId(): Promise<string> {
+    return LoginIDMerchantCheckout.getMerchantTrustId();
   }
 
   /**
@@ -76,13 +85,13 @@ class LoginIDMerchantCheckout {
       params.discoverUrl || params.iframe.src,
     );
 
-    const checkoutId = await store.setOrSignWithCheckoutId();
+    const merchantTrustId = await store.setOrSignWithCheckoutId();
     const discoveryResult = await discovery.discover();
 
     if (discoveryResult.flow === "EMBED") {
       const communicator = createMerchantCommunicator(params);
       const data = {
-        checkoutId: checkoutId,
+        merchantTrustId: merchantTrustId,
       };
       const result = await communicator.receiveData<
         EmbeddedContextData,

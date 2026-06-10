@@ -3,6 +3,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 
+import type { AdditionalPasskeyInfo } from "./AdditionalPasskeyInfo";
 /**
  * Authentication response will contain authzToken on success of list of available options for the next step.
  */
@@ -23,6 +24,7 @@ export type Mfa = {
    * An authorization token (JWT) confirming successful authentication.
    */
   idToken: string;
+  passkeyInfo?: AdditionalPasskeyInfo;
   /**
    * Base64 encoded payload object
    */
