@@ -1,3 +1,11 @@
+## @loginid/websdk3 [3.5.1](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/websdk3@3.5.0...@loginid/websdk3@3.5.1) (2026-06-10)
+
+### Bug Fixes
+
+* **websdk3:** added `deviceId` to `CreatePasskeyOptions` ([5311e24](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/5311e2411def415819708b303963117c8664d9ae))
+* **websdk3:** replace `TrustStore` with `WalletTrustIdStore` ([4959372](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/495937267209247a1c8d78a28c97d26a962e21ff))
+* **websdk3:** update core dependency ([0ae5871](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/0ae5871cc7f3f6dcbad1c678aa6d61324eb5f8c9))
+
 ## @loginid/websdk3 [3.5.0](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/websdk3@3.4.0...@loginid/websdk3@3.5.0) (2026-02-10)
 
 ### Features
