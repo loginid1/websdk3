@@ -155,6 +155,7 @@ class Passkeys extends OTP {
           const result: AuthResult = toAuthResult(regCompleteResponse);
 
           this.session.setJwtCookie(regCompleteResponse.jwtAccess);
+
           AppStore.persistDeviceId(
             appId,
             deviceId || regCompleteResponse.deviceId,
@@ -261,11 +262,11 @@ class Passkeys extends OTP {
                 requestBody: authCompleteRequestBody,
               });
 
-            fetchAndSyncPasskeys(this.service, this.session);
-
             const result = toAuthResult(authCompleteResponse);
 
             this.session.setJwtCookie(result.token);
+
+            fetchAndSyncPasskeys(this.service, this.session);
 
             AppStore.persistDeviceId(appId, authCompleteResponse.deviceId);
 
