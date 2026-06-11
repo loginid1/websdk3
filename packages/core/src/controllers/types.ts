@@ -38,6 +38,11 @@ export interface LoginIDConfig {
    * If true, disables sending analytics/events to LoginID. Defaults to false.
    */
   disableAnalytics?: boolean;
+
+  /**
+   * If true, uses TrustID, a Web Crypto–derived device identifier, as a device possession factor. Defaults to false.
+   */
+  useTrustId?: boolean;
 }
 
 /**
