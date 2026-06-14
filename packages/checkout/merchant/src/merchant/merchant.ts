@@ -5,7 +5,7 @@ import {
   EmbeddedContextData,
   LID_CHECKOUT_KEY,
 } from "@loginid/checkout-commons";
-import { CheckoutIdStore, LocalStorageFlagger } from "@loginid/core/store";
+import { LocalStorageFlagger, TrustStore } from "@loginid/core/store";
 import { EmbeddedContextResult, StartCheckoutParams } from "./types";
 import { CheckoutDiscoveryMerchant } from "../discovery";
 import { createMerchantCommunicator } from "../creators";
@@ -27,8 +27,8 @@ class LoginIDMerchantCheckout {
    * @returns {Promise<string>} A promise that resolves with the `merchantTrustId`.
    */
   public static async getMerchantTrustId(): Promise<string> {
-    const store = new CheckoutIdStore();
-    return await store.setOrSignWithCheckoutId();
+    const store = new TrustStore("CHECKOUT");
+    return await store.getLatestOrCreateTrustId();
   }
 
   /**
@@ -80,12 +80,12 @@ class LoginIDMerchantCheckout {
   public static async startCheckout(
     params: StartCheckoutParams,
   ): Promise<void> {
-    const store = new CheckoutIdStore();
+    const store = new TrustStore("CHECKOUT");
     const discovery = new CheckoutDiscoveryMerchant(
       params.discoverUrl || params.iframe.src,
     );
 
-    const merchantTrustId = await store.setOrSignWithCheckoutId();
+    const merchantTrustId = await store.getLatestOrCreateTrustId();
     const discoveryResult = await discovery.discover();
 
     if (discoveryResult.flow === "EMBED") {
