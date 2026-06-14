@@ -538,7 +538,15 @@ class Passkeys extends OTP {
     fn: () => Promise<T>,
   ): Promise<T> {
     try {
-      return await fn();
+      const result = await fn();
+
+      if (this.config.getConfig().useTrustId) {
+        const appId = this.config.getAppId();
+        const store = new TrustStore(appId);
+        store.markTrustIdAsValid();
+      }
+
+      return result;
     } catch (error) {
       if (error instanceof Error) {
         const service = new ClientEvents(this.config.getConfig());
