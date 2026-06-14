@@ -22,7 +22,7 @@ export class CheckoutDiscovery extends LoginIDBase implements DiscoverStrategy {
    */
   async discover(): Promise<DiscoverResult> {
     // Attempt to find the first one trust ID
-    const store = new TrustStore("CHECKOUT");
+    const store = TrustStore.forCheckout();
     const walletTrustId = await store.getLatestOrCreateTrustId();
 
     let isValid: boolean | null = null;

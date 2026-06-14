@@ -27,7 +27,7 @@ class LoginIDMerchantCheckout {
    * @returns {Promise<string>} A promise that resolves with the `merchantTrustId`.
    */
   public static async getMerchantTrustId(): Promise<string> {
-    const store = new TrustStore("CHECKOUT");
+    const store = TrustStore.forCheckout();
     return await store.getLatestOrCreateTrustId();
   }
 
@@ -80,7 +80,7 @@ class LoginIDMerchantCheckout {
   public static async startCheckout(
     params: StartCheckoutParams,
   ): Promise<void> {
-    const store = new TrustStore("CHECKOUT");
+    const store = TrustStore.forCheckout();
     const discovery = new CheckoutDiscoveryMerchant(
       params.discoverUrl || params.iframe.src,
     );

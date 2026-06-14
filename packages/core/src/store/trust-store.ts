@@ -13,6 +13,7 @@ const dbName = "LoginIDTrustStore";
 const trustStorageKey = `trust-id`;
 const appIdUsernameCompositeIndex = "app_id_username_idx";
 const lastUsedAtIndex = "last_used_at_idx";
+const CHECKOUT_APP_ID = "CHECKOUT";
 
 /**
  * TrustStore extends IndexedDBWrapper to manage trust ID records.
@@ -20,6 +21,14 @@ const lastUsedAtIndex = "last_used_at_idx";
 export class TrustStore extends IndexedDBWrapper {
   /** App ID associated with this store */
   private readonly appId: string;
+
+  /**
+   * Creates a TrustStore instance for checkout.
+   * @returns {TrustStore} A new TrustStore instance configured for checkout.
+   */
+  public static forCheckout(): TrustStore {
+    return new TrustStore(CHECKOUT_APP_ID);
+  }
 
   /**
    * Creates an instance of TrustStore.

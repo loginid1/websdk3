@@ -8,8 +8,14 @@ jest.mock("@loginid/core/store");
 
 describe("CheckoutDiscovery", () => {
   let checkoutDiscovery: CheckoutDiscovery;
+  const mockTrustStore = {
+    getLatestOrCreateTrustId: jest.fn(),
+    isTrustIdValid: jest.fn(),
+  };
 
   beforeEach(() => {
+    (TrustStore.forCheckout as jest.Mock).mockReturnValue(mockTrustStore);
+
     checkoutDiscovery = new CheckoutDiscovery({
       baseUrl: "https://api.loginid.io",
     });
@@ -26,16 +32,14 @@ describe("CheckoutDiscovery", () => {
   });
 
   it("should return EMBED when server returns success", async () => {
-    (TrustStore.prototype.isTrustIdValid as jest.Mock).mockResolvedValue(
-      "abc123",
-    );
+    mockTrustStore.getLatestOrCreateTrustId.mockResolvedValue("abc123");
     (checkoutDiscovery as any).service.mfa.mfaMfaDiscover.mockResolvedValue({});
     const result = await checkoutDiscovery.discover();
     expect(result).toEqual({ flow: "EMBED" });
   });
 
   it("should return REDIRECT when server returns 404", async () => {
-    (TrustStore.prototype.isTrustIdValid as jest.Mock).mockResolvedValue(null);
+    mockTrustStore.getLatestOrCreateTrustId.mockResolvedValue("abc123");
 
     const error404 = new ApiError(
       { method: "POST", url: "/mfa/discover", body: {} },
@@ -57,7 +61,8 @@ describe("CheckoutDiscovery", () => {
   });
 
   it("should fall back to client validation on non-404 errors", async () => {
-    (TrustStore.prototype.isTrustIdValid as jest.Mock).mockResolvedValue(null);
+    mockTrustStore.getLatestOrCreateTrustId.mockResolvedValue("abc123");
+    mockTrustStore.isTrustIdValid.mockResolvedValue(null);
 
     const error500 = new ApiError(
       { method: "POST", url: "/mfa/discover", body: {} },
@@ -77,9 +82,7 @@ describe("CheckoutDiscovery", () => {
     let result = await checkoutDiscovery.discover();
     expect(result).toEqual({ flow: "REDIRECT" });
 
-    (TrustStore.prototype.isTrustIdValid as jest.Mock).mockResolvedValue(
-      "abc123",
-    );
+    mockTrustStore.isTrustIdValid.mockResolvedValue("abc123");
     result = await checkoutDiscovery.discover();
     expect(result).toEqual({ flow: "EMBED" });
   });
