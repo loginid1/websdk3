@@ -11,7 +11,7 @@ import {
   CheckoutPerformActionOptions,
 } from "../types";
 import { DiscoverResult, EmbeddedContextData } from "@loginid/checkout-commons";
-import { MfaBeginLocalStorage, WalletTrustIdStore } from "@loginid/core/store";
+import { MfaBeginLocalStorage } from "@loginid/core/store";
 import { ValidationError } from "@loginid/core/errors";
 import { createWalletCommunicator } from "../creators";
 import { WalletCommunicator } from "../communicators";
@@ -143,16 +143,6 @@ class LoginIDWalletAuth {
       const callback = async () => ({});
 
       this.communicator.sendData("EMBED", callback, {});
-
-      const passkeyFactors = new Set([
-        "passkey:reg",
-        "passkey:auth",
-        "passkey:tx",
-      ]);
-      if (passkeyFactors.has(factorName)) {
-        const store = new WalletTrustIdStore();
-        store.markCheckoutIdAsValid();
-      }
     }
 
     return result;

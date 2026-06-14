@@ -1,8 +1,8 @@
 // Copyright (C) LoginID
 
 import { DiscoverResult, DiscoverStrategy } from "@loginid/checkout-commons";
-import { WalletTrustIdStore } from "@loginid/core/store";
 import { LoginIDBase } from "@loginid/core/controllers";
+import { TrustStore } from "@loginid/core/store";
 import { ApiError } from "@loginid/core/api";
 
 /**
@@ -22,8 +22,8 @@ export class CheckoutDiscovery extends LoginIDBase implements DiscoverStrategy {
    */
   async discover(): Promise<DiscoverResult> {
     // Attempt to find the first one trust ID
-    const store = new WalletTrustIdStore();
-    const walletTrustId = await store.setOrSignWithCheckoutId();
+    const store = new TrustStore("CHECKOUT");
+    const walletTrustId = await store.getLatestOrCreateTrustId();
 
     let isValid: boolean | null = null;
 
@@ -40,7 +40,7 @@ export class CheckoutDiscovery extends LoginIDBase implements DiscoverStrategy {
 
     // Fallback to client-side validation only when the result is inconclusive
     if (isValid === null) {
-      isValid = await store.isCheckoutIdValid();
+      isValid = await store.isTrustIdValid();
     }
 
     if (isValid) {
