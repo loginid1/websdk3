@@ -7,13 +7,7 @@ import {
   MfaPerformActionOptions,
   MfaSessionResult,
 } from "./types";
-import {
-  AppStore,
-  MfaBeginLocalStorage,
-  MfaStore,
-  TrustStore,
-  WalletTrustIdStore,
-} from "../store";
+import { AppStore, MfaBeginLocalStorage, MfaStore, TrustStore } from "../store";
 import { fetchAndSyncPasskeys, handlePotentialStalePasskey } from "../signal";
 import { mfaOptions, toMfaInfo, toMfaSessionDetails } from "../defaults";
 import { ApiError, Mfa, MfaBeginRequestBody, MfaNext } from "../api";
@@ -59,13 +53,17 @@ export class MFA extends LoginIDBase {
 
     let walletTrustId = "";
     if (options.txPayload) {
-      const store = new WalletTrustIdStore();
-      walletTrustId = await store.setOrSignWithCheckoutId();
+      const store = new TrustStore(appId);
+      walletTrustId = await store.getLatestOrCreateTrustId();
     }
 
     const merchantTrustId = options.merchantTrustId || options.checkoutId;
     let trustId = "";
-    if (!merchantTrustId && !walletTrustId) {
+    if (
+      this.config.getConfig().useTrustId &&
+      !merchantTrustId &&
+      !walletTrustId
+    ) {
       const store = new TrustStore(appId);
       trustId = await store.setOrSignWithTrustId(username);
     }
@@ -342,6 +340,17 @@ export class MFA extends LoginIDBase {
       AppStore.persistDeviceId(appId, mfaSuccessResult.deviceId);
 
       const newMfaInfo = MfaStore.getInfo(appId);
+
+      const passkeyFactors = new Set([
+        "passkey:reg",
+        "passkey:auth",
+        "passkey:tx",
+      ]);
+
+      if (passkeyFactors.has(factorName)) {
+        const store = new TrustStore(appId);
+        await store.markTrustIdAsValid();
+      }
 
       if (factorName === "passkey:auth" || factorName === "passkey:tx") {
         fetchAndSyncPasskeys(this.service, this.session);
