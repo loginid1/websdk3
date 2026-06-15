@@ -1,3 +1,10 @@
+## @loginid/checkout-wallet [1.4.2](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/checkout-wallet@1.4.1...@loginid/checkout-wallet@1.4.2) (2026-06-15)
+
+### Bug Fixes
+
+* **checkout-wallet:** added timeout option for `discover` ([0d82265](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/0d822657c33c4ad6eff32967fba592b1b2113e42))
+* **checkout-wallet:** use consolidated `TrustStore` ([7c5949d](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/7c5949dddb62ec94215fd378155b11f63766aed7))
+
 ## @loginid/checkout-wallet [1.4.1](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/checkout-wallet@1.4.0...@loginid/checkout-wallet@1.4.1) (2026-06-10)
 
 ### Bug Fixes
