@@ -9,9 +9,10 @@ import {
 import {
   CheckoutBeginFlowOptions,
   CheckoutPerformActionOptions,
+  DiscoverOptions,
 } from "../types";
 import { DiscoverResult, EmbeddedContextData } from "@loginid/checkout-commons";
-import { MfaBeginLocalStorage, WalletTrustIdStore } from "@loginid/core/store";
+import { MfaBeginLocalStorage } from "@loginid/core/store";
 import { ValidationError } from "@loginid/core/errors";
 import { createWalletCommunicator } from "../creators";
 import { WalletCommunicator } from "../communicators";
@@ -63,8 +64,8 @@ class LoginIDWalletAuth {
    *
    * @returns {Promise<DiscoverResult>} - A promise that resolves with the available discovery result.
    */
-  async discover(): Promise<DiscoverResult> {
-    const result = await this.discovery.discover();
+  async discover(options?: DiscoverOptions): Promise<DiscoverResult> {
+    const result = await this.discovery.discover(options);
     this.communicator.sendData("DISCOVER", async () => result);
     return result;
   }
@@ -143,16 +144,6 @@ class LoginIDWalletAuth {
       const callback = async () => ({});
 
       this.communicator.sendData("EMBED", callback, {});
-
-      const passkeyFactors = new Set([
-        "passkey:reg",
-        "passkey:auth",
-        "passkey:tx",
-      ]);
-      if (passkeyFactors.has(factorName)) {
-        const store = new WalletTrustIdStore();
-        store.markCheckoutIdAsValid();
-      }
     }
 
     return result;

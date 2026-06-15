@@ -28,9 +28,9 @@ import {
   handlePotentialStalePasskey,
 } from "@loginid/core/signal";
 import { NO_LOGIN_OPTIONS_ERROR, WebAuthnHelper } from "@loginid/core/webauthn";
-import { AppStore, WalletTrustIdStore } from "@loginid/core/store";
 import { defaultDeviceInfo } from "@loginid/core/utils/browser";
 import { ClientEvents } from "@loginid/core/client-events";
+import { AppStore, TrustStore } from "@loginid/core/store";
 import { LoginIDConfig } from "@loginid/core/controllers";
 import { parseJwt } from "@loginid/core/utils/crypto";
 import { mergeFallbackOptions } from "../lib/utils";
@@ -104,7 +104,6 @@ class Passkeys extends OTP {
     const appId = this.config.getAppId();
     const deviceId = options.deviceId || AppStore.getDeviceId(appId);
     const deviceInfo = await defaultDeviceInfo(deviceId);
-    const trustStore = new WalletTrustIdStore();
     const opts = passkeyOptions(username, authzToken, options);
 
     opts.authzToken = this.session.getToken(opts);
@@ -116,7 +115,11 @@ class Passkeys extends OTP {
       }
     }
 
-    const trustInfo = await trustStore.setOrSignWithCheckoutId();
+    let trustInfo = "";
+    if (this.config.getConfig().useTrustId) {
+      const trustStore = new TrustStore(appId);
+      trustInfo = await trustStore.setOrSignWithTrustId(username);
+    }
 
     const regInitRequestBody: RegInitRequestBody = {
       app: {
@@ -155,6 +158,7 @@ class Passkeys extends OTP {
           const result: AuthResult = toAuthResult(regCompleteResponse);
 
           this.session.setJwtCookie(regCompleteResponse.jwtAccess);
+
           AppStore.persistDeviceId(
             appId,
             deviceId || regCompleteResponse.deviceId,
@@ -223,10 +227,13 @@ class Passkeys extends OTP {
   ): Promise<AuthResult> {
     const appId = this.config.getAppId();
     const deviceInfo = await defaultDeviceInfo(AppStore.getDeviceId(appId));
-    const trustStore = new WalletTrustIdStore();
     const opts = passkeyOptions(username, "", options);
 
-    const trustInfo = await trustStore.setOrSignWithCheckoutId();
+    let trustInfo = "";
+    if (this.config.getConfig().useTrustId) {
+      const trustStore = new TrustStore(appId);
+      trustInfo = await trustStore.setOrSignWithTrustId(username);
+    }
 
     const authInitRequestBody: AuthInitRequestBody = {
       app: {
@@ -261,11 +268,11 @@ class Passkeys extends OTP {
                 requestBody: authCompleteRequestBody,
               });
 
-            fetchAndSyncPasskeys(this.service, this.session);
-
             const result = toAuthResult(authCompleteResponse);
 
             this.session.setJwtCookie(result.token);
+
+            fetchAndSyncPasskeys(this.service, this.session);
 
             AppStore.persistDeviceId(appId, authCompleteResponse.deviceId);
 
@@ -531,7 +538,15 @@ class Passkeys extends OTP {
     fn: () => Promise<T>,
   ): Promise<T> {
     try {
-      return await fn();
+      const result = await fn();
+
+      if (this.config.getConfig().useTrustId) {
+        const appId = this.config.getAppId();
+        const store = new TrustStore(appId);
+        store.markTrustIdAsValid();
+      }
+
+      return result;
     } catch (error) {
       if (error instanceof Error) {
         const service = new ClientEvents(this.config.getConfig());

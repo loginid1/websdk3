@@ -9,6 +9,16 @@
 export type Flow = "REDIRECT" | "EMBED";
 
 /**
+ * The status of a discovery call.
+ */
+export type DiscoverStatus = "SUCCESS" | "TIMEOUT" | "FAILED";
+
+/**
+ * The reason for a discovery call result.
+ */
+export type DiscoverReason = "TIMEOUT" | "NOT_FOUND" | "UNKNOWN";
+
+/**
  * The result of a discovery call from the wallet, used by the merchant to determine
  * how to proceed with the checkout authentication flow.
  *
@@ -29,6 +39,18 @@ export interface DiscoverResult {
    * @type {Flow}
    */
   flow: Flow;
+
+  /**
+   * The status of the discovery call.
+   * @type {DiscoverStatus}
+   */
+  status?: DiscoverStatus;
+
+  /**
+   * The reason for the discovery call result.
+   * @type {DiscoverReason}
+   */
+  reason?: DiscoverReason;
 }
 
 /**
@@ -38,15 +60,32 @@ export interface DiscoverResult {
 export type ReceiverType = Flow | "DISCOVER";
 
 /**
+ * Options for the discover method.
+ *
+ * @expand
+ */
+export interface DiscoverOptions {
+  /**
+   * The timeout in milliseconds for the discovery process.
+   */
+  timeout?: number;
+
+  /**
+   * An optional username.
+   */
+  username?: string;
+}
+
+/**
  * Interface for defining a strategy to discover user and authentication contexts.
  */
 export interface DiscoverStrategy {
   /**
    * Discovers the appropriate checkout context based on the provided encrypted context.
-   * @param {string} [username] - An optional username.
+   * @param {DiscoverOptions} [options] - Options for discovery.
    * @returns {Promise<DiscoverResult>} A promise that resolves to the discovered result.
    */
-  discover(username?: string): Promise<DiscoverResult>;
+  discover(options?: DiscoverOptions): Promise<DiscoverResult>;
 }
 
 /**

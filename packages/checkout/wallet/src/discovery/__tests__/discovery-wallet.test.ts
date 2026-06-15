@@ -1,15 +1,21 @@
 // Copyright (C) LoginID
 
-import { WalletTrustIdStore } from "@loginid/core/store";
 import { CheckoutDiscovery } from "../discovery-wallet";
+import { TrustStore } from "@loginid/core/store";
 import { ApiError } from "@loginid/core/api";
 
 jest.mock("@loginid/core/store");
 
 describe("CheckoutDiscovery", () => {
   let checkoutDiscovery: CheckoutDiscovery;
+  const mockTrustStore = {
+    getLatestOrCreateTrustId: jest.fn(),
+    isTrustIdValid: jest.fn(),
+  };
 
   beforeEach(() => {
+    (TrustStore.forCheckout as jest.Mock).mockReturnValue(mockTrustStore);
+
     checkoutDiscovery = new CheckoutDiscovery({
       baseUrl: "https://api.loginid.io",
     });
@@ -26,18 +32,14 @@ describe("CheckoutDiscovery", () => {
   });
 
   it("should return EMBED when server returns success", async () => {
-    (
-      WalletTrustIdStore.prototype.isCheckoutIdValid as jest.Mock
-    ).mockResolvedValue("abc123");
+    mockTrustStore.getLatestOrCreateTrustId.mockResolvedValue("abc123");
     (checkoutDiscovery as any).service.mfa.mfaMfaDiscover.mockResolvedValue({});
     const result = await checkoutDiscovery.discover();
-    expect(result).toEqual({ flow: "EMBED" });
+    expect(result).toEqual({ flow: "EMBED", status: "SUCCESS" });
   });
 
   it("should return REDIRECT when server returns 404", async () => {
-    (
-      WalletTrustIdStore.prototype.isCheckoutIdValid as jest.Mock
-    ).mockResolvedValue(null);
+    mockTrustStore.getLatestOrCreateTrustId.mockResolvedValue("abc123");
 
     const error404 = new ApiError(
       { method: "POST", url: "/mfa/discover", body: {} },
@@ -55,13 +57,16 @@ describe("CheckoutDiscovery", () => {
       error404,
     );
     const result = await checkoutDiscovery.discover();
-    expect(result).toEqual({ flow: "REDIRECT" });
+    expect(result).toEqual({
+      flow: "REDIRECT",
+      status: "FAILED",
+      reason: "NOT_FOUND",
+    });
   });
 
   it("should fall back to client validation on non-404 errors", async () => {
-    (
-      WalletTrustIdStore.prototype.isCheckoutIdValid as jest.Mock
-    ).mockResolvedValue(null);
+    mockTrustStore.getLatestOrCreateTrustId.mockResolvedValue("abc123");
+    mockTrustStore.isTrustIdValid.mockResolvedValue(null);
 
     const error500 = new ApiError(
       { method: "POST", url: "/mfa/discover", body: {} },
@@ -79,12 +84,14 @@ describe("CheckoutDiscovery", () => {
       error500,
     );
     let result = await checkoutDiscovery.discover();
-    expect(result).toEqual({ flow: "REDIRECT" });
+    expect(result).toEqual({
+      flow: "REDIRECT",
+      status: "FAILED",
+      reason: "UNKNOWN",
+    });
 
-    (
-      WalletTrustIdStore.prototype.isCheckoutIdValid as jest.Mock
-    ).mockResolvedValue("abc123");
+    mockTrustStore.isTrustIdValid.mockResolvedValue("abc123");
     result = await checkoutDiscovery.discover();
-    expect(result).toEqual({ flow: "EMBED" });
+    expect(result).toEqual({ flow: "EMBED", status: "SUCCESS" });
   });
 });

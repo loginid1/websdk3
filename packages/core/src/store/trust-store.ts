@@ -9,9 +9,11 @@ import { TrustIDRecord } from "../types";
 const dbVersion = 1;
 const appIdIndex = "app_id_idx";
 const nameIndex = "username_idx";
-const dbName = "loginid-trust-store";
-const trustStorageKey = `LoginID_trust-id`;
+const dbName = "LoginIDTrustStore";
+const trustStorageKey = `trust-id`;
 const appIdUsernameCompositeIndex = "app_id_username_idx";
+const lastUsedAtIndex = "last_used_at_idx";
+const CHECKOUT_APP_ID = "CHECKOUT";
 
 /**
  * TrustStore extends IndexedDBWrapper to manage trust ID records.
@@ -19,6 +21,14 @@ const appIdUsernameCompositeIndex = "app_id_username_idx";
 export class TrustStore extends IndexedDBWrapper {
   /** App ID associated with this store */
   private readonly appId: string;
+
+  /**
+   * Creates a TrustStore instance for checkout.
+   * @returns {TrustStore} A new TrustStore instance configured for checkout.
+   */
+  public static forCheckout(): TrustStore {
+    return new TrustStore(CHECKOUT_APP_ID);
+  }
 
   /**
    * Creates an instance of TrustStore.
@@ -29,13 +39,99 @@ export class TrustStore extends IndexedDBWrapper {
       { name: nameIndex, keyPath: ["username"] },
       { name: appIdIndex, keyPath: ["appId"] },
       { name: appIdUsernameCompositeIndex, keyPath: ["appId", "username"] },
+      { name: lastUsedAtIndex, keyPath: ["lastUsedAt"] },
     ]);
     this.appId = appId;
   }
 
   /**
+   * Marks the latest trust ID in storage as valid.
+   *
+   * @returns {Promise<void>} A promise that resolves when the record is updated.
+   * @throws {StorageError} If no record is found or the update fails.
+   */
+  public async markTrustIdAsValid(): Promise<void> {
+    try {
+      const record = await this.getLatestUsedTrustIdRecord();
+      record.valid = true;
+      await this.putRecord(record);
+    } catch {
+      throw new StorageError(
+        "Failed to mark trust ID as valid.",
+        "ERROR_STORAGE_FAILED",
+      );
+    }
+  }
+
+  /**
+   * Checks whether the stored trust ID is marked as valid.
+   *
+   * @returns {Promise<boolean>} True if the trust ID is valid, false otherwise.
+   * @throws {StorageError} If no record is found or access fails.
+   */
+  public async isTrustIdValid(): Promise<boolean> {
+    try {
+      const record = await this.getLatestUsedTrustIdRecord();
+      return record && record.valid === true;
+    } catch (error) {
+      if (
+        error instanceof StorageError &&
+        error.code === "ERROR_STORAGE_NOT_FOUND"
+      ) {
+        return false;
+      }
+      throw new StorageError(
+        "Failed to check trust ID validity.",
+        "ERROR_STORAGE_FAILED",
+      );
+    }
+  }
+
+  /**
+   * Retrieves the latest used Trust ID record.
+   *
+   * @returns {Promise<TrustIDRecord>} A promise that resolves to the latest used trust ID record.
+   * @throws {StorageError} If no record is found or access fails.
+   */
+  public async getLatestUsedTrustIdRecord(): Promise<TrustIDRecord> {
+    try {
+      return await this.getLastRecordByIndex<TrustIDRecord>(lastUsedAtIndex);
+    } catch (error) {
+      if (error instanceof StorageError) {
+        throw error;
+      }
+      throw new StorageError(
+        "Failed to get latest used trust ID.",
+        "ERROR_STORAGE_FAILED",
+      );
+    }
+  }
+
+  /**
+   * Retrieves and signs the latest used Trust ID.
+   *
+   * @returns {Promise<string>} A promise that resolves to the signed trust ID.
+   * @throws {StorageError} If no record is found or access fails.
+   */
+  public async getLatestUsedTrustId(): Promise<string> {
+    const record = await this.getLatestUsedTrustIdRecord();
+
+    record.lastUsedAt = new Date();
+    await this.putRecord(record);
+
+    const publicKey = await exportPublicKeyJwk(record.keyPair);
+    const token = toTrustIDPayload(record.id);
+    const trustId = await signJwtWithJwk(
+      token,
+      publicKey,
+      record.keyPair.privateKey,
+    );
+    return trustId;
+  }
+
+  /**
    * Generates a Trust ID for a user and stores it.
-   * @param {string} username - The username associated with the trust ID.
+   * @param {string} [username] - The username associated with the trust ID.
    * @returns {Promise<string>} The signed trust ID.
    */
   public async setTrustId(username: string): Promise<string> {
@@ -49,6 +145,8 @@ export class TrustStore extends IndexedDBWrapper {
       appId: this.appId,
       username,
       keyPair,
+      lastUsedAt: new Date(),
+      valid: false,
     });
 
     return trustId;
@@ -64,6 +162,10 @@ export class TrustStore extends IndexedDBWrapper {
       appIdUsernameCompositeIndex,
       [this.appId, username],
     );
+
+    record.lastUsedAt = new Date();
+    await this.putRecord(record);
+
     const publicKey = await exportPublicKeyJwk(record.keyPair);
     const token = toTrustIDPayload(record.id);
     const trustId = await signJwtWithJwk(
@@ -72,6 +174,24 @@ export class TrustStore extends IndexedDBWrapper {
       record.keyPair.privateKey,
     );
     return trustId;
+  }
+
+  /**
+   * Tries to get the latest used trust ID, if not found, it creates a new one without a username.
+   * @returns {Promise<string>} The signed trust ID.
+   */
+  public async getLatestOrCreateTrustId(): Promise<string> {
+    try {
+      return await this.getLatestUsedTrustId();
+    } catch (error) {
+      if (
+        error instanceof StorageError &&
+        error.code === "ERROR_STORAGE_NOT_FOUND"
+      ) {
+        return await this.setTrustId("");
+      }
+      throw error;
+    }
   }
 
   /**

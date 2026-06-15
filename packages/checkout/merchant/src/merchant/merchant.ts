@@ -5,7 +5,7 @@ import {
   EmbeddedContextData,
   LID_CHECKOUT_KEY,
 } from "@loginid/checkout-commons";
-import { CheckoutIdStore, LocalStorageFlagger } from "@loginid/core/store";
+import { LocalStorageFlagger, TrustStore } from "@loginid/core/store";
 import { EmbeddedContextResult, StartCheckoutParams } from "./types";
 import { CheckoutDiscoveryMerchant } from "../discovery";
 import { createMerchantCommunicator } from "../creators";
@@ -21,14 +21,14 @@ class LoginIDMerchantCheckout {
   /**
    * Generates or retrieves a unique `merchantTrustId`.
    *
-   * See [What is CheckoutID?](https://docs.loginid.io/user-scenario/checkout/merchant/#what-is-checkoutid)
+   * See [What is Trust ID?](https://docs.loginid.io/next/user-scenario/checkout/merchant/#what-is-merchanttrustid)
    * for more information about its purpose and usage.
    *
    * @returns {Promise<string>} A promise that resolves with the `merchantTrustId`.
    */
   public static async getMerchantTrustId(): Promise<string> {
-    const store = new CheckoutIdStore();
-    return await store.setOrSignWithCheckoutId();
+    const store = TrustStore.forCheckout();
+    return await store.getLatestOrCreateTrustId();
   }
 
   /**
@@ -38,6 +38,32 @@ class LoginIDMerchantCheckout {
    */
   public static async getCheckoutId(): Promise<string> {
     return LoginIDMerchantCheckout.getMerchantTrustId();
+  }
+
+  /**
+   * Marks the latest merchant trust ID in storage as valid.
+   *
+   * See [What is Trust ID?](https://docs.loginid.io/next/user-scenario/checkout/merchant/#what-is-merchanttrustid)
+   * for more information about its purpose and usage.
+   *
+   * @returns {Promise<void>} A promise that resolves when the record is updated.
+   */
+  public static async markMerchantTrustId(): Promise<void> {
+    const store = TrustStore.forCheckout();
+    await store.markTrustIdAsValid();
+  }
+
+  /**
+   * Checks whether the stored merchant trust ID is marked as valid.
+   *
+   * See [What is Trust ID?](https://docs.loginid.io/next/user-scenario/checkout/merchant/#what-is-merchanttrustid)
+   * for more information about its purpose and usage.
+   *
+   * @returns {Promise<boolean>} True if the trust ID is valid, false otherwise.
+   */
+  public static async isMerchantTrustIdValid(): Promise<boolean> {
+    const store = TrustStore.forCheckout();
+    return await store.isTrustIdValid();
   }
 
   /**
@@ -80,12 +106,12 @@ class LoginIDMerchantCheckout {
   public static async startCheckout(
     params: StartCheckoutParams,
   ): Promise<void> {
-    const store = new CheckoutIdStore();
+    const store = TrustStore.forCheckout();
     const discovery = new CheckoutDiscoveryMerchant(
       params.discoverUrl || params.iframe.src,
     );
 
-    const merchantTrustId = await store.setOrSignWithCheckoutId();
+    const merchantTrustId = await store.getLatestOrCreateTrustId();
     const discoveryResult = await discovery.discover();
 
     if (discoveryResult.flow === "EMBED") {
