@@ -347,7 +347,10 @@ export class MFA extends LoginIDBase {
         "passkey:tx",
       ]);
 
-      if (passkeyFactors.has(factorName)) {
+      if (
+        this.config.getConfig().useTrustId &&
+        passkeyFactors.has(factorName)
+      ) {
         const store = new TrustStore(appId);
         await store.markTrustIdAsValid();
       }
