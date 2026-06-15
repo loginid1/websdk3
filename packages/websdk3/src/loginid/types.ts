@@ -1,11 +1,6 @@
 // Copyright (C) LoginID
 
-import {
-  ApiError,
-  AuthCode,
-  CreationResult,
-  DeviceInfo,
-} from "@loginid/core/api";
+import { ApiError, AuthCode, DeviceInfo } from "@loginid/core/api";
 import { UsernameType } from "@loginid/core/controllers";
 
 export type Complete<T> = {
@@ -13,7 +8,6 @@ export type Complete<T> = {
 };
 
 export type DeviceInfoRequestBody = DeviceInfo;
-export type Transports = CreationResult["transports"];
 
 export type Message = "email" | "sms";
 
