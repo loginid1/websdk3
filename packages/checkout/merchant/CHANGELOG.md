@@ -1,3 +1,10 @@
+## @loginid/checkout-merchant [1.2.2](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/checkout-merchant@1.2.1...@loginid/checkout-merchant@1.2.2) (2026-06-15)
+
+### Bug Fixes
+
+* **checkout-merchant:** Add `markMerchantTrustId` and `isMerchantTrustIdValid` methods ([a86cf10](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/a86cf10e540e50a2608766de89628e4b52830a24))
+* **checkout-merchant:** use consolidated `TrustStore` ([0552e33](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/0552e3375d59d45d2c2e0cc02685ccbf3306b292))
+
 ## @loginid/checkout-merchant [1.2.1](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/checkout-merchant@1.2.0...@loginid/checkout-merchant@1.2.1) (2026-06-10)
 
 ### Bug Fixes
