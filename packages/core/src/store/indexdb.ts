@@ -179,6 +179,57 @@ export class IndexedDBWrapper {
   }
 
   /**
+   * Retrieves the last record from the object store using an index.
+   * @protected
+   * @template T
+   * @param {string} indexName - The name of the index to use for sorting.
+   * @returns {Promise<T>} A promise that resolves to the last record.
+   */
+  protected async getLastRecordByIndex<T>(indexName: string): Promise<T> {
+    return new Promise<T>((resolve, reject) => {
+      const open = this.openDb();
+
+      open.onsuccess = () => {
+        const db = open.result;
+        const tx = db.transaction(this.storeKey, "readonly");
+        const store = tx.objectStore(this.storeKey);
+        const index = store.index(indexName);
+        const request = index.openCursor(null, "prev");
+
+        request.onsuccess = () => {
+          const cursor = request.result;
+          if (cursor) {
+            resolve(cursor.value);
+          } else {
+            reject(
+              new StorageError(
+                `No records found for index ${indexName}.`,
+                "ERROR_STORAGE_NOT_FOUND",
+              ),
+            );
+          }
+        };
+
+        request.onerror = () =>
+          reject(
+            new StorageError(
+              `Failed to fetch record from index ${indexName}.`,
+              "ERROR_STORAGE_FAILED",
+            ),
+          );
+      };
+
+      open.onerror = () =>
+        reject(
+          new StorageError(
+            "Failed to open the database.",
+            "ERROR_STORAGE_FAILED_TO_OPEN",
+          ),
+        );
+    });
+  }
+
+  /**
    * Retrieves the first record from the object store.
    * @protected
    * @template T

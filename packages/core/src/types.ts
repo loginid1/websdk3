@@ -39,26 +39,6 @@ export interface SessionInfo {
 }
 
 /**
- * Represents a stored checkout ID record.
- */
-export interface CheckoutIDRecord {
-  /**
-   * Unique identifier for the checkout ID, derived from the checkout ID token.
-   */
-  id: string;
-
-  /**
-   * Cryptographic key pair used for signing and verification.
-   */
-  keyPair: CryptoKeyPair;
-
-  /**
-   * Indicates if the checkout ID has successfully been completed.
-   */
-  valid: boolean;
-}
-
-/**
  * Represents the claims included in a TrustID token.
  */
 export interface TrustIDClaims {
@@ -78,19 +58,34 @@ export interface TrustIDClaims {
  */
 export interface TrustIDRecord {
   /**
-   * Unique identifier for the Trust ID, derived from the TrustID token.
+   * Unique identifier for the Trust ID.
    */
   id: string;
 
   /**
-   * Username associated with the Trust ID.
-   */
-  username: string;
-
-  /**
-   * Cryptographic key pair used for signing and verification.
+   * The cryptographic key pair associated with the Trust ID.
    */
   keyPair: CryptoKeyPair;
+
+  /**
+   * App ID associated with this store, for user-specific records.
+   */
+  appId?: string;
+
+  /**
+   * Username associated with the Trust ID, for user-specific records.
+   */
+  username?: string;
+
+  /**
+   * Timestamp of when this record was last used, to identify the latest active Trust ID used.
+   */
+  lastUsedAt?: Date;
+
+  /**
+   * Indicates if the Trust ID has been validated.
+   */
+  valid?: boolean;
 }
 
 /**
