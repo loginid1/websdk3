@@ -20,6 +20,18 @@ export type AnyAsyncFunction = (...args: any[]) => Promise<any>;
 export type ResultCallback<T, U> = (param: T) => Promise<U>;
 
 /**
+ * Options used to initiate the discovery process.
+ *
+ * @expand
+ */
+export interface DiscoverOptions {
+  /**
+   * A timeout for the discovery process in milliseconds.
+   */
+  timeout?: number;
+}
+
+/**
  * Options used to initiate the checkout-specific MFA authentication flow.
  *
  * @expand

@@ -9,6 +9,7 @@ import {
 import {
   CheckoutBeginFlowOptions,
   CheckoutPerformActionOptions,
+  DiscoverOptions,
 } from "../types";
 import { DiscoverResult, EmbeddedContextData } from "@loginid/checkout-commons";
 import { MfaBeginLocalStorage } from "@loginid/core/store";
@@ -63,8 +64,8 @@ class LoginIDWalletAuth {
    *
    * @returns {Promise<DiscoverResult>} - A promise that resolves with the available discovery result.
    */
-  async discover(): Promise<DiscoverResult> {
-    const result = await this.discovery.discover();
+  async discover(options?: DiscoverOptions): Promise<DiscoverResult> {
+    const result = await this.discovery.discover(options);
     this.communicator.sendData("DISCOVER", async () => result);
     return result;
   }

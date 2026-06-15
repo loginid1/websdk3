@@ -35,7 +35,7 @@ describe("CheckoutDiscovery", () => {
     mockTrustStore.getLatestOrCreateTrustId.mockResolvedValue("abc123");
     (checkoutDiscovery as any).service.mfa.mfaMfaDiscover.mockResolvedValue({});
     const result = await checkoutDiscovery.discover();
-    expect(result).toEqual({ flow: "EMBED" });
+    expect(result).toEqual({ flow: "EMBED", status: "SUCCESS" });
   });
 
   it("should return REDIRECT when server returns 404", async () => {
@@ -57,7 +57,11 @@ describe("CheckoutDiscovery", () => {
       error404,
     );
     const result = await checkoutDiscovery.discover();
-    expect(result).toEqual({ flow: "REDIRECT" });
+    expect(result).toEqual({
+      flow: "REDIRECT",
+      status: "FAILED",
+      reason: "NOT_FOUND",
+    });
   });
 
   it("should fall back to client validation on non-404 errors", async () => {
@@ -80,10 +84,14 @@ describe("CheckoutDiscovery", () => {
       error500,
     );
     let result = await checkoutDiscovery.discover();
-    expect(result).toEqual({ flow: "REDIRECT" });
+    expect(result).toEqual({
+      flow: "REDIRECT",
+      status: "FAILED",
+      reason: "UNKNOWN",
+    });
 
     mockTrustStore.isTrustIdValid.mockResolvedValue("abc123");
     result = await checkoutDiscovery.discover();
-    expect(result).toEqual({ flow: "EMBED" });
+    expect(result).toEqual({ flow: "EMBED", status: "SUCCESS" });
   });
 });
