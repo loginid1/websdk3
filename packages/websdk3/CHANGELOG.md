@@ -1,3 +1,13 @@
+## @loginid/websdk3 [3.5.2](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/websdk3@3.5.1...@loginid/websdk3@3.5.2) (2026-06-15)
+
+### Bug Fixes
+
+* **webask3:** remove global conflict type `Transports` ([6f116a7](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/6f116a7c32e647419be0d5471d2f156bb77ce7f8))
+* **websdk3:** ensure token set before signalAPI ([6e8496b](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/6e8496bff49c3861305d880aecc19c7ef449b024))
+* **websdk3:** make `TrustID` configurable via `LoginIDConfig` ([ae53f95](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/ae53f95c4631c4155cfc7e3bf59453ee52713ad9))
+* **websdk3:** revert `WalletTrustIdStore` to `TrustStore` ([b81cde7](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/b81cde70b11226e387e7583b026f44cf44890a73))
+* **websdk3:** use consolidated `TrustStore` ([4b871ee](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/4b871eeb36c696b42fa1a56753b759719099d7ce))
+
 ## @loginid/websdk3 [3.5.1](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/websdk3@3.5.0...@loginid/websdk3@3.5.1) (2026-06-10)
 
 ### Bug Fixes
