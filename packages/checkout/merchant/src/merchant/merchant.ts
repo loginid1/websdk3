@@ -1,6 +1,7 @@
 // Copyright (C) LoginID
 
 import {
+  DiscoverOptions,
   DiscoverResult,
   EmbeddedContextData,
   LID_CHECKOUT_KEY,
@@ -75,14 +76,18 @@ class LoginIDMerchantCheckout {
    * See [Wallet Discovery documentation](https://docs.loginid.io/user-scenario/checkout/wallet/web/#0-discovery-page---determine-flow)
    * for details.
    *
-   * @param discoverUrl - The wallet discovery page URL.
+   * @param {string} discoverUrl - The wallet discovery page URL.
+   * @param {DiscoverOptions} [options] - Options for discovery.
    *
-   * @returns A promise resolving to the discovery result, including the
+   * @returns {Promise<DiscoverResult>} A promise resolving to the discovery result, including the
    * recommended checkout flow (`"EMBED"` or `"REDIRECT"`).
    */
-  public static async discover(discoverUrl: string): Promise<DiscoverResult> {
+  public static async discover(
+    discoverUrl: string,
+    options?: DiscoverOptions,
+  ): Promise<DiscoverResult> {
     const discovery = new CheckoutDiscoveryMerchant(discoverUrl);
-    return await discovery.discover();
+    return await discovery.discover(options);
   }
 
   /**
