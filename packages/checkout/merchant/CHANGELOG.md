@@ -1,3 +1,9 @@
+## @loginid/checkout-merchant [1.2.3](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/checkout-merchant@1.2.2...@loginid/checkout-merchant@1.2.3) (2026-06-16)
+
+### Bug Fixes
+
+* **checkout-merchant:** added `timeout` option for `discover` ([eb49d17](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/eb49d17dfba332df5c01fd2bc62d50cca58c94fe))
+
 ## @loginid/checkout-merchant [1.2.2](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/checkout-merchant@1.2.1...@loginid/checkout-merchant@1.2.2) (2026-06-15)
 
 ### Bug Fixes
