@@ -1,6 +1,7 @@
 // Copyright (C) LoginID
 
 import {
+  DiscoverOptions,
   DiscoverResult,
   DiscoverStrategy,
   LID_CHECKOUT_KEY,
@@ -32,24 +33,48 @@ export class CheckoutDiscoveryMerchant implements DiscoverStrategy {
    *
    * After the discovery request completes, the hidden iframe is removed from the DOM.
    *
+   * @param {DiscoverOptions} [options] - Options for discovery.
    * @returns {Promise<DiscoverResult>} A promise resolving to wallet-side discovery info,
    * used to determine how to proceed with the authentication flow.
    */
-  async discover(): Promise<DiscoverResult> {
+  async discover(options?: DiscoverOptions): Promise<DiscoverResult> {
     const hasHadEmbedded = LocalStorageFlagger.isStamped(LID_CHECKOUT_KEY);
     if (hasHadEmbedded) {
-      return { flow: "EMBED" };
+      return { flow: "EMBED", status: "SUCCESS" };
     }
 
     const { communicator, iframe } = createMerchantCommunicatorHidden(
       this.iframeUrl,
     );
-    const result = await communicator.receiveData<void, DiscoverResult>(
-      "DISCOVER",
-    );
 
-    iframe.remove();
+    try {
+      const discoverPromise = communicator.receiveData<void, DiscoverResult>(
+        "DISCOVER",
+      );
 
-    return result;
+      if (options?.timeout) {
+        const timeoutPromise = new Promise<never>((_, reject) =>
+          setTimeout(
+            () => reject(new Error("Discovery timed out")),
+            options.timeout,
+          ),
+        );
+        return await Promise.race([discoverPromise, timeoutPromise]);
+      } else {
+        return await discoverPromise;
+      }
+    } catch (error) {
+      if (error instanceof Error && error.message === "Discovery timed out") {
+        return {
+          flow: "REDIRECT",
+          status: "TIMEOUT",
+          reason: "TIMEOUT",
+        };
+      }
+
+      throw error;
+    } finally {
+      iframe.remove();
+    }
   }
 }
