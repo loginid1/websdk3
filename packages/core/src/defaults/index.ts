@@ -57,7 +57,7 @@ export const toMfaInfo = (
  */
 export const toMfaSessionDetails = (
   info?: MfaInfo | null,
-  data?: MfaData,
+  data?: MfaData | null,
   trustSet?: LoginIDTrustSet,
 ): MfaSessionResult => {
   const remainingFactors: RemainingFactor[] =
@@ -109,8 +109,8 @@ export const toMfaSessionDetails = (
   );
 
   const isComplete = !!data?.accessToken || !!data?.payloadSignature;
-  const merchantTrustId = isComplete ? trustSet?.merchantTrustId : undefined;
-  const walletTrustId = isComplete ? trustSet?.walletTrustId : undefined;
+  const merchantTrustId = trustSet?.merchantTrustId;
+  const walletTrustId = trustSet?.walletTrustId;
   const deviceId = isComplete ? data?.deviceId : undefined;
 
   const result: MfaSessionResult = {
