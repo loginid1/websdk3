@@ -38,8 +38,8 @@ export const toTrustIDPayload = (id?: string): TrustIDClaims => {
 
   const payload: TrustIDClaims = {
     id: id,
-    // 1 min exp
-    exp: Math.floor(Date.now() / 1000) + 60,
+    // 5 min exp
+    exp: Math.floor(Date.now() / 1000) + 300,
   };
 
   return payload;

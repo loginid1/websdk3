@@ -99,7 +99,7 @@ export class MFA extends LoginIDBase {
 
     this.session.logout();
 
-    return toMfaSessionDetails(mfaInfo);
+    return toMfaSessionDetails(mfaInfo, null, trustIds);
   }
 
   /**
@@ -246,7 +246,10 @@ export class MFA extends LoginIDBase {
 
         MfaStore.updateSession(appId, newSession);
 
-        return toMfaSessionDetails(MfaStore.getInfo(appId));
+        const mfaInfo = MfaStore.getInfo(appId);
+        const trustSet = MfaBeginLocalStorage.getTrustSet();
+
+        return toMfaSessionDetails(mfaInfo, null, trustSet);
       }
 
       case "otp:verify": {
@@ -325,10 +328,11 @@ export class MFA extends LoginIDBase {
     username: string = "",
     fn: () => Promise<Mfa>,
   ): Promise<MfaSessionResult> {
+    const trustSet = MfaBeginLocalStorage.getTrustSet();
+
     try {
       const mfaSuccessResult = await fn();
       const mfaInfo = MfaStore.getInfo(appId);
-      const trustSet = MfaBeginLocalStorage.getTrustSet();
 
       MfaStore.persistInfo(appId, {
         ...(username && { username }),
@@ -372,7 +376,7 @@ export class MFA extends LoginIDBase {
 
           MfaStore.persistInfo(appId, mfaInfo);
 
-          return toMfaSessionDetails(mfaInfo);
+          return toMfaSessionDetails(mfaInfo, null, trustSet);
         }
       }
 
