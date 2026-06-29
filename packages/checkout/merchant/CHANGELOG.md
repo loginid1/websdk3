@@ -1,3 +1,9 @@
+## @loginid/checkout-merchant [1.2.4](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/checkout-merchant@1.2.3...@loginid/checkout-merchant@1.2.4) (2026-06-29)
+
+### Bug Fixes
+
+* **checkout-merchant:** updated default trust ID exp to 5 min ([5a0a133](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/5a0a13330f6b128e2cbd2e9fc04be9adff0ab10b))
+
 ## @loginid/checkout-merchant [1.2.3](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/checkout-merchant@1.2.2...@loginid/checkout-merchant@1.2.3) (2026-06-16)
 
 ### Bug Fixes
