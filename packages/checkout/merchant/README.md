@@ -1,6 +1,5 @@
 # LoginID Checkout SDK – Merchant
 
-
 The LoginID Checkout SDK for Merchants enables seamless passwordless authentication using passkeys within embedded 
 checkout experiences. This SDK is designed to integrate with iframes and orchestrate user authentication in a secure way.
 
