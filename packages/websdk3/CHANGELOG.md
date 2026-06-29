@@ -1,3 +1,9 @@
+## @loginid/websdk3 [3.5.3](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/websdk3@3.5.2...@loginid/websdk3@3.5.3) (2026-06-29)
+
+### Bug Fixes
+
+* **websdk3:** updated default trust ID exp to 5 min ([7255426](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/7255426adcf215774403296da1eb4e74657d5b16))
+
 ## @loginid/websdk3 [3.5.2](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/websdk3@3.5.1...@loginid/websdk3@3.5.2) (2026-06-15)
 
 ### Bug Fixes
