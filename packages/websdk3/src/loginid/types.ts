@@ -99,6 +99,11 @@ export interface AuthenticateWithPasskeysOptions extends MainPasskeyOptions {
    * Pass this if additional passkeys API calls may be anticipated on the current context page.
    */
   abortController?: AbortController;
+
+  /**
+   * When true it will enable immediate mode for WebAuthn.
+   */
+  immediate?: boolean;
 }
 
 /**

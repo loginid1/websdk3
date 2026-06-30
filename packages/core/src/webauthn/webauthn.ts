@@ -121,6 +121,7 @@ const getPasskeyCredential = async (
   const credOptions: CredentialRequestOptions = {
     ...(options.autoFill && { mediation: "conditional" }),
     ...(options.abortController && { signal: options.abortController.signal }),
+    ...(options.immediate && { uiMode: "immediate" }),
     publicKey: {
       allowCredentials: allowCredentials,
       challenge: base64UrlToBuffer(init.challenge),

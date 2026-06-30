@@ -12,6 +12,7 @@ export interface GetNavigatorCredentialOptions {
 export interface GetPasskeyCredentialOptions {
   autoFill?: boolean;
   abortController?: AbortController;
+  immediate?: boolean;
 }
 
 export interface AuthzTokenOptions {
