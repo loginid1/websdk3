@@ -28,6 +28,7 @@ export interface AllOptions {
   usernameType?: UsernameType;
   displayName?: string;
   callbacks?: Callbacks;
+  deviceId?: string | undefined;
 }
 
 /**
@@ -99,6 +100,12 @@ export interface AuthenticateWithPasskeysOptions extends MainPasskeyOptions {
    * Pass this if additional passkeys API calls may be anticipated on the current context page.
    */
   abortController?: AbortController;
+
+  /**
+   * An identifier for the device used in the authentication process. This property helps determine if supported authentications can be proceeded,
+   * allowing future authentications to identify the device correctly.
+   */
+  deviceId?: string;
 }
 
 /**
