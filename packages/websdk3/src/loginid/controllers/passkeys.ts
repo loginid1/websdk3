@@ -102,9 +102,8 @@ class Passkeys extends OTP {
     options: CreatePasskeyOptions = {},
   ): Promise<AuthResult> {
     const appId = this.config.getAppId();
-    const deviceId = options.deviceId || AppStore.getDeviceId(appId);
-    const deviceInfo = await defaultDeviceInfo(deviceId);
-    const opts = passkeyOptions(username, authzToken, options);
+    const opts = passkeyOptions(username, authzToken, options, appId);
+    const deviceInfo = await defaultDeviceInfo(opts.deviceId);
 
     opts.authzToken = this.session.getToken(opts);
     if (opts.authzToken) {
@@ -159,10 +158,7 @@ class Passkeys extends OTP {
 
           this.session.setJwtCookie(regCompleteResponse.jwtAccess);
 
-          AppStore.persistDeviceId(
-            appId,
-            deviceId || regCompleteResponse.deviceId,
-          );
+          AppStore.persistDeviceId(appId, regCompleteResponse.deviceId);
 
           return result;
         } catch (error) {
@@ -226,8 +222,8 @@ class Passkeys extends OTP {
     options: AuthenticateWithPasskeysOptions = {},
   ): Promise<AuthResult> {
     const appId = this.config.getAppId();
-    const deviceInfo = await defaultDeviceInfo(AppStore.getDeviceId(appId));
-    const opts = passkeyOptions(username, "", options);
+    const opts = passkeyOptions(username, "", options, appId);
+    const deviceInfo = await defaultDeviceInfo(opts.deviceId);
 
     let trustInfo = "";
     if (this.config.getConfig().useTrustId) {

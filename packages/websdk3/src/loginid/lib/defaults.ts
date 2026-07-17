@@ -7,6 +7,7 @@ import {
   ConfirmTransactionOptions,
 } from "../types";
 import { randomUUID } from "@loginid/core/utils/crypto";
+import { AppStore } from "@loginid/core/store";
 import { JWT } from "@loginid/core/api";
 
 /**
@@ -21,13 +22,19 @@ export const passkeyOptions = (
   username: string,
   authzToken: string,
   options: AllOptions,
-): Complete<AllOptions> => {
+  appId?: string,
+): Complete<Omit<AllOptions, "deviceId">> & { deviceId?: string } => {
+  const deviceId = appId
+    ? options.deviceId || AppStore.getDeviceId(appId)
+    : options.deviceId;
+
   return {
     ...options,
     authzToken: authzToken || options.authzToken || "",
     usernameType: options.usernameType || "other",
     displayName: options.displayName || username,
     callbacks: options.callbacks || {},
+    deviceId: deviceId || undefined,
   };
 };
 
