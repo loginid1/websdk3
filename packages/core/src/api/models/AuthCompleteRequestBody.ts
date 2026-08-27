@@ -7,7 +7,15 @@ import type { AuthenticatorAssertionResponse } from "./AuthenticatorAssertionRes
 export type AuthCompleteRequestBody = {
   assertionResult: AuthenticatorAssertionResponse;
   /**
+   * This attribute contains the authenticator data returned by the authenticator.
+   */
+  authenticatorData?: string;
+  /**
    * An opaque object containing session data.
    */
   session: string;
+  /**
+   * Base64 encoded the raw signature returned from the authenticator.
+   */
+  signature?: string;
 };

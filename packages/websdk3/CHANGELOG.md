@@ -1,3 +1,9 @@
+## @loginid/websdk3 [3.5.4](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/websdk3@3.5.3...@loginid/websdk3@3.5.4) (2026-07-17)
+
+### Bug Fixes
+
+* **websdk3:** add `deviceId` support to passkey authentication options ([5797429](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/57974291613a42cd3466c1b75bf26b7754a18e74))
+
 ## @loginid/websdk3 [3.5.3](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/websdk3@3.5.2...@loginid/websdk3@3.5.3) (2026-06-29)
 
 ### Bug Fixes
