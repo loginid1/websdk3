@@ -1,3 +1,9 @@
+## @loginid/websdk3 [3.6.0](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/websdk3@3.5.4...@loginid/websdk3@3.6.0) (2026-08-27)
+
+### Features
+
+* **websdk3:** Add transaction confirmation support to `authenticateWithPasskey` ([eb6c100](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/eb6c1003bdb34b2bea1035685da297de0fc7313e))
+
 ## @loginid/websdk3 [3.5.4](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/websdk3@3.5.3...@loginid/websdk3@3.5.4) (2026-07-17)
 
 ### Bug Fixes
