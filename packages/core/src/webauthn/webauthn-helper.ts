@@ -45,8 +45,6 @@ export class WebAuthnHelper {
         }),
       },
       session: session,
-      authenticatorData: bufferToBase64Url(response.authenticatorData),
-      signature: bufferToBase64Url(response.signature),
     };
 
     return authCompleteRequestBody;
