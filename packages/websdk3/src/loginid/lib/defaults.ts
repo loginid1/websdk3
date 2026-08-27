@@ -35,7 +35,7 @@ export const passkeyOptions = (
     displayName: options.displayName || username,
     callbacks: options.callbacks || {},
     deviceId: deviceId || undefined,
-    nonce: options.nonce || randomUUID(),
+    nonce: options.nonce || "",
   };
 };
 
