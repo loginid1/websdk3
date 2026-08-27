@@ -36,9 +36,28 @@ paths:
               schema:
                 $ref: '#/components/schemas/JWT'
               example:
+                authCred:
+                  aaguid: fbfc3007-154e-4ecc-8c0b-6e020557d7bd
+                  createdAt: 2023-06-15 13:29:41 EDT
+                  credentialId: Dolores iste.
+                  credentialSynced: false
+                  id: 861ee00b-b40d-493a-a10b-457a0d527b48
+                  lastUsedAt: '2025-01-02T16:40:44Z'
+                  lastUsedFromDevice:
+                    clientName: Chrome
+                    clientType: browser
+                    clientVersion: 120.0.0.0
+                    deviceId: ab715482-4089-4818-9f79-80523d8eb3c6
+                    lastUsedAt: '2025-01-02T16:40:44Z'
+                    osArch: arm64
+                    osName: iOS
+                    osVersion: 18.1.1
+                  name: My Phone
+                  providerName: Apple Passwords
                 deviceId: 8222fe14-4973-469f-843d-73b0f9e0a3a9
                 jwtAccess: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
                 passkeyId: 482b7723-eb3e-4814-809f-05af16284fcc
+                txId: 8222fe14-4973-469f-843d-73b0f9e0a3a9
                 userId: 2a363a42-a397-4af0-b089-0935fc223017
         '400':
           description: 'bad_request: Bad Request response.'
@@ -49,8 +68,8 @@ paths:
               example:
                 msg: Internal error
                 msgCode: internal_error
-        '404':
-          description: 'forbidden: Not Found response.'
+        '403':
+          description: 'forbidden: Forbidden response.'
           content:
             application/json:
               schema:
@@ -120,10 +139,14 @@ paths:
                     "signalCurrentUserDetails": true,
                     "signalUnknownCredential": true
                   }
+              traceId: 6957cf6e-a86c-44fb-b25a-bd97cb9ff830
               trustItems:
                 auth: DqjUIcwnq7edyyeMGCxWNqs1cNBrEjBXlB2mVxfja8s=
                 merchant: gpOLtpZWhxkKgwEJyYzB2ckXn9IXDID7jjiaYFYTfS4=
                 wallet: NlPsJDfILKo0nCxuu2lrv6q9SBqgKLvpIuqSI4izk9k=
+              tx:
+                data: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
+                nonce: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
               user:
                 username: admin@example.com
                 usernameType: email
@@ -397,9 +420,28 @@ paths:
               schema:
                 $ref: '#/components/schemas/JWT'
               example:
+                authCred:
+                  aaguid: fbfc3007-154e-4ecc-8c0b-6e020557d7bd
+                  createdAt: 2023-06-15 13:29:41 EDT
+                  credentialId: Dolores iste.
+                  credentialSynced: false
+                  id: 861ee00b-b40d-493a-a10b-457a0d527b48
+                  lastUsedAt: '2025-01-02T16:40:44Z'
+                  lastUsedFromDevice:
+                    clientName: Chrome
+                    clientType: browser
+                    clientVersion: 120.0.0.0
+                    deviceId: ab715482-4089-4818-9f79-80523d8eb3c6
+                    lastUsedAt: '2025-01-02T16:40:44Z'
+                    osArch: arm64
+                    osName: iOS
+                    osVersion: 18.1.1
+                  name: My Phone
+                  providerName: Apple Passwords
                 deviceId: 8222fe14-4973-469f-843d-73b0f9e0a3a9
                 jwtAccess: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
                 passkeyId: 482b7723-eb3e-4814-809f-05af16284fcc
+                txId: 8222fe14-4973-469f-843d-73b0f9e0a3a9
                 userId: 2a363a42-a397-4af0-b089-0935fc223017
         '400':
           description: 'bad_request: Bad Request response.'
@@ -975,6 +1017,15 @@ paths:
                       - label: +1(661)942-5456
                         value: 3e3092dc-eb0c-4064-9276-7687fe5cef57
                 session: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
+        '403':
+          description: 'forbidden: Forbidden response.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppError'
+              example:
+                msg: Internal error
+                msgCode: internal_error
         '500':
           description: 'internal_error: Internal Server Error response.'
           content:
@@ -1064,6 +1115,15 @@ paths:
               example:
                 msg: Internal error
                 msgCode: internal_error
+        '403':
+          description: 'forbidden: Forbidden response.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppError'
+              example:
+                msg: Internal error
+                msgCode: internal_error
         '500':
           description: 'internal_error: Internal Server Error response.'
           content:
@@ -1140,6 +1200,15 @@ paths:
                 msgCode: internal_error
         '401':
           description: 'unauthorized: Unauthorized response.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppError'
+              example:
+                msg: Internal error
+                msgCode: internal_error
+        '403':
+          description: 'forbidden: Forbidden response.'
           content:
             application/json:
               schema:
@@ -1758,9 +1827,28 @@ paths:
               schema:
                 $ref: '#/components/schemas/JWT'
               example:
+                authCred:
+                  aaguid: fbfc3007-154e-4ecc-8c0b-6e020557d7bd
+                  createdAt: 2023-06-15 13:29:41 EDT
+                  credentialId: Dolores iste.
+                  credentialSynced: false
+                  id: 861ee00b-b40d-493a-a10b-457a0d527b48
+                  lastUsedAt: '2025-01-02T16:40:44Z'
+                  lastUsedFromDevice:
+                    clientName: Chrome
+                    clientType: browser
+                    clientVersion: 120.0.0.0
+                    deviceId: ab715482-4089-4818-9f79-80523d8eb3c6
+                    lastUsedAt: '2025-01-02T16:40:44Z'
+                    osArch: arm64
+                    osName: iOS
+                    osVersion: 18.1.1
+                  name: My Phone
+                  providerName: Apple Passwords
                 deviceId: 8222fe14-4973-469f-843d-73b0f9e0a3a9
                 jwtAccess: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
                 passkeyId: 482b7723-eb3e-4814-809f-05af16284fcc
+                txId: 8222fe14-4973-469f-843d-73b0f9e0a3a9
                 userId: 2a363a42-a397-4af0-b089-0935fc223017
         '400':
           description: 'bad_request: Bad Request response.'
@@ -2012,6 +2100,7 @@ paths:
               example:
                 msg: Internal error
                 msgCode: internal_error
+      deprecated: true
   /fido2/v2/tx/init:
     post:
       tags:
@@ -2081,6 +2170,7 @@ paths:
               example:
                 msg: Internal error
                 msgCode: internal_error
+      deprecated: true
 components:
   schemas:
     Aaguid:
@@ -2362,6 +2452,9 @@ components:
           $ref: '#/components/schemas/Application'
         deviceInfo:
           $ref: '#/components/schemas/DeviceInfo'
+        traceId:
+          type: string
+          example: 6957cf6e-a86c-44fb-b25a-bd97cb9ff830
         trustItems:
           type: object
           description: TrustIDs provided with the request
@@ -2373,6 +2466,8 @@ components:
             type: string
             example: >-
               eyJ0eXAiOiJKV1QiLA0KICJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ.dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk
+        tx:
+          $ref: '#/components/schemas/TxPayload'
         user:
           $ref: '#/components/schemas/UserLogin'
       example:
@@ -2402,10 +2497,14 @@ components:
               "signalCurrentUserDetails": true,
               "signalUnknownCredential": true
             }
+        traceId: 6957cf6e-a86c-44fb-b25a-bd97cb9ff830
         trustItems:
           auth: DqjUIcwnq7edyyeMGCxWNqs1cNBrEjBXlB2mVxfja8s=
           merchant: gpOLtpZWhxkKgwEJyYzB2ckXn9IXDID7jjiaYFYTfS4=
           wallet: NlPsJDfILKo0nCxuu2lrv6q9SBqgKLvpIuqSI4izk9k=
+        tx:
+          data: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
+          nonce: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
         user:
           username: admin@example.com
           usernameType: email
@@ -2708,6 +2807,8 @@ components:
     JWT:
       type: object
       properties:
+        authCred:
+          $ref: '#/components/schemas/Passkey'
         deviceId:
           type: string
           description: Device ID
@@ -2720,18 +2821,43 @@ components:
           type: string
           description: Passkey ID
           example: 482b7723-eb3e-4814-809f-05af16284fcc
+        txId:
+          type: string
+          description: Transaction ID
+          example: 8222fe14-4973-469f-843d-73b0f9e0a3a9
         userId:
           type: string
           description: User ID
           example: 2a363a42-a397-4af0-b089-0935fc223017
       example:
+        authCred:
+          aaguid: fbfc3007-154e-4ecc-8c0b-6e020557d7bd
+          createdAt: 2023-06-15 13:29:41 EDT
+          credentialId: Dolores iste.
+          credentialSynced: false
+          id: 861ee00b-b40d-493a-a10b-457a0d527b48
+          lastUsedAt: '2025-01-02T16:40:44Z'
+          lastUsedFromDevice:
+            clientName: Chrome
+            clientType: browser
+            clientVersion: 120.0.0.0
+            deviceId: ab715482-4089-4818-9f79-80523d8eb3c6
+            lastUsedAt: '2025-01-02T16:40:44Z'
+            osArch: arm64
+            osName: iOS
+            osVersion: 18.1.1
+          name: My Phone
+          providerName: Apple Passwords
         deviceId: 8222fe14-4973-469f-843d-73b0f9e0a3a9
         jwtAccess: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
         passkeyId: 482b7723-eb3e-4814-809f-05af16284fcc
+        txId: 8222fe14-4973-469f-843d-73b0f9e0a3a9
         userId: 2a363a42-a397-4af0-b089-0935fc223017
       required:
         - jwtAccess
         - userId
+        - passkeyId
+        - deviceId
     Mfa:
       type: object
       properties:
@@ -2862,9 +2988,6 @@ components:
           example: ak4BXFgauyDtsRvnXWfaTW1DyetX7fTViGY9DRQGQ+g=
         traceId:
           type: string
-          description: >-
-            A unique id for tracing all events associated with an interaction. A
-            random ID will be generated by the system if not provided.
           example: 6957cf6e-a86c-44fb-b25a-bd97cb9ff830
         trustItems:
           type: object
@@ -4007,6 +4130,23 @@ components:
         - txPayload
         - txType
         - nonce
+    TxPayload:
+      type: object
+      properties:
+        data:
+          type: string
+          description: Transaction data
+          example: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
+        nonce:
+          type: string
+          description: Random string
+          example: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
+      example:
+        data: UxaynsCYdykyHKaA0G7IeWaBG6DGJoGFN8mbJgvRo...
+        nonce: w5zY9tpNgePsqkTsQlNPVCR2rwUlCdhCLhVwXsN2r...
+      required:
+        - data
+        - nonce
     User:
       type: object
       properties:
@@ -4073,7 +4213,9 @@ tags:
   - name: client-events
     description: Error reporting endpoint
   - name: tx
-    description: FIDO2 transaction confirmation flow
+    description: >-
+      FIDO2 transaction confirmation flow. This service is deprecated in favor
+      of tx payload in auth.
   - name: auth
     description: FIDO2 authentication flow
   - name: mfa

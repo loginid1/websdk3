@@ -240,6 +240,10 @@ class Passkeys extends OTP {
         username: username,
         usernameType: opts.usernameType,
       },
+      ...(options.txPayload && {
+        tx: { data: options.txPayload, nonce: opts.nonce },
+      }),
+      ...(options.traceId && { traceId: options.traceId }),
       ...(trustInfo && { trustItems: { auth: trustInfo } }),
     };
 
@@ -289,7 +293,12 @@ class Passkeys extends OTP {
           await opts.callbacks.onFallback(username, fallbackOptions);
         }
 
-        const emptyResponse: JWT = { userId: "", jwtAccess: "" };
+        const emptyResponse: JWT = {
+          userId: "",
+          jwtAccess: "",
+          deviceId: "",
+          passkeyId: "",
+        };
         return toAuthResult(emptyResponse, false, true);
       }
 

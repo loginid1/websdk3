@@ -3,11 +3,13 @@
 /* istanbul ignore file */
 /* tslint:disable */
 
+import type { Passkey } from "./Passkey";
 export type JWT = {
+  authCred?: Passkey;
   /**
    * Device ID
    */
-  deviceId?: string;
+  deviceId: string;
   /**
    * JWT access token
    */
@@ -15,7 +17,11 @@ export type JWT = {
   /**
    * Passkey ID
    */
-  passkeyId?: string;
+  passkeyId: string;
+  /**
+   * Transaction ID
+   */
+  txId?: string;
   /**
    * User ID
    */
