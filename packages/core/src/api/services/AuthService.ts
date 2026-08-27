@@ -31,7 +31,7 @@ export class AuthService {
       mediaType: "application/json",
       errors: {
         400: `bad_request: Bad Request response.`,
-        404: `forbidden: Not Found response.`,
+        403: `forbidden: Forbidden response.`,
         500: `internal_error: Internal Server Error response.`,
       },
     });

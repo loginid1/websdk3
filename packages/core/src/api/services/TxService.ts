@@ -12,6 +12,7 @@ import type { TxInit } from "../models/TxInit";
 export class TxService {
   constructor(public readonly httpRequest: BaseHttpRequest) {}
   /**
+   * @deprecated
    * Complete transaction confirmation
    * @returns TxComplete OK response.
    * @throws ApiError
@@ -34,6 +35,7 @@ export class TxService {
     });
   }
   /**
+   * @deprecated
    * Start transaction confirmation flow
    * @returns TxInit OK response.
    * @throws ApiError

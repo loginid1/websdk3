@@ -35,6 +35,7 @@ export const passkeyOptions = (
     displayName: options.displayName || username,
     callbacks: options.callbacks || {},
     deviceId: deviceId || undefined,
+    nonce: options.nonce || "",
   };
 };
 
@@ -76,5 +77,7 @@ export const toAuthResult = (
     deviceId: authResponse.deviceId,
     isAuthenticated: isAuthenticated,
     isFallback: isFallback,
+    passkeyCredential: authResponse.authCred,
+    txId: authResponse.txId,
   };
 };
