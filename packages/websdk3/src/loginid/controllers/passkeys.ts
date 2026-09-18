@@ -131,6 +131,7 @@ class Passkeys extends OTP {
         displayName: opts.displayName,
       },
       passkeyOptions: { ...(options.crossPlatform && { securityKey: true }) },
+      ...(options.traceId && { traceId: options.traceId }),
       ...(trustInfo && { trustItems: { auth: trustInfo } }),
     };
 
