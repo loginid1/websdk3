@@ -77,6 +77,15 @@ paths:
               example:
                 msg: Internal error
                 msgCode: internal_error
+        '404':
+          description: 'not_found: Not Found response.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppError'
+              example:
+                msg: Internal error
+                msgCode: internal_error
         '500':
           description: 'internal_error: Internal Server Error response.'
           content:
@@ -1939,6 +1948,7 @@ paths:
               passkeyOptions:
                 conditionalCreate: false
                 securityKey: false
+              traceId: 6957cf6e-a86c-44fb-b25a-bd97cb9ff830
               trustItems:
                 auth: DqjUIcwnq7edyyeMGCxWNqs1cNBrEjBXlB2mVxfja8s=
                 merchant: gpOLtpZWhxkKgwEJyYzB2ckXn9IXDID7jjiaYFYTfS4=
@@ -3903,6 +3913,9 @@ components:
           $ref: '#/components/schemas/DeviceInfo'
         passkeyOptions:
           $ref: '#/components/schemas/PasskeyOptions'
+        traceId:
+          type: string
+          example: 6957cf6e-a86c-44fb-b25a-bd97cb9ff830
         trustItems:
           type: object
           description: TrustIDs provided with the request
@@ -3946,6 +3959,7 @@ components:
         passkeyOptions:
           conditionalCreate: false
           securityKey: false
+        traceId: 6957cf6e-a86c-44fb-b25a-bd97cb9ff830
         trustItems:
           auth: DqjUIcwnq7edyyeMGCxWNqs1cNBrEjBXlB2mVxfja8s=
           merchant: gpOLtpZWhxkKgwEJyYzB2ckXn9IXDID7jjiaYFYTfS4=
