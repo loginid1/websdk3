@@ -7,8 +7,8 @@ import {
   ConfirmTransactionOptions,
 } from "../types";
 import { randomUUID } from "@loginid/core/utils/crypto";
+import { JWT, RegInit } from "@loginid/core/api";
 import { AppStore } from "@loginid/core/store";
-import { JWT } from "@loginid/core/api";
 
 /**
  * Merges provided options with default values for passkey options.
@@ -55,6 +55,26 @@ export const confirmTransactionOptions = (
     txType: options.txType || "raw",
     nonce: options.nonce || randomUUID(),
   };
+};
+
+/**
+ * Merges any client-supplied, defined override values into a RegInit response.
+ *
+ * @param {RegInit} regInitResponseBody The RegInit response to patch.
+ * @param {Partial<RegInit>} [overrides] Fields to overwrite on the response. Undefined fields are left untouched.
+ * @returns {RegInit} The RegInit response, with overrides applied when defined.
+ */
+export const applyRegInitOverrides = (
+  regInitResponseBody: RegInit,
+  overrides?: Partial<RegInit>,
+): RegInit => {
+  const definedOverrides = Object.fromEntries(
+    Object.entries(overrides || {}).filter(([, value]) => value !== undefined),
+  );
+
+  return Object.keys(definedOverrides).length > 0
+    ? { ...regInitResponseBody, ...definedOverrides }
+    : regInitResponseBody;
 };
 
 /**

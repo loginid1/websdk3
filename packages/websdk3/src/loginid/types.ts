@@ -155,6 +155,12 @@ export interface CreatePasskeyOptions extends MainPasskeyOptions {
   displayName?: string;
 
   /**
+   * Overrides the username and display name used by the browser/authenticator during passkey creation.
+   * When set, `displayName` is ignored and this value is used instead.
+   */
+  overrideDeviceDisplayName?: string;
+
+  /**
    * A custom label or nickname for the passkey itself, used to help users distinguish between multiple passkeys.
    * If not provided, a default name may be auto-generated based on the device and/or user-agent.
    */
