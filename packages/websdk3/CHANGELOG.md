@@ -1,3 +1,10 @@
+## @loginid/websdk3 [3.7.0](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/websdk3@3.6.0...@loginid/websdk3@3.7.0) (2026-09-21)
+
+### Features
+
+* **websdk3:** add `overrideDeviceDisplayName` option to `createPasskey` ([2152876](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/21528766555c8fbfd9c9a27ff20cf3c79d6fa145))
+* **websdk3:** add `traceId` option to `createPasskey` ([2e49f81](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/2e49f81c381bb7f27f5fb2c2243a9307e9904568))
+
 ## @loginid/websdk3 [3.6.0](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/websdk3@3.5.4...@loginid/websdk3@3.6.0) (2026-08-27)
 
 ### Features
