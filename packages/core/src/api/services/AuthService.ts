@@ -32,6 +32,7 @@ export class AuthService {
       errors: {
         400: `bad_request: Bad Request response.`,
         403: `forbidden: Forbidden response.`,
+        404: `not_found: Not Found response.`,
         500: `internal_error: Internal Server Error response.`,
       },
     });

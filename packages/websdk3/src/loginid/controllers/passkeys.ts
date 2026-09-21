@@ -19,6 +19,7 @@ import {
   TxInitRequestBody,
 } from "@loginid/core/api";
 import {
+  applyRegInitOverrides,
   confirmTransactionOptions,
   passkeyOptions,
   toAuthResult,
@@ -128,16 +129,36 @@ class Passkeys extends OTP {
       user: {
         username: username,
         usernameType: opts.usernameType,
-        displayName: opts.displayName,
+        // displayName is ignored when overrideDeviceDisplayName is set
+        ...(!options.overrideDeviceDisplayName && {
+          displayName: opts.displayName,
+        }),
       },
       passkeyOptions: { ...(options.crossPlatform && { securityKey: true }) },
+      ...(options.traceId && { traceId: options.traceId }),
       ...(trustInfo && { trustItems: { auth: trustInfo } }),
     };
 
-    const regInitResponseBody = await this.service.reg.regRegInit({
+    const regInitResponse = await this.service.reg.regRegInit({
       requestBody: regInitRequestBody,
       ...(opts.authzToken && { authorization: opts.authzToken }),
     });
+
+    const regInitResponseBody = applyRegInitOverrides(
+      regInitResponse,
+      options.overrideDeviceDisplayName
+        ? {
+            registrationRequestOptions: {
+              ...regInitResponse.registrationRequestOptions,
+              user: {
+                ...regInitResponse.registrationRequestOptions.user,
+                name: options.overrideDeviceDisplayName,
+                displayName: options.overrideDeviceDisplayName,
+              },
+            },
+          }
+        : undefined,
+    );
 
     return await this.invokePasskeyApi(
       regInitResponseBody.session,
