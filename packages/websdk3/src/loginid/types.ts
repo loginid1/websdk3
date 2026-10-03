@@ -103,6 +103,11 @@ export interface AuthenticateWithPasskeysOptions extends MainPasskeyOptions {
   abortController?: AbortController;
 
   /**
+   * When true it will enable immediate mode for WebAuthn.
+   */
+  immediate?: boolean;
+
+  /**
    * An identifier for the device used in the authentication process. This property helps determine if supported authentications can be proceeded,
    * allowing future authentications to identify the device correctly.
    */
