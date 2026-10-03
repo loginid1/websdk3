@@ -59,6 +59,7 @@ export type { TxComplete } from "./models/TxComplete";
 export type { TxCompleteRequestBody } from "./models/TxCompleteRequestBody";
 export type { TxInit } from "./models/TxInit";
 export type { TxInitRequestBody } from "./models/TxInitRequestBody";
+export type { TxPayload } from "./models/TxPayload";
 export type { User } from "./models/User";
 export type { UserLogin } from "./models/UserLogin";
 

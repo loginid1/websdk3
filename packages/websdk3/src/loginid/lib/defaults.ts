@@ -7,7 +7,8 @@ import {
   ConfirmTransactionOptions,
 } from "../types";
 import { randomUUID } from "@loginid/core/utils/crypto";
-import { JWT } from "@loginid/core/api";
+import { JWT, RegInit } from "@loginid/core/api";
+import { AppStore } from "@loginid/core/store";
 
 /**
  * Merges provided options with default values for passkey options.
@@ -21,13 +22,20 @@ export const passkeyOptions = (
   username: string,
   authzToken: string,
   options: AllOptions,
-): Complete<AllOptions> => {
+  appId?: string,
+): Complete<Omit<AllOptions, "deviceId">> & { deviceId?: string } => {
+  const deviceId = appId
+    ? options.deviceId || AppStore.getDeviceId(appId)
+    : options.deviceId;
+
   return {
     ...options,
     authzToken: authzToken || options.authzToken || "",
     usernameType: options.usernameType || "other",
     displayName: options.displayName || username,
     callbacks: options.callbacks || {},
+    deviceId: deviceId || undefined,
+    nonce: options.nonce || "",
   };
 };
 
@@ -50,6 +58,26 @@ export const confirmTransactionOptions = (
 };
 
 /**
+ * Merges any client-supplied, defined override values into a RegInit response.
+ *
+ * @param {RegInit} regInitResponseBody The RegInit response to patch.
+ * @param {Partial<RegInit>} [overrides] Fields to overwrite on the response. Undefined fields are left untouched.
+ * @returns {RegInit} The RegInit response, with overrides applied when defined.
+ */
+export const applyRegInitOverrides = (
+  regInitResponseBody: RegInit,
+  overrides?: Partial<RegInit>,
+): RegInit => {
+  const definedOverrides = Object.fromEntries(
+    Object.entries(overrides || {}).filter(([, value]) => value !== undefined),
+  );
+
+  return Object.keys(definedOverrides).length > 0
+    ? { ...regInitResponseBody, ...definedOverrides }
+    : regInitResponseBody;
+};
+
+/**
  * Constructs an `AuthResult` object using the provided JWT access token and authentication status.
  *
  * @param {JWT} authResponse - The authentication response containing user details and the JWT access token.
@@ -69,5 +97,7 @@ export const toAuthResult = (
     deviceId: authResponse.deviceId,
     isAuthenticated: isAuthenticated,
     isFallback: isFallback,
+    passkeyCredential: authResponse.authCred,
+    txId: authResponse.txId,
   };
 };

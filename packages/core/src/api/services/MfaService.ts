@@ -163,6 +163,7 @@ export class MfaService {
       errors: {
         400: `bad_request: Bad Request response.`,
         401: `additional_auth_required: Unauthorized response.`,
+        403: `forbidden: Forbidden response.`,
         500: `internal_error: Internal Server Error response.`,
       },
     });
@@ -194,6 +195,7 @@ export class MfaService {
       errors: {
         400: `bad_request: Bad Request response.`,
         401: `unauthorized: Unauthorized response.`,
+        403: `forbidden: Forbidden response.`,
         500: `internal_error: Internal Server Error response.`,
       },
     });
@@ -225,6 +227,7 @@ export class MfaService {
       errors: {
         400: `bad_request: Bad Request response.`,
         401: `unauthorized: Unauthorized response.`,
+        403: `forbidden: Forbidden response.`,
         500: `internal_error: Internal Server Error response.`,
       },
     });

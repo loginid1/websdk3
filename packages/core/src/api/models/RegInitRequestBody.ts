@@ -11,6 +11,7 @@ export type RegInitRequestBody = {
   app: Application;
   deviceInfo: DeviceInfo;
   passkeyOptions?: PasskeyOptions;
+  traceId?: string;
   /**
    * TrustIDs provided with the request
    */

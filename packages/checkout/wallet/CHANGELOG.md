@@ -1,3 +1,9 @@
+## @loginid/checkout-wallet [1.4.3](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/checkout-wallet@1.4.2...@loginid/checkout-wallet@1.4.3) (2026-06-26)
+
+### Bug Fixes
+
+* **checkout-wallet:** Ensure trust IDs are available throughout MFA flow ([1f5de57](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/1f5de572b0bebf116070fd5302e6e6bde3092acf))
+
 ## @loginid/checkout-wallet [1.4.2](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/checkout-wallet@1.4.1...@loginid/checkout-wallet@1.4.2) (2026-06-15)
 
 ### Bug Fixes

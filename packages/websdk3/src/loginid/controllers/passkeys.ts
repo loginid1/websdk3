@@ -19,6 +19,7 @@ import {
   TxInitRequestBody,
 } from "@loginid/core/api";
 import {
+  applyRegInitOverrides,
   confirmTransactionOptions,
   passkeyOptions,
   toAuthResult,
@@ -102,9 +103,8 @@ class Passkeys extends OTP {
     options: CreatePasskeyOptions = {},
   ): Promise<AuthResult> {
     const appId = this.config.getAppId();
-    const deviceId = options.deviceId || AppStore.getDeviceId(appId);
-    const deviceInfo = await defaultDeviceInfo(deviceId);
-    const opts = passkeyOptions(username, authzToken, options);
+    const opts = passkeyOptions(username, authzToken, options, appId);
+    const deviceInfo = await defaultDeviceInfo(opts.deviceId);
 
     opts.authzToken = this.session.getToken(opts);
     if (opts.authzToken) {
@@ -129,16 +129,36 @@ class Passkeys extends OTP {
       user: {
         username: username,
         usernameType: opts.usernameType,
-        displayName: opts.displayName,
+        // displayName is ignored when overrideDeviceDisplayName is set
+        ...(!options.overrideDeviceDisplayName && {
+          displayName: opts.displayName,
+        }),
       },
       passkeyOptions: { ...(options.crossPlatform && { securityKey: true }) },
+      ...(options.traceId && { traceId: options.traceId }),
       ...(trustInfo && { trustItems: { auth: trustInfo } }),
     };
 
-    const regInitResponseBody = await this.service.reg.regRegInit({
+    const regInitResponse = await this.service.reg.regRegInit({
       requestBody: regInitRequestBody,
       ...(opts.authzToken && { authorization: opts.authzToken }),
     });
+
+    const regInitResponseBody = applyRegInitOverrides(
+      regInitResponse,
+      options.overrideDeviceDisplayName
+        ? {
+            registrationRequestOptions: {
+              ...regInitResponse.registrationRequestOptions,
+              user: {
+                ...regInitResponse.registrationRequestOptions.user,
+                name: options.overrideDeviceDisplayName,
+                displayName: options.overrideDeviceDisplayName,
+              },
+            },
+          }
+        : undefined,
+    );
 
     return await this.invokePasskeyApi(
       regInitResponseBody.session,
@@ -159,10 +179,7 @@ class Passkeys extends OTP {
 
           this.session.setJwtCookie(regCompleteResponse.jwtAccess);
 
-          AppStore.persistDeviceId(
-            appId,
-            deviceId || regCompleteResponse.deviceId,
-          );
+          AppStore.persistDeviceId(appId, regCompleteResponse.deviceId);
 
           return result;
         } catch (error) {
@@ -226,8 +243,8 @@ class Passkeys extends OTP {
     options: AuthenticateWithPasskeysOptions = {},
   ): Promise<AuthResult> {
     const appId = this.config.getAppId();
-    const deviceInfo = await defaultDeviceInfo(AppStore.getDeviceId(appId));
-    const opts = passkeyOptions(username, "", options);
+    const opts = passkeyOptions(username, "", options, appId);
+    const deviceInfo = await defaultDeviceInfo(opts.deviceId);
 
     let trustInfo = "";
     if (this.config.getConfig().useTrustId) {
@@ -244,6 +261,10 @@ class Passkeys extends OTP {
         username: username,
         usernameType: opts.usernameType,
       },
+      ...(options.txPayload && {
+        tx: { data: options.txPayload, nonce: opts.nonce },
+      }),
+      ...(options.traceId && { traceId: options.traceId }),
       ...(trustInfo && { trustItems: { auth: trustInfo } }),
     };
 
@@ -293,7 +314,12 @@ class Passkeys extends OTP {
           await opts.callbacks.onFallback(username, fallbackOptions);
         }
 
-        const emptyResponse: JWT = { userId: "", jwtAccess: "" };
+        const emptyResponse: JWT = {
+          userId: "",
+          jwtAccess: "",
+          deviceId: "",
+          passkeyId: "",
+        };
         return toAuthResult(emptyResponse, false, true);
       }
 
