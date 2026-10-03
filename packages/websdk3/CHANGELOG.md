@@ -1,3 +1,9 @@
+## @loginid/websdk3 [3.8.0](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/websdk3@3.7.0...@loginid/websdk3@3.8.0) (2026-10-03)
+
+### Features
+
+* **websdk3:** enable WebAuthn `uiMode: 'immediate'` via `immediate` option ([42ba930](https://gitlab.com/loginid/software/sdks/loginid-websdk3/commit/42ba93036b241ef06e0ad28357c1c0db1e944548))
+
 ## @loginid/websdk3 [3.7.0](https://gitlab.com/loginid/software/sdks/loginid-websdk3/compare/@loginid/websdk3@3.6.0...@loginid/websdk3@3.7.0) (2026-09-21)
 
 ### Features
